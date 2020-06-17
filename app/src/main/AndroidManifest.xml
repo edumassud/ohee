@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.ohee">
+
+    <uses-feature android:name="android.hardware.camera2"
+        android:required="true" />
+
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+
+       <activity android:name=".activity.MessengerActivity" />
+        <activity
+            android:name=".activity.GroupFinalizationActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:parentActivityName=".activity.GroupActivity"></activity>
+        <activity
+            android:name=".activity.GroupActivity"
+            android:parentActivityName=".activity.MessengerActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.ChatActivity"
+            android:parentActivityName=".activity.MessengerActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity android:name=".activity.VisitProfileActivity" />
+        <activity android:name=".activity.EditProfileActivity" />
+        <activity android:name=".activity.MainActivity" />
+        <activity android:name=".activity.SignUpActivity" />
+        <activity android:name=".activity.LoginActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

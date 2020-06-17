@@ -1,0 +1,154 @@
+package com.example.ohee.model;
+
+import com.example.ohee.helpers.SetFirebase;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.Exclude;
+
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
+
+public class User implements Serializable {
+    private String name, email, password, idUser, picturePath, searchName, university;
+    private String bio = "Im new to OhEE!";
+    private int postCount = 0;
+    private int followerCount = 0;
+    private int followingCount = 0;
+
+    public User(String name, String email, String password, String university) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.university = university;
+    }
+
+    public User(String email, String password) {
+        this.email = email;
+        this.password = password;
+    }
+
+    public User() {
+    }
+
+    public void save() {
+        DatabaseReference firebase = SetFirebase.getFirebaseDatabase();
+        firebase.child("user")
+                .child(this.idUser)
+                .setValue(this);
+    }
+
+    public void update() {
+        DatabaseReference firebaseRef = SetFirebase.getFirebaseDatabase();
+        DatabaseReference userRef = firebaseRef
+                .child("user")
+                .child(getIdUser());
+
+        Map<String, Object> userValues = convertToMap();
+
+        userRef.updateChildren(userValues);
+    }
+
+    public Map<String, Object> convertToMap() {
+        HashMap<String, Object> usersMap = new HashMap<>();
+        usersMap.put("email", getEmail());
+        usersMap.put("name", getName());
+        usersMap.put("university", getUniversity());
+        usersMap.put("bio", getBio());
+        usersMap.put("picturePath", getPicturePath());
+        usersMap.put("searchName", getName().toUpperCase());
+        usersMap.put("postCount", getPostCount());
+        usersMap.put("followingCount", getFollowingCount());
+        usersMap.put("followerCount", getFollowerCount());
+
+        return usersMap;
+    }
+
+    public int getPostCount() {
+        return postCount;
+    }
+
+    public void setPostCount(int postCount) {
+        this.postCount = postCount;
+    }
+
+    public int getFollowerCount() {
+        return followerCount;
+    }
+
+    public void setFollowerCount(int followerCount) {
+        this.followerCount = followerCount;
+    }
+
+    public int getFollowingCount() {
+        return followingCount;
+    }
+
+    public void setFollowingCount(int followingCount) {
+        this.followingCount = followingCount;
+    }
+
+    public String getSearchName() {
+        return searchName;
+    }
+
+    public void setSearchName(String searchName) {
+        this.searchName = searchName;
+    }
+
+    public String getBio() {
+        return bio;
+    }
+
+    public void setBio(String bio) {
+        this.bio = bio;
+    }
+
+    public String getUniversity() {
+        return university;
+    }
+
+    public void setUniversity(String university) {
+        this.university = university;
+    }
+
+    public String getPicturePath() {
+        return picturePath;
+    }
+
+    public void setPicturePath(String picturePath) {
+        this.picturePath = picturePath;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    @Exclude
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getIdUser() {
+        return idUser;
+    }
+
+    public void setIdUser(String idUser) {
+        this.idUser = idUser;
+    }
+}
