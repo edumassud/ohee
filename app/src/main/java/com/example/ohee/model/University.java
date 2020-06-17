@@ -2,8 +2,12 @@ package com.example.ohee.model;
 
 //import com.google.gson.annotations.SerializedName;
 
+import android.widget.Toast;
+
+import com.example.ohee.activity.SignUpActivity;
 import com.example.ohee.helpers.SetFirebase;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.Exclude;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,7 +25,13 @@ public class University {
         JSONObject registryData = whois.getJSONObject("registryData");
         JSONObject registrant = registryData.getJSONObject("registrant");
 
-        this.name = registrant.getString("name");
+        String txtName = registrant.getString("name");
+        if (txtName.contains("\n")) {
+            int endAt = txtName.indexOf("\n");
+            this.name = txtName.substring(0, endAt);
+        } else {
+            this.name = txtName;
+        }
         this.city = registrant.optString("city");
         this.state = registrant.optString("state");
     }

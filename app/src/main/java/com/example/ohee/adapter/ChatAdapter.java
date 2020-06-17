@@ -47,8 +47,12 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MyViewHolder> 
             Group grupo = conversa.getGrupo();
             holder.nome.setText(grupo.getNome());
             if (grupo.getFoto() != null) {
-                Uri uri = Uri.parse(conversa.getUsuarioExibicao().getPicturePath());
-                Glide.with(c).load(uri).into(holder.foto);
+                if (conversa.getUsuarioExibicao().getPicturePath() == null) {
+                    holder.foto.setImageResource(R.drawable.avatar);
+                } else {
+                    Uri uri = Uri.parse(conversa.getUsuarioExibicao().getPicturePath());
+                    Glide.with(c).load(uri).into(holder.foto);
+                }
             } else {
                 holder.foto.setImageResource(R.drawable.avatar);
             }

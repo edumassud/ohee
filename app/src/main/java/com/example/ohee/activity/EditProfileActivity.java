@@ -51,7 +51,8 @@ public class EditProfileActivity extends AppCompatActivity {
     private StorageReference storageRef = SetFirebase.getFirebaseStorage();
     private User loggedUser = SetFirebaseUser.getUserData();
     private String userId = SetFirebaseUser.getUsersId();
-//    private DatabaseReference userRef = SetFirebase.getFirebaseDatabase().child("user").child(user.getUid());
+    private FirebaseUser user = SetFirebaseUser.getUser();
+    private DatabaseReference userRef = SetFirebase.getFirebaseDatabase().child("user").child(user.getUid());
 
     private static final int GALLERY = 200;
 
@@ -80,8 +81,6 @@ public class EditProfileActivity extends AppCompatActivity {
         FirebaseUser userFB = SetFirebaseUser.getUser();
         editName.setText(userFB.getDisplayName());
         emailField.setText(userFB.getEmail());
-        editBio.setText(loggedUser.getBio());
-//        universityField.setText(loggedUser.getUniversity().getName());
         Uri url = userFB.getPhotoUrl();
         if (url != null) {
             Glide.with(EditProfileActivity.this)
@@ -92,36 +91,22 @@ public class EditProfileActivity extends AppCompatActivity {
         }
 
 
-//        userRef.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                User user = dataSnapshot.getValue(User.class);
-//                String txtNameAndUniversity     = user.getName() + " • " + user.getUniversity();
-//                String posts                    = String.valueOf(user.getPostCount());
-//                String following                = String.valueOf(user.getFollowingCount());
-//                String followers                = String.valueOf(user.getFollowerCount());
-//                String bio                      = String.valueOf(user.getBio());
-//                String picturePath              = String.valueOf(user.getPicturePath());
-//
-//                // Setting data on screen
-//                postsCount.setText(posts);
-//                followingCount.setText(following);
-//                followersCount.setText(followers);
-//                profileBio.setText(bio);
-//                profileNameAndUniversity.setText(txtNameAndUniversity);
-//                if (user.getPicturePath() != null) {
-//                    Uri uri = Uri.parse(picturePath);
-//                    Glide.with(getActivity()).load(uri).into(profileImg);
-//                } else {
-//                    profileImg.setImageResource(R.drawable.avatar);
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        });
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+                String bio = user.getBio();
+                String university = user.getUniversity();
+
+                editBio.setText(bio);
+                universityField.setText(university);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
         btLogOut.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -141,7 +126,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
                 loggedUser.setName(newName);
                 loggedUser.setBio(newBio);
-                loggedUser.update();
+                loggedUser.updateInfo();
                 finish();
             }
         });
@@ -187,7 +172,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
                     // Img data
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    image.compress(Bitmap.CompressFormat.JPEG, 70, baos);
+                    image.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                     byte[] imgData = baos.toByteArray();
 
                     // Save to firebase
@@ -226,7 +211,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
         // Atualizar foto no firebase
         loggedUser.setPicturePath(uri.toString());
-        loggedUser.update();
+        loggedUser.updateImg();
         Toast.makeText(this, "Picture succesfully updated", Toast.LENGTH_SHORT).show();
     }
 }

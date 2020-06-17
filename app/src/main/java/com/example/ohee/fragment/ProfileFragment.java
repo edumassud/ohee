@@ -84,12 +84,12 @@ public class ProfileFragment extends Fragment {
                 followersCount.setText(followers);
                 profileBio.setText(bio);
                 profileNameAndUniversity.setText(txtNameAndUniversity);
-                if (user.getPicturePath() != null) {
-                    Uri uri = Uri.parse(picturePath);
-                    Glide.with(getActivity()).load(uri).into(profileImg);
-                } else {
-                    profileImg.setImageResource(R.drawable.avatar);
-                }
+//                if (user.getPicturePath() != null) {
+//                    Uri uri = Uri.parse(picturePath);
+//                    Glide.with(getActivity()).load(uri).into(profileImg);
+//                } else {
+//                    profileImg.setImageResource(R.drawable.avatar);
+//                }
             }
 
             @Override

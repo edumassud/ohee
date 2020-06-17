@@ -2,8 +2,11 @@ package com.example.ohee.fragment;
 
 import android.Manifest;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.provider.MediaStore;
@@ -13,7 +16,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.example.ohee.R;
+import com.example.ohee.activity.FilterActivity;
 import com.example.ohee.helpers.Permission;
+
+import java.io.ByteArrayOutputStream;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -67,5 +73,38 @@ public class PostFragment extends Fragment {
         });
 
         return view;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == getActivity().RESULT_OK && data != null) {
+            Bitmap img = null;
+
+            try {
+                switch (requestCode) {
+                    case CAMERA_SELECTION:
+                        img = (Bitmap) data.getExtras().get("data");
+                        break;
+                    case GALLERY_SELECTION:
+                        Uri selectedImage = data.getData();
+                        img = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), selectedImage);
+                }
+
+                if (img != null) {
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    img.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                    byte[] imgData = baos.toByteArray();
+
+                    // Send to filter application
+                    Intent i = new Intent(getActivity(), FilterActivity.class);
+                    i.putExtra("selectedPic", imgData);
+                    startActivity(i);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

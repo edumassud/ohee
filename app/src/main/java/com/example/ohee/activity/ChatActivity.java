@@ -25,7 +25,7 @@ import com.example.ohee.helpers.SetFirebase;
 import com.example.ohee.helpers.SetFirebaseUser;
 import com.example.ohee.model.Chat;
 import com.example.ohee.model.Group;
-import com.example.ohee.model.Messagem;
+import com.example.ohee.model.Message;
 import com.example.ohee.model.User;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -53,7 +53,7 @@ public class ChatActivity extends AppCompatActivity {
     private ImageView imageCamera;
 
     private MessagesAdapter adapter;
-    private List<Messagem> mensagens = new ArrayList<>();
+    private List<Message> mensagens = new ArrayList<>();
 
     private User usuarioemetente;
     private String idUsuarioRemetente, idUsuarioDestinatario;
@@ -192,7 +192,7 @@ public class ChatActivity extends AppCompatActivity {
                                         @Override
                                         public void onSuccess(Uri uri) {
                                             if (usuarioDestinatario != null) {
-                                                Messagem mensagem = new Messagem();
+                                                Message mensagem = new Message();
                                                 mensagem.setIdUsuario(idUsuarioRemetente);
                                                 mensagem.setMensagem("image");
                                                 mensagem.setImagem(uri.toString());
@@ -204,7 +204,7 @@ public class ChatActivity extends AppCompatActivity {
                                                     String idRemetenteGrupo = membro.getIdUser();
                                                     String idUsuarioLogadoGrupo = SetFirebaseUser.getUsersId();
 
-                                                    Messagem mensagem = new Messagem();
+                                                    Message mensagem = new Message();
                                                     mensagem.setIdUsuario(idUsuarioLogadoGrupo);
                                                     mensagem.setMensagem("img.jpeg");
                                                     mensagem.setNome(usuarioemetente.getName());
@@ -248,7 +248,7 @@ public class ChatActivity extends AppCompatActivity {
         String txtMensagem = editMensagem.getText().toString();
         if (!txtMensagem.isEmpty()) {
             if (usuarioDestinatario != null) {
-                Messagem mensagem = new Messagem();
+                Message mensagem = new Message();
                 mensagem.setIdUsuario(idUsuarioRemetente);
                 mensagem.setMensagem(txtMensagem);
 
@@ -268,7 +268,7 @@ public class ChatActivity extends AppCompatActivity {
                     String idRemetenteGrupo = membro.getIdUser();
                     String idUsuarioLogadoGrupo = SetFirebaseUser.getUsersId();
 
-                    Messagem mensagem = new Messagem();
+                    Message mensagem = new Message();
                     mensagem.setIdUsuario(idUsuarioLogadoGrupo);
                     mensagem.setMensagem(txtMensagem);
                     mensagem.setNome(usuarioemetente.getName());
@@ -282,7 +282,7 @@ public class ChatActivity extends AppCompatActivity {
         }
     }
 
-    private void salvarMensagem(String idRemetente, String idDestinatario, Messagem mensagem) {
+    private void salvarMensagem(String idRemetente, String idDestinatario, Message mensagem) {
         DatabaseReference database = SetFirebase.getFirebaseDatabase();
         DatabaseReference mensagemRef = database.child("messages");
 
@@ -291,7 +291,7 @@ public class ChatActivity extends AppCompatActivity {
         editMensagem.setText("");
     }
 
-    private void salvarConversa(String idRemetente, String idDestinatario, User usuarioExibicao, Messagem msg, boolean isGroup) {
+    private void salvarConversa(String idRemetente, String idDestinatario, User usuarioExibicao, Message msg, boolean isGroup) {
         Chat conversaRemetente = new Chat();
         conversaRemetente.setIdRemetente(idRemetente);
         conversaRemetente.setIdDestinatario(idDestinatario);
@@ -310,7 +310,7 @@ public class ChatActivity extends AppCompatActivity {
         childEventListenerMensagens = mensagensRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                Messagem mensagem = dataSnapshot.getValue(Messagem.class);
+                Message mensagem = dataSnapshot.getValue(Message.class);
                 mensagens.add(mensagem);
                 adapter.notifyDataSetChanged();
             }

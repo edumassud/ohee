@@ -83,6 +83,7 @@ public class SignUpActivity extends AppCompatActivity {
         btSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                progressBar.setVisibility(View.VISIBLE);
                 String txtName = nameField.getText().toString();
                 String txtEmail = emailField.getText().toString();
                 String txtPassword = passwordField.getText().toString();
@@ -109,9 +110,9 @@ public class SignUpActivity extends AppCompatActivity {
                         public void onResponse(Call<String> call, Response<String> response) {
 
                             try {
-                                String responseReplaced = response.body().replace("\\n", "");
-                                JSONObject responseObject = new JSONObject(responseReplaced);
+                                JSONObject responseObject = new JSONObject(response.body());
                                 University university = new University(responseObject);
+
                                 university.save();
 
                                 user = new User(txtName, txtEmail, txtPassword, university.getName());
@@ -133,6 +134,7 @@ public class SignUpActivity extends AppCompatActivity {
             }
         });
     }
+
 
     public void signUpUser() {
         progressBar.setVisibility(View.VISIBLE);

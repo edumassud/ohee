@@ -14,17 +14,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.ohee.R;
 import com.example.ohee.helpers.SetFirebaseUser;
-import com.example.ohee.model.Messagem;
+import com.example.ohee.model.Message;
 
 import java.util.List;
 
 public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.MyViewHolder> {
-    private List<Messagem> mensagens;
+    private List<Message> mensagens;
     private Context context;
     private static final int TIPO_REMETENTE = 0;
     private static final int TIPO_DESTINATARIO = 1;
 
-    public MessagesAdapter(List<Messagem> mensagens, Context context) {
+    public MessagesAdapter(List<Message> mensagens, Context context) {
         this.mensagens = mensagens;
         this.context = context;
     }
@@ -43,7 +43,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.MyView
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        Messagem mensagem = mensagens.get(position);
+        Message mensagem = mensagens.get(position);
         String nome = mensagem.getNome();
         if (mensagem.getImagem() != null) {
             Uri url = Uri.parse(mensagem.getImagem());
@@ -72,7 +72,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.MyView
 
     @Override
     public int getItemViewType(int position) {
-        Messagem mensagem = mensagens.get(position);
+        Message mensagem = mensagens.get(position);
         String idUsuario = SetFirebaseUser.getUsersId();
 
         if (idUsuario.equals(mensagem.getIdUsuario())) {

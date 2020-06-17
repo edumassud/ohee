@@ -1,6 +1,12 @@
 package com.example.ohee.model;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.example.ohee.helpers.SetFirebase;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Exclude;
 
@@ -37,28 +43,43 @@ public class User implements Serializable {
                 .setValue(this);
     }
 
-    public void update() {
+    public void updateInfo() {
         DatabaseReference firebaseRef = SetFirebase.getFirebaseDatabase();
         DatabaseReference userRef = firebaseRef
                 .child("user")
                 .child(getIdUser());
 
-        Map<String, Object> userValues = convertToMap();
+        Map<String, Object> userValues = convertInfoToMap();
 
         userRef.updateChildren(userValues);
     }
 
-    public Map<String, Object> convertToMap() {
+    public void updateImg() {
+        DatabaseReference firebaseRef = SetFirebase.getFirebaseDatabase();
+        DatabaseReference userRef = firebaseRef
+                .child("user")
+                .child(getIdUser());
+
+        Map<String, Object> userValues = convertImgToMap();
+
+        userRef.updateChildren(userValues);
+    }
+
+    public Map<String, Object> convertInfoToMap() {
         HashMap<String, Object> usersMap = new HashMap<>();
-        usersMap.put("email", getEmail());
         usersMap.put("name", getName());
-        usersMap.put("university", getUniversity());
         usersMap.put("bio", getBio());
-        usersMap.put("picturePath", getPicturePath());
         usersMap.put("searchName", getName().toUpperCase());
         usersMap.put("postCount", getPostCount());
         usersMap.put("followingCount", getFollowingCount());
         usersMap.put("followerCount", getFollowerCount());
+
+        return usersMap;
+    }
+
+    public Map<String, Object> convertImgToMap() {
+        HashMap<String, Object> usersMap = new HashMap<>();
+        usersMap.put("picturePath", getPicturePath());
 
         return usersMap;
     }

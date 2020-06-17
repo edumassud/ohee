@@ -35,7 +35,8 @@ public class VisitProfileActivity extends AppCompatActivity {
     private DatabaseReference usersRef = databaseReference.child("user");
     private DatabaseReference userHostRef;
     private DatabaseReference loggedUserRef;
-    private DatabaseReference followersRef = databaseReference.child("followers");
+    private DatabaseReference followingRef = databaseReference.child("following");
+//    private DatabaseReference followersRef = databaseReference.child("followers");
 
     private String idLoggedUSer;
 
@@ -140,16 +141,22 @@ public class VisitProfileActivity extends AppCompatActivity {
 
     private void checkFollowing() {
 
-        DatabaseReference followerRef = followersRef
+        DatabaseReference followerRef = followingRef
                 .child(idLoggedUSer)
                 .child(selectedUser.getIdUser());
 
-        followerRef.addListenerForSingleValueEvent(
+        followerRef.addValueEventListener(
                 new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         if (dataSnapshot.exists()) {
                             btFollow.setText("Following");
+                            btFollow.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    unfollow(loggedUser, selectedUser);
+                                }
+                            });
                         } else {
                             btFollow.setText("Follow");
                             btFollow.setOnClickListener(new View.OnClickListener() {
@@ -169,19 +176,50 @@ public class VisitProfileActivity extends AppCompatActivity {
         );
     }
 
+    private void unfollow(User loggedUser, User friendsUser) {
+        DatabaseReference followerRef = followingRef
+                .child(loggedUser.getIdUser())
+                .child(friendsUser.getIdUser());
+
+        followerRef.removeValue();
+
+        btFollow.setText("Follow");
+
+        //Remove following to logged user
+        int following = loggedUser.getFollowingCount();
+
+        HashMap<String, Object> followingData = new HashMap<>();
+        followingData.put("followingCount", following);
+
+        DatabaseReference userFollowing = usersRef
+                .child(loggedUser.getIdUser());
+
+        userFollowing.updateChildren(followingData);
+
+        // Remove follower to friend
+        int followers = friendsUser.getFollowerCount();
+
+        HashMap<String, Object> followerData = new HashMap<>();
+        followerData.put("followerCount", followers);
+
+        DatabaseReference userFollower = usersRef
+                .child(friendsUser.getIdUser());
+
+        userFollower.updateChildren(followerData);
+    }
+
     private void saveFollower(User loggedUser, User friendsUser) {
         HashMap<String, Object> friendsData = new HashMap<>();
         friendsData.put("name", friendsUser.getName());
         friendsData.put("picturePath", friendsUser.getPicturePath());
 
-        DatabaseReference followerRef = followersRef
+        DatabaseReference followerRef = followingRef
                 .child(loggedUser.getIdUser())
                 .child(friendsUser.getIdUser());
 
         followerRef.setValue(friendsData);
 
         btFollow.setText("Following");
-        btFollow.setOnClickListener(null);
 
         // Add following to logged user
         int following = loggedUser.getFollowingCount() + 1;
@@ -195,7 +233,6 @@ public class VisitProfileActivity extends AppCompatActivity {
         userFollowing.updateChildren(followingData);
 
         // Add follower to friend
-        // Add following to logged user
         int followers = friendsUser.getFollowerCount() + 1;
 
         HashMap<String, Object> followerData = new HashMap<>();
