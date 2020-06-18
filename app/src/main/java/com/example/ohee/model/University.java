@@ -18,6 +18,7 @@ public class University {
     private String name;
     private String city;
     private String state;
+    private String domain;
     private List<User> students;
 
     public University(JSONObject json) throws JSONException {
@@ -36,11 +37,22 @@ public class University {
         this.state = registrant.optString("state");
     }
 
+    public University() {
+    }
+
     public void save() {
         DatabaseReference firebase = SetFirebase.getFirebaseDatabase();
         firebase.child("universities")
-                .child(this.getName())
+                .child(this.getDomain())
                 .setValue(this);
+    }
+
+    public String getDomain() {
+        return domain;
+    }
+
+    public void setDomain(String domain) {
+        this.domain = domain;
     }
 
     public String getName() {

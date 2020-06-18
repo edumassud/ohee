@@ -36,7 +36,6 @@ public class VisitProfileActivity extends AppCompatActivity {
     private DatabaseReference userHostRef;
     private DatabaseReference loggedUserRef;
     private DatabaseReference followingRef = databaseReference.child("following");
-//    private DatabaseReference followersRef = databaseReference.child("followers");
 
     private String idLoggedUSer;
 

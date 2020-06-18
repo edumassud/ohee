@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<ScrollView xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
     xmlns:android="http://schemas.android.com/apk/res/android">
 <LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -19,7 +17,7 @@
         android:id="@+id/imgSelected"
         android:layout_width="match_parent"
         android:layout_height="420dp"
-        android:scaleType="centerCrop"
+        android:scaleType="centerInside"
         app:srcCompat="@drawable/avatar" />
 
     <com.google.android.material.textfield.TextInputLayout

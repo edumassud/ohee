@@ -83,7 +83,6 @@ public class SignUpActivity extends AppCompatActivity {
         btSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                progressBar.setVisibility(View.VISIBLE);
                 String txtName = nameField.getText().toString();
                 String txtEmail = emailField.getText().toString();
                 String txtPassword = passwordField.getText().toString();
@@ -98,38 +97,64 @@ public class SignUpActivity extends AppCompatActivity {
                     Toast.makeText(SignUpActivity.this, "Passwords don't match", Toast.LENGTH_SHORT).show();
                     confirmPasswordField.setText("");
                 } else {
-                    Map<String, String> params = new HashMap<String, String>();
-                    params.put("apiKey", WHO_IS_API_KEY);
-                    params.put("domainName", txtEmail);
-                    params.put("outputFormat", "JSON");
+                    progressBar.setVisibility(View.VISIBLE);
+                    String domain = txtEmail.substring(txtEmail.lastIndexOf("@") + 1).replace(".", "");
+                    DatabaseReference databaseReference = SetFirebase.getFirebaseDatabase();
+                    DatabaseReference universityRef = databaseReference
+                            .child("universities")
+                            .child(domain);
 
-                    GetDataService service = retrofit.create(GetDataService.class);
-                    Call<String> call = service.getUniversity(params);
-                    call.enqueue(new Callback<String>() {
-                        @Override
-                        public void onResponse(Call<String> call, Response<String> response) {
+                    universityRef.addListenerForSingleValueEvent(
+                            new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    if (dataSnapshot.exists()) {
+                                        University university = dataSnapshot.getValue(University.class);
+                                        user = new User(txtName, txtEmail, txtPassword, university.getName());
+                                        user.setSearchName(txtName.toUpperCase());
+                                        signUpUser();
+                                    } else {
+                                        Map<String, String> params = new HashMap<String, String>();
+                                        params.put("apiKey", WHO_IS_API_KEY);
+                                        params.put("domainName", txtEmail);
+                                        params.put("outputFormat", "JSON");
 
-                            try {
-                                JSONObject responseObject = new JSONObject(response.body());
-                                University university = new University(responseObject);
+                                        GetDataService service = retrofit.create(GetDataService.class);
+                                        Call<String> call = service.getUniversity(params);
+                                        call.enqueue(new Callback<String>() {
+                                            @Override
+                                            public void onResponse(Call<String> call, Response<String> response) {
 
-                                university.save();
+                                                try {
+                                                    JSONObject responseObject = new JSONObject(response.body());
+                                                    University university = new University(responseObject);
+                                                    university.setDomain(domain);
+                                                    university.save();
 
-                                user = new User(txtName, txtEmail, txtPassword, university.getName());
-                                user.setSearchName(txtName.toUpperCase());
-                                signUpUser();
+                                                    user = new User(txtName, txtEmail, txtPassword, university.getName());
+                                                    user.setSearchName(txtName.toUpperCase());
+                                                    signUpUser();
 
-                            }catch (JSONException e) {
-                                Log.e("ERROR", e.getLocalizedMessage());
+                                                }catch (JSONException e) {
+                                                    Log.e("ERROR", e.getLocalizedMessage());
+                                                }
+
+                                            }
+
+                                            @Override
+                                            public void onFailure(Call<String> call, Throwable t) {
+                                                Log.e("PASSEI", "FALHOU");
+                                            }
+                                        });
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
                             }
-
-                        }
-
-                        @Override
-                        public void onFailure(Call<String> call, Throwable t) {
-                            Log.e("PASSEI", "FALHOU");
-                        }
-                    });
+                    );
                 }
             }
         });
