@@ -1,10 +1,12 @@
 package com.example.ohee.activity;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -14,6 +16,7 @@ import com.example.ohee.R;
 import com.example.ohee.helpers.SetFirebase;
 import com.example.ohee.helpers.SetFirebaseUser;
 import com.example.ohee.model.User;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -36,6 +39,7 @@ public class VisitProfileActivity extends AppCompatActivity {
     private DatabaseReference userHostRef;
     private DatabaseReference loggedUserRef;
     private DatabaseReference followingRef = databaseReference.child("following");
+    private DatabaseReference followerRef = databaseReference.child("followers");
 
     private String idLoggedUSer;
 
@@ -92,6 +96,7 @@ public class VisitProfileActivity extends AppCompatActivity {
         super.onStop();
         userHostRef.removeEventListener(eventListener);
     }
+
 
     private void getHostData() {
         userHostRef = usersRef.child(selectedUser.getIdUser());
@@ -176,35 +181,47 @@ public class VisitProfileActivity extends AppCompatActivity {
     }
 
     private void unfollow(User loggedUser, User friendsUser) {
-        DatabaseReference followerRef = followingRef
+        DatabaseReference followingNode = followingRef
                 .child(loggedUser.getIdUser())
                 .child(friendsUser.getIdUser());
 
-        followerRef.removeValue();
+        followingNode.removeValue();
+
+        DatabaseReference followerNode = followerRef
+                .child(friendsUser.getIdUser())
+                .child(loggedUser.getIdUser());
+
+        followerNode.removeValue();
 
         btFollow.setText("Follow");
 
-        //Remove following to logged user
-        int following = loggedUser.getFollowingCount();
+        loggedUser.setFollowingCount(loggedUser.getFollowingCount() - 1);
+        selectedUser.setFollowerCount(selectedUser.getFollowerCount() - 1);
 
-        HashMap<String, Object> followingData = new HashMap<>();
-        followingData.put("followingCount", following);
+        loggedUser.updateInfo();
+        selectedUser.updateInfo();
 
-        DatabaseReference userFollowing = usersRef
-                .child(loggedUser.getIdUser());
-
-        userFollowing.updateChildren(followingData);
-
-        // Remove follower to friend
-        int followers = friendsUser.getFollowerCount();
-
-        HashMap<String, Object> followerData = new HashMap<>();
-        followerData.put("followerCount", followers);
-
-        DatabaseReference userFollower = usersRef
-                .child(friendsUser.getIdUser());
-
-        userFollower.updateChildren(followerData);
+//        //Remove following to logged user
+//        int following = loggedUser.getFollowingCount();
+//
+//        HashMap<String, Object> followingData = new HashMap<>();
+//        followingData.put("followingCount", following);
+//
+//        DatabaseReference userFollowing = usersRef
+//                .child(loggedUser.getIdUser());
+//
+//        userFollowing.updateChildren(followingData);
+//
+//        // Remove follower to friend
+//        int followers = friendsUser.getFollowerCount();
+//
+//        HashMap<String, Object> followerData = new HashMap<>();
+//        followerData.put("followerCount", followers);
+//
+//        DatabaseReference userFollower = usersRef
+//                .child(friendsUser.getIdUser());
+//
+//        userFollower.updateChildren(followerData);
     }
 
     private void saveFollower(User loggedUser, User friendsUser) {
@@ -212,35 +229,50 @@ public class VisitProfileActivity extends AppCompatActivity {
         friendsData.put("name", friendsUser.getName());
         friendsData.put("picturePath", friendsUser.getPicturePath());
 
-        DatabaseReference followerRef = followingRef
+        HashMap<String, Object> loggedUserData = new HashMap<>();
+        loggedUserData.put("name", loggedUser.getName());
+        loggedUserData.put("picturePath", loggedUser.getPicturePath());
+
+        DatabaseReference followingNode = followingRef
                 .child(loggedUser.getIdUser())
                 .child(friendsUser.getIdUser());
 
-        followerRef.setValue(friendsData);
+        followingNode.setValue(friendsData);
+
+        DatabaseReference followerNode = followerRef
+                .child(friendsUser.getIdUser())
+                .child(loggedUser.getIdUser());
+
+        followerNode.setValue(loggedUserData);
 
         btFollow.setText("Following");
 
-        // Add following to logged user
-        int following = loggedUser.getFollowingCount() + 1;
+        loggedUser.setFollowingCount(loggedUser.getFollowingCount() + 1);
+        selectedUser.setFollowerCount(selectedUser.getFollowerCount() + 1);
 
-        HashMap<String, Object> followingData = new HashMap<>();
-        followingData.put("followingCount", following);
+        loggedUser.updateInfo();
+        selectedUser.updateInfo();
 
-        DatabaseReference userFollowing = usersRef
-                .child(loggedUser.getIdUser());
-
-        userFollowing.updateChildren(followingData);
-
-        // Add follower to friend
-        int followers = friendsUser.getFollowerCount() + 1;
-
-        HashMap<String, Object> followerData = new HashMap<>();
-        followerData.put("followerCount", followers);
-
-        DatabaseReference userFollower = usersRef
-                .child(friendsUser.getIdUser());
-
-        userFollower.updateChildren(followerData);
+//        // Add following to logged user
+//        int following = loggedUser.getFollowingCount() + 1;
+//
+//        HashMap<String, Object> followingData = new HashMap<>();
+//        followingData.put("followingCount", following);
+//
+//        DatabaseReference userFollowing = usersRef
+//                .child(loggedUser.getIdUser());
+//
+//        userFollowing.updateChildren(followingData);
+//
+//        // Add follower to friend
+//        int followers = friendsUser.getFollowerCount() + 1;
+//
+//        HashMap<String, Object> followerData = new HashMap<>();
+//        followerData.put("followerCount", followers);
+//
+//        DatabaseReference userFollower = usersRef
+//                .child(friendsUser.getIdUser());
+//
+//        userFollower.updateChildren(followerData);
     }
-
 }

@@ -172,4 +172,5 @@ public class User implements Serializable {
     public void setIdUser(String idUser) {
         this.idUser = idUser;
     }
+
 }
