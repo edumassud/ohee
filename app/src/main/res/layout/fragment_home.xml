@@ -13,7 +13,8 @@
         android:id="@+id/tabsHome"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/white"
+        android:background="#000000"
+        app:tabTextColor="@color/colorPrimary"
         app:tabIndicatorColor="@color/colorPrimary">
 
         <com.google.android.material.tabs.TabItem

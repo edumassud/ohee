@@ -29,7 +29,6 @@ public class LoginActivity extends AppCompatActivity {
     private Button btLogin;
     private TextView txtCreateAcc;
     private ProgressBar progressBar;
-    private ImageView btSeePassword;
 
     private FirebaseAuth auth = SetFirebase.getFirebaseAuth();
 
@@ -45,7 +44,6 @@ public class LoginActivity extends AppCompatActivity {
         btLogin = findViewById(R.id.btLogin);
         txtCreateAcc = findViewById(R.id.txtCreateAcc);
         progressBar = findViewById(R.id.progressBar);
-        btSeePassword = findViewById(R.id.btSeePassword);
 
         checkLogged();
 

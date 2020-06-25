@@ -41,7 +41,10 @@ public class EditProfileActivity extends AppCompatActivity {
     private CircleImageView editProfileImg;
     private TextView txtChangePic;
     private TextInputEditText editName, editBio, emailField, universityField;
-    private Button btLogOut, btSave;
+    private Button btLogOut, btSave, btTaken, btComplicated, btSingle, btDude, btChick;
+
+    private String status;
+    private String sex;
 
     private String[] permissionsRequired = new String[] {
             Manifest.permission.READ_EXTERNAL_STORAGE
@@ -73,6 +76,11 @@ public class EditProfileActivity extends AppCompatActivity {
         universityField     = findViewById(R.id.editUniversity);
         btLogOut            = findViewById(R.id.btLogOut);
         btSave              = findViewById(R.id.btSave);
+        btTaken             = findViewById(R.id.btTaken);
+        btComplicated       = findViewById(R.id.btComplicated);
+        btSingle            = findViewById(R.id.btSingle);
+        btDude              = findViewById(R.id.btMale);
+        btChick             = findViewById(R.id.btFemale);
 
         emailField.setFocusable(false);
         universityField.setFocusable(false);
@@ -98,6 +106,29 @@ public class EditProfileActivity extends AppCompatActivity {
                 String bio = user.getBio();
                 String university = user.getUniversity();
 
+                if (user.getStatus() != null && !user.getStatus().isEmpty()) {
+                    if (user.getStatus().equals("taken")) {
+                        btTaken.setBackgroundResource(R.drawable.taken_background);
+                        status = "taken";
+                    } else if (user.getStatus().equals("complicated")) {
+                        btComplicated.setBackgroundResource(R.drawable.complicated_background);
+                        status = "complicated";
+                    } else {
+                        btSingle.setBackgroundResource(R.drawable.single_background);
+                        status = "single";
+                    }
+                }
+
+                if (user.getSex()!= null && !user.getSex().isEmpty()) {
+                    if (user.getSex().equals("male")) {
+                        btDude.setBackgroundResource(R.drawable.dude_background);
+                        sex = "male";
+                    } else {
+                        btChick.setBackgroundResource(R.drawable.chick_background);
+                        sex = "female";
+                    }
+                }
+
                 editBio.setText(bio);
                 universityField.setText(university);
             }
@@ -107,6 +138,9 @@ public class EditProfileActivity extends AppCompatActivity {
 
             }
         });
+
+        chooseStatus();
+        pickSex();
 
         btLogOut.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,6 +160,8 @@ public class EditProfileActivity extends AppCompatActivity {
 
                 loggedUser.setName(newName);
                 loggedUser.setBio(newBio);
+                loggedUser.setStatus(status);
+                loggedUser.setSex(sex);
                 loggedUser.updateInfo();
                 finish();
             }
@@ -148,6 +184,65 @@ public class EditProfileActivity extends AppCompatActivity {
                 if (i.resolveActivity(getPackageManager()) != null) {
                     startActivityForResult(i, GALLERY);
                 }
+            }
+        });
+    }
+
+    private void chooseStatus() {
+
+        btTaken.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                btTaken.setBackgroundResource(R.drawable.taken_background);
+                btComplicated.setBackgroundResource(R.drawable.button_background);
+                btSingle.setBackgroundResource(R.drawable.button_background);
+
+                status = "taken";
+            }
+        });
+
+        btComplicated.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                btTaken.setBackgroundResource(R.drawable.button_background);
+                btComplicated.setBackgroundResource(R.drawable.complicated_background);
+                btSingle.setBackgroundResource(R.drawable.button_background);
+
+                status = "complicated";
+            }
+        });
+
+        btSingle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                btTaken.setBackgroundResource(R.drawable.button_background);
+                btComplicated.setBackgroundResource(R.drawable.button_background);
+                btSingle.setBackgroundResource(R.drawable.single_background);
+
+                status = "single";
+            }
+        });
+    }
+
+    private void pickSex() {
+
+        btDude.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                btDude.setBackgroundResource(R.drawable.dude_background);
+                btChick.setBackgroundResource(R.drawable.button_background);
+
+                sex = "male";
+            }
+        });
+
+        btChick.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                btDude.setBackgroundResource(R.drawable.button_background);
+                btChick.setBackgroundResource(R.drawable.chick_background);
+
+                sex = "female";
             }
         });
     }

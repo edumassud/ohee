@@ -4,7 +4,8 @@
     android:id="@+id/toolbar"
     android:layout_width="match_parent"
     android:layout_height="50dp"
-    android:background="@android:color/white"
+    android:background="#000000"
+    android:elevation="4dp"
     android:padding="1dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
