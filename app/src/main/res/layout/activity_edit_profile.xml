@@ -27,6 +27,7 @@
             android:id="@+id/txtChangePic"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="32dp"
             android:text="Change Profile Picture"
             android:textAlignment="center"
             android:textColor="@android:color/white" />
@@ -52,7 +53,7 @@
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="4dp"
             android:background="@drawable/text_field_background"
             android:textColorHint="@android:color/white">
 
@@ -63,6 +64,22 @@
                 android:hint="Bio"
                 android:maxLines="3"
                 android:textColor="@android:color/white" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="32dp"
+            android:background="@drawable/text_field_background"
+            android:hint="Phone number"
+
+            android:textColorHint="@android:color/white">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="phone"
+                android:textColor="@android:color/white"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <LinearLayout
@@ -104,14 +121,14 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="32dp"
             android:orientation="horizontal">
 
             <Button
                 android:id="@+id/btMale"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="2dp"
                 android:layout_weight="1"
                 android:background="@drawable/button_background"
                 android:text="dude"
@@ -121,10 +138,20 @@
                 android:id="@+id/btFemale"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="2dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="4dp"
                 android:layout_weight="1"
                 android:background="@drawable/button_background"
                 android:text="chick"
+                android:textColor="@android:color/white" />
+
+            <Button
+                android:id="@+id/btOther"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/button_background"
+                android:text="oThEr"
                 android:textColor="@android:color/white" />
         </LinearLayout>
 

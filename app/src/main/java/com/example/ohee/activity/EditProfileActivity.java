@@ -41,7 +41,7 @@ public class EditProfileActivity extends AppCompatActivity {
     private CircleImageView editProfileImg;
     private TextView txtChangePic;
     private TextInputEditText editName, editBio, emailField, universityField;
-    private Button btLogOut, btSave, btTaken, btComplicated, btSingle, btDude, btChick;
+    private Button btLogOut, btSave, btTaken, btComplicated, btSingle, btDude, btChick, btOther;
 
     private String status;
     private String sex;
@@ -81,6 +81,7 @@ public class EditProfileActivity extends AppCompatActivity {
         btSingle            = findViewById(R.id.btSingle);
         btDude              = findViewById(R.id.btMale);
         btChick             = findViewById(R.id.btFemale);
+        btOther             = findViewById(R.id.btOther);
 
         emailField.setFocusable(false);
         universityField.setFocusable(false);
@@ -231,6 +232,7 @@ public class EditProfileActivity extends AppCompatActivity {
             public void onClick(View v) {
                 btDude.setBackgroundResource(R.drawable.dude_background);
                 btChick.setBackgroundResource(R.drawable.button_background);
+                btOther.setBackgroundResource(R.drawable.button_background);
 
                 sex = "male";
             }
@@ -241,8 +243,20 @@ public class EditProfileActivity extends AppCompatActivity {
             public void onClick(View v) {
                 btDude.setBackgroundResource(R.drawable.button_background);
                 btChick.setBackgroundResource(R.drawable.chick_background);
+                btOther.setBackgroundResource(R.drawable.button_background);
 
                 sex = "female";
+            }
+        });
+
+        btOther.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                btDude.setBackgroundResource(R.drawable.button_background);
+                btChick.setBackgroundResource(R.drawable.button_background);
+                btOther.setBackgroundResource(R.drawable.other_background);
+
+                sex = "other";
             }
         });
     }
