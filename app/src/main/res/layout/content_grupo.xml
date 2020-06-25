@@ -10,7 +10,7 @@
         android:id="@+id/recyclerMembrosSelecionados"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/white"
+        android:background="@drawable/bg_message_balloon"
         android:orientation="horizontal"
         android:scrollbars="horizontal" />
 

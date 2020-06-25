@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:text="Nome"
             android:textAlignment="center"
-            android:textColor="@android:color/black" />
+            android:textColor="@android:color/white" />
 
 
     </LinearLayout>

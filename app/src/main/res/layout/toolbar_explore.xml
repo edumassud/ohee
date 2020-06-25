@@ -17,7 +17,7 @@
             android:layout_height="match_parent"
             android:background="@drawable/sv_background"
             android:backgroundTintMode="multiply"
-            android:queryBackground="@android:color/white"
+            android:queryBackground="@drawable/sv_background"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
