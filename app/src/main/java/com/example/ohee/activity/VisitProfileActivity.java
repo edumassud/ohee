@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -27,7 +28,7 @@ import java.util.HashMap;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class VisitProfileActivity extends AppCompatActivity {
-    private Button btFollow;
+    private Button btFollow, btGoToChat;
     private CircleImageView imgProfile;
     private TextView txtPosts, txtFollowing, txtFollowers, profileNameAndUniversity, txtBio;
 
@@ -55,6 +56,7 @@ public class VisitProfileActivity extends AppCompatActivity {
         txtFollowers                = findViewById(R.id.followersCount);
         imgProfile                  = findViewById(R.id.profileImg);
         btFollow                    = findViewById(R.id.btEditProfile);
+        btGoToChat                  = findViewById(R.id.btGoToChat);
         profileNameAndUniversity    = findViewById(R.id.profileNameAndUniversity);
         txtBio                      = findViewById(R.id.profileBio);
 
@@ -82,6 +84,15 @@ public class VisitProfileActivity extends AppCompatActivity {
             }
 
         }
+
+        btGoToChat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getApplicationContext(), ChatActivity.class);
+                i.putExtra("chatContato", selectedUser);
+                startActivity(i);
+            }
+        });
     }
 
     @Override

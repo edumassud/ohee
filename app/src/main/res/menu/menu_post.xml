@@ -4,7 +4,8 @@
 
     <item
         android:id="@+id/btPost"
-        app:showAsAction="always"
-        android:title="Post" />
+        android:icon="@drawable/ic_check"
+        android:title="Post"
+        app:showAsAction="always" />
 
 </menu>

@@ -27,6 +27,7 @@
             android:layout_marginLeft="15dp"
             android:layout_weight="1"
             android:gravity="center|left"
-            android:text="TextView" />
+            android:text="TextView"
+            android:textColor="@android:color/white" />
     </LinearLayout>
 </LinearLayout>
