@@ -91,6 +91,8 @@ public class SignUpActivity extends AppCompatActivity {
 
                 if (txtName.isEmpty() || txtEmail.isEmpty() || txtPassword.isEmpty() || txtConfirmPassword.isEmpty()) {
                     Toast.makeText(SignUpActivity.this, "Complete all fields", Toast.LENGTH_SHORT).show();
+                } else if(txtEmail.length() <= 5) {
+                    Toast.makeText(SignUpActivity.this, "Email is invalid", Toast.LENGTH_SHORT).show();
                 } else if (!txtEmail.substring(txtEmail.length() - 4).equals(".edu")) {
                     Toast.makeText(SignUpActivity.this, "Email is not a college email", Toast.LENGTH_SHORT).show();
                     emailField.setText("");
