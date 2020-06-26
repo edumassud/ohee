@@ -77,8 +77,13 @@ public class LoginActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
                     progressBar.setVisibility(View.GONE);
-                    goToMain();
-                    finish();
+                    if (auth.getCurrentUser().isEmailVerified()) {
+                        goToMain();
+                        finish();
+                    } else {
+                        Toast.makeText(LoginActivity.this, "Your email hasn't been verified yet.", Toast.LENGTH_SHORT).show();
+                    }
+
                 } else {
                     progressBar.setVisibility(View.GONE);
                     String exception = "";
@@ -101,7 +106,7 @@ public class LoginActivity extends AppCompatActivity {
 
     public void checkLogged () {
         //auth.signOut();
-        if (auth.getCurrentUser() != null) {
+        if (auth.getCurrentUser() != null && auth.getCurrentUser().isEmailVerified()) {
             goToMain();
         }
     }

@@ -19,6 +19,7 @@ import com.example.ohee.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.auth.ActionCodeSettings;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
@@ -168,11 +169,25 @@ public class SignUpActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
                     progressBar.setVisibility(View.GONE);
+
+                    auth.getCurrentUser().sendEmailVerification().addOnCompleteListener(
+                            new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        Toast.makeText(SignUpActivity.this, "Please verify you email.", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        Toast.makeText(SignUpActivity.this, "Error", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            }
+                    );
+
                     String idUser = task.getResult().getUser().getUid();
                     user.setIdUser(idUser);
                     user.save();
                     SetFirebaseUser.updateUsersName(user.getName());
-                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+//                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
                     finish();
                 } else {
                     progressBar.setVisibility(View.GONE);
