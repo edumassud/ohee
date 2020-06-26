@@ -27,7 +27,7 @@ import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 public class LoginActivity extends AppCompatActivity {
     private TextInputEditText emailField, passwordField;
     private Button btLogin;
-    private TextView txtCreateAcc;
+    private TextView txtCreateAcc, txtForgotPassword;
     private ProgressBar progressBar;
 
     private FirebaseAuth auth = SetFirebase.getFirebaseAuth();
@@ -39,11 +39,12 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        emailField = findViewById(R.id.editEmail);
-        passwordField = findViewById(R.id.editPassword);
-        btLogin = findViewById(R.id.btLogin);
-        txtCreateAcc = findViewById(R.id.txtCreateAcc);
-        progressBar = findViewById(R.id.progressBar);
+        emailField          = findViewById(R.id.editEmail);
+        passwordField       = findViewById(R.id.editPassword);
+        btLogin             = findViewById(R.id.btLogin);
+        txtCreateAcc        = findViewById(R.id.txtCreateAcc);
+        progressBar         = findViewById(R.id.progressBar);
+        txtForgotPassword   = findViewById(R.id.btForgotPassword);
 
         checkLogged();
 
@@ -60,6 +61,13 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         });
+
+       txtForgotPassword.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View v) {
+               startActivity(new Intent(LoginActivity.this, ResetPasswordActivity.class));
+           }
+       });
 
         txtCreateAcc.setOnClickListener(new View.OnClickListener() {
             @Override
