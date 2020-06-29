@@ -68,6 +68,12 @@ public class FilterActivity extends AppCompatActivity {
 
     private String idLoggedUser = SetFirebaseUser.getUsersId();
 
+    private User loggedUser;
+    private String idLoggedUSer;
+    private DatabaseReference databaseReference = SetFirebase.getFirebaseDatabase();
+    private DatabaseReference loggedUserRef;
+    private DatabaseReference usersRef = databaseReference.child("user");
+
     private List<ThumbnailItem> listFilters = new ArrayList<>();
 
     @Override
@@ -82,6 +88,8 @@ public class FilterActivity extends AppCompatActivity {
         btPrivate           = findViewById(R.id.btPrivate);
         btPublic            = findViewById(R.id.btPublic);
         txtInfo             = findViewById(R.id.txtInfo);
+
+        idLoggedUSer = SetFirebaseUser.getUsersId();
 
         Toolbar toolbar = findViewById(R.id.toolbarPrincipal);
         toolbar.setTitle("Post");
@@ -243,6 +251,10 @@ public class FilterActivity extends AppCompatActivity {
 
                         post.save();
 
+                        // Increment post count
+                        loggedUser.setPostCount(loggedUser.getPostCount() + 1);
+                        loggedUser.updateInfo();
+
                         finish();
                     }
                 });
@@ -272,5 +284,26 @@ public class FilterActivity extends AppCompatActivity {
     public boolean onSupportNavigateUp() {
         finish();
         return false;
+    }
+
+    private void getLoggedUserData() {
+        loggedUserRef = usersRef.child(idLoggedUSer);
+        loggedUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                loggedUser = dataSnapshot.getValue(User.class);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        getLoggedUserData();
     }
 }

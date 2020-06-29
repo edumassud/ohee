@@ -16,6 +16,7 @@ import com.bumptech.glide.Glide;
 import com.example.ohee.R;
 import com.example.ohee.helpers.SetFirebase;
 import com.example.ohee.helpers.SetFirebaseUser;
+import com.example.ohee.model.Post;
 import com.example.ohee.model.User;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -23,7 +24,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -41,6 +44,8 @@ public class VisitProfileActivity extends AppCompatActivity {
     private DatabaseReference loggedUserRef;
     private DatabaseReference followingRef = databaseReference.child("following");
     private DatabaseReference followerRef = databaseReference.child("followers");
+    private DatabaseReference postsRef = databaseReference.child("posts");
+    private DatabaseReference userPostsRef;
 
     private String idLoggedUSer;
 
@@ -69,6 +74,9 @@ public class VisitProfileActivity extends AppCompatActivity {
         if (bundle != null) {
             selectedUser = (User) bundle.getSerializable("selectedUser");
 
+            // Get posts ref
+            userPostsRef = postsRef.child(selectedUser.getIdUser());
+
             // Customize name & university
             profileNameAndUniversity.setText(selectedUser.getName() + " • " + selectedUser.getUniversity());
 
@@ -93,6 +101,8 @@ public class VisitProfileActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
+
+        loadPosts();
     }
 
     @Override
@@ -135,6 +145,28 @@ public class VisitProfileActivity extends AppCompatActivity {
                 }
         );
 
+    }
+
+    private void loadPosts() {
+        userPostsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<String> urls = new ArrayList<>();
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    Post post = ds.getValue(Post.class);
+                    urls.add(post.getPath());
+                    Log.i("Posts: ", post.getPath());
+                }
+
+                //txtPosts.setText(String.valueOf(urls.size()));
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private void getLoggedUserData() {
@@ -212,27 +244,7 @@ public class VisitProfileActivity extends AppCompatActivity {
         loggedUser.updateInfo();
         selectedUser.updateInfo();
 
-//        //Remove following to logged user
-//        int following = loggedUser.getFollowingCount();
 //
-//        HashMap<String, Object> followingData = new HashMap<>();
-//        followingData.put("followingCount", following);
-//
-//        DatabaseReference userFollowing = usersRef
-//                .child(loggedUser.getIdUser());
-//
-//        userFollowing.updateChildren(followingData);
-//
-//        // Remove follower to friend
-//        int followers = friendsUser.getFollowerCount();
-//
-//        HashMap<String, Object> followerData = new HashMap<>();
-//        followerData.put("followerCount", followers);
-//
-//        DatabaseReference userFollower = usersRef
-//                .child(friendsUser.getIdUser());
-//
-//        userFollower.updateChildren(followerData);
     }
 
     private void saveFollower(User loggedUser, User friendsUser) {
@@ -264,26 +276,5 @@ public class VisitProfileActivity extends AppCompatActivity {
         loggedUser.updateInfo();
         selectedUser.updateInfo();
 
-//        // Add following to logged user
-//        int following = loggedUser.getFollowingCount() + 1;
-//
-//        HashMap<String, Object> followingData = new HashMap<>();
-//        followingData.put("followingCount", following);
-//
-//        DatabaseReference userFollowing = usersRef
-//                .child(loggedUser.getIdUser());
-//
-//        userFollowing.updateChildren(followingData);
-//
-//        // Add follower to friend
-//        int followers = friendsUser.getFollowerCount() + 1;
-//
-//        HashMap<String, Object> followerData = new HashMap<>();
-//        followerData.put("followerCount", followers);
-//
-//        DatabaseReference userFollower = usersRef
-//                .child(friendsUser.getIdUser());
-//
-//        userFollower.updateChildren(followerData);
     }
 }

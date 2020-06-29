@@ -114,7 +114,7 @@ public class LoginActivity extends AppCompatActivity {
 
     public void checkLogged () {
         //auth.signOut();
-        if (auth.getCurrentUser() != null && auth.getCurrentUser().isEmailVerified()) {
+        if (auth.getCurrentUser() != null){ //&& auth.getCurrentUser().isEmailVerified()) {
             goToMain();
         }
     }

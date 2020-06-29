@@ -94,7 +94,7 @@ public class PostFragment extends Fragment {
 
                 if (img != null) {
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    img.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                    img.compress(Bitmap.CompressFormat.JPEG, 50, baos);
                     byte[] imgData = baos.toByteArray();
 
                     // Send to filter application
