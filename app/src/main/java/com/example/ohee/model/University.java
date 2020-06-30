@@ -12,14 +12,19 @@ import com.google.firebase.database.Exclude;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public class University {
+public class University implements Serializable {
     private String name;
     private String city;
     private String state;
     private String domain;
-    private List<User> students;
+    private List<User> students = new ArrayList<>();
+    private int count;
 
     public University(JSONObject json) throws JSONException {
         JSONObject whois = json.getJSONObject("WhoisRecord");
@@ -35,9 +40,21 @@ public class University {
         }
         this.city = registrant.optString("city");
         this.state = registrant.optString("state");
+        this.count = 0;
     }
 
     public University() {
+    }
+
+    public void update() {
+        DatabaseReference firebaseRef = SetFirebase.getFirebaseDatabase();
+        DatabaseReference universityRef = firebaseRef
+                .child("universities")
+                .child(getDomain());
+
+        Map<String, Object> userValues = convertInfoToMap();
+
+        universityRef.updateChildren(userValues);
     }
 
     public void save() {
@@ -45,6 +62,29 @@ public class University {
         firebase.child("universities")
                 .child(this.getDomain())
                 .setValue(this);
+    }
+
+    public void addUser(User user) {
+        List<User> users = this.getStudents();
+        users.add(user);
+        setStudents(users);
+        update();
+    }
+
+    public Map<String, Object> convertInfoToMap() {
+        HashMap<String, Object> usersMap = new HashMap<>();
+        usersMap.put("count", getCount());
+        usersMap.put("students", getStudents());
+
+        return usersMap;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
     }
 
     public String getDomain() {

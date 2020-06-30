@@ -44,7 +44,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.MyView
         boolean cabecalho = usuario.getEmail().isEmpty();
 
         holder.nome.setText(usuario.getName());
-        holder.university.setText(usuario.getUniversity());
+        holder.university.setText(usuario.getUniversityName());
 
         if (usuario.getPicturePath() != null) {
             Uri uri = Uri.parse(usuario.getPicturePath());

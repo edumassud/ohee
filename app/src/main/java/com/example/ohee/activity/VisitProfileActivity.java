@@ -1,7 +1,6 @@
 package com.example.ohee.activity;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -18,7 +17,6 @@ import com.example.ohee.helpers.SetFirebase;
 import com.example.ohee.helpers.SetFirebaseUser;
 import com.example.ohee.model.Post;
 import com.example.ohee.model.User;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -78,7 +76,7 @@ public class VisitProfileActivity extends AppCompatActivity {
             userPostsRef = postsRef.child(selectedUser.getIdUser());
 
             // Customize name & university
-            profileNameAndUniversity.setText(selectedUser.getName() + " • " + selectedUser.getUniversity());
+            profileNameAndUniversity.setText(selectedUser.getName() + " • " + selectedUser.getUniversityName());
 
             // Customize picture
             String picPath = selectedUser.getPicturePath();

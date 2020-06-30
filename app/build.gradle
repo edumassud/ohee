@@ -62,4 +62,6 @@ dependencies {
 
     implementation 'info.androidhive:imagefilters:1.0.7'
 
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+
 }

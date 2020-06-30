@@ -71,7 +71,7 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
-                String txtNameAndUniversity     = user.getName() + " • " + user.getUniversity();
+                String txtNameAndUniversity     = user.getName() + " • " + user.getUniversityName();
                 String posts                    = String.valueOf(user.getPostCount());
                 String following                = String.valueOf(user.getFollowingCount());
                 String followers                = String.valueOf(user.getFollowerCount());

@@ -13,16 +13,11 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 
 import com.example.ohee.R;
-import com.example.ohee.activity.ChatActivity;
-import com.example.ohee.activity.SearchActivity;
 import com.example.ohee.activity.VisitProfileActivity;
-import com.example.ohee.adapter.ChatAdapter;
 import com.example.ohee.adapter.ContactsAdapter;
-import com.example.ohee.adapter.SearchAdapter;
 import com.example.ohee.helpers.RecyclerItemClickListener;
 import com.example.ohee.helpers.SetFirebase;
 import com.example.ohee.helpers.SetFirebaseUser;
-import com.example.ohee.model.Chat;
 import com.example.ohee.model.User;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -148,7 +143,7 @@ public class UserSearchFragment extends Fragment {
 
         for (User user : listUsers) {
             String name = user.getName().toLowerCase();
-            String university = user.getUniversity().toLowerCase();
+            String university = user.getUniversityName().toLowerCase();
             if (name.contains(txt) || university.contains(txt)) {
                 listUserSearch.add(user);
             }

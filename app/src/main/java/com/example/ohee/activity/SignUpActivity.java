@@ -33,7 +33,9 @@ import com.google.firebase.database.ValueEventListener;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import retrofit2.Call;
@@ -115,7 +117,12 @@ public class SignUpActivity extends AppCompatActivity {
                                         University university = dataSnapshot.getValue(University.class);
                                         user = new User(txtName, txtEmail, txtPassword, university.getName());
                                         user.setSearchName(txtName.toUpperCase());
-                                        signUpUser();
+
+                                        signUpUser(university);
+
+                                        // Increment university count
+                                        university.setCount(university.getCount() + 1);
+                                        university.update();
                                     } else {
                                         Map<String, String> params = new HashMap<String, String>();
                                         params.put("apiKey", WHO_IS_API_KEY);
@@ -134,9 +141,14 @@ public class SignUpActivity extends AppCompatActivity {
                                                     university.setDomain(domain);
                                                     university.save();
 
+                                                    // Increment university count
+                                                    university.setCount(university.getCount() + 1);
+                                                    university.update();
+
                                                     user = new User(txtName, txtEmail, txtPassword, university.getName());
                                                     user.setSearchName(txtName.toUpperCase());
-                                                    signUpUser();
+
+                                                    signUpUser(university);
 
                                                 }catch (JSONException e) {
                                                     Log.e("ERROR", e.getLocalizedMessage());
@@ -164,7 +176,7 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
 
-    public void signUpUser() {
+    public void signUpUser(University university) {
         progressBar.setVisibility(View.VISIBLE);
         auth.createUserWithEmailAndPassword(user.getEmail(), user.getPassword()).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
@@ -188,6 +200,7 @@ public class SignUpActivity extends AppCompatActivity {
                     String idUser = task.getResult().getUser().getUid();
                     user.setIdUser(idUser);
                     user.save();
+                    university.addUser(user);
                     SetFirebaseUser.updateUsersName(user.getName());
 //                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
                     finish();

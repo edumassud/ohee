@@ -105,7 +105,7 @@ public class EditProfileActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
                 String bio = user.getBio();
-                String university = user.getUniversity();
+                String university = user.getUniversityName();
 
                 if (user.getStatus() != null && !user.getStatus().isEmpty()) {
                     if (user.getStatus().equals("taken")) {
@@ -323,4 +323,5 @@ public class EditProfileActivity extends AppCompatActivity {
         loggedUser.updateImg();
         Toast.makeText(this, "Picture succesfully updated", Toast.LENGTH_SHORT).show();
     }
+
 }
