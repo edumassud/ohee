@@ -1,10 +1,12 @@
 package com.example.ohee.fragment;
 
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +20,7 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -32,7 +35,6 @@ import java.util.Map;
  */
 public class UniversityDataFragment extends Fragment {
     private University university;
-    private List<User> listUser = new ArrayList();
     private PieChart chart;
 
     private int dudes = 0;
@@ -54,34 +56,58 @@ public class UniversityDataFragment extends Fragment {
         View view =  inflater.inflate(R.layout.fragment_university_data, container, false);
 
         chart = (PieChart) view.findViewById(R.id.chart);
-
+        chart.setNoDataText("");
+        chart.setEntryLabelColor(Color.WHITE);
+        chart.setUsePercentValues(true);
+        chart.getDescription().setEnabled(false);
+        chart.getLegend().setEnabled(false);
+        chart.setDragDecelerationFrictionCoef(0.95f);
+        chart.setDrawHoleEnabled(true);
+        chart.setHoleColor(Color.TRANSPARENT);
+        chart.setDrawCenterText(true);
+        chart.setRotationAngle(0);
+        chart.setRotationEnabled(false);
+        chart.setHighlightPerTapEnabled(false);
 
         getUsersData();
-
-
-
-        // Setting data
-        List<PieEntry> entries = new ArrayList<>();
-        entries.add(new PieEntry(dudes, "Dudes"));
-        entries.add(new PieEntry(chicks, "Chicks"));
-        entries.add(new PieEntry(other, "Other"));
-
-        PieDataSet set = new PieDataSet(entries, "");
-        PieData data = new PieData(set);
-        chart.setData(data);
-        chart.invalidate(); // refresh
+        setUsersData();
 
         return view;
     }
 
     private void getUsersData() {
-        for (int i = 0; i <= university.getStudents().size(); i++) {
-            String userSex = listUser.get(i).getSex();
+        for (int i = 0; i < university.getStudents().size(); i++) {
+            User user = university.getStudents().get(i);
+            String userSex = user.getSex();
             if (userSex != null && !userSex.isEmpty()) {
                 if (userSex.equals("male")) {dudes = dudes + 1;}
                 else if (userSex.equals("female")) {chicks = chicks + 1;}
                 else if (userSex.equals("other")) {other = other + 1;}
             }
         }
+    }
+
+    private void setUsersData() {
+        List<PieEntry> entries = new ArrayList<>();
+        entries.add(new PieEntry(dudes, "Dudes"));
+        entries.add(new PieEntry(chicks, "Chicks"));
+        if (other > 5) {
+            entries.add(new PieEntry(other, "Other"));
+        }
+
+
+        PieDataSet set = new PieDataSet(entries, "");
+        PieData data = new PieData(set);
+
+        set.setColors(R.color.colorPrimary, R.color.colorPink);
+
+        data.setValueFormatter(new PercentFormatter(chart));
+        data.setValueTextSize(12f);
+        data.setValueTextColor(Color.WHITE);
+
+        data.getDataSetByLabel("",true);
+
+        chart.setData(data);
+        chart.invalidate();
     }
 }

@@ -57,6 +57,19 @@ public class University implements Serializable {
         universityRef.updateChildren(userValues);
     }
 
+    public void updateUser(User user, int i) {
+        DatabaseReference firebaseRef = SetFirebase.getFirebaseDatabase();
+        DatabaseReference universityRef = firebaseRef
+                .child("universities")
+                .child(getDomain())
+                .child("students")
+                .child(i + "");
+
+        Map<String, Object> userValues = mapUser(user);
+
+        universityRef.updateChildren(userValues);
+    }
+
     public void save() {
         DatabaseReference firebase = SetFirebase.getFirebaseDatabase();
         firebase.child("universities")
@@ -75,6 +88,20 @@ public class University implements Serializable {
         HashMap<String, Object> usersMap = new HashMap<>();
         usersMap.put("count", getCount());
         usersMap.put("students", getStudents());
+
+        return usersMap;
+    }
+
+    public Map<String, Object> mapUser(User user) {
+        HashMap<String, Object> usersMap = new HashMap<>();
+        usersMap.put("name", user.getName());
+        usersMap.put("bio", user.getBio());
+        usersMap.put("searchName", user.getName().toUpperCase());
+        usersMap.put("postCount", user.getPostCount());
+        usersMap.put("followingCount", user.getFollowingCount());
+        usersMap.put("followerCount", user.getFollowerCount());
+        usersMap.put("status", user.getStatus());
+        usersMap.put("sex", user.getSex());
 
         return usersMap;
     }

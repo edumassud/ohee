@@ -15,18 +15,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class User implements Serializable {
-    private String name, email, password, idUser, picturePath, searchName, universityName, status, sex;
+    private String name, email, password, idUser, picturePath, searchName, universityName, universityDomain, status, sex;
     private String bio = "Im new to OhEE!";
     private int postCount = 0;
     private int followerCount = 0;
     private int followingCount = 0;
 
-    public User(String name, String email, String password, String universityName) {
+    public User(String name, String email, String password, String universityName, String universityDomain) {
 
         this.name = name;
         this.email = email;
         this.password = password;
         this.universityName = universityName;
+        this.universityDomain = universityDomain;
     }
 
     public User(String email, String password) {
@@ -190,5 +191,13 @@ public class User implements Serializable {
 
     public void setSex(String sex) {
         this.sex = sex;
+    }
+
+    public String getUniversityDomain() {
+        return universityDomain;
+    }
+
+    public void setUniversityDomain(String universityDomain) {
+        this.universityDomain = universityDomain;
     }
 }

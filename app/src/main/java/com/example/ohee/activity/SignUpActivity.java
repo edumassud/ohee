@@ -115,7 +115,7 @@ public class SignUpActivity extends AppCompatActivity {
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     if (dataSnapshot.exists()) {
                                         University university = dataSnapshot.getValue(University.class);
-                                        user = new User(txtName, txtEmail, txtPassword, university.getName());
+                                        user = new User(txtName, txtEmail, txtPassword, university.getName(), university.getDomain());
                                         user.setSearchName(txtName.toUpperCase());
 
                                         signUpUser(university);
@@ -145,7 +145,7 @@ public class SignUpActivity extends AppCompatActivity {
                                                     university.setCount(university.getCount() + 1);
                                                     university.update();
 
-                                                    user = new User(txtName, txtEmail, txtPassword, university.getName());
+                                                    user = new User(txtName, txtEmail, txtPassword, university.getName(), university.getDomain());
                                                     user.setSearchName(txtName.toUpperCase());
 
                                                     signUpUser(university);

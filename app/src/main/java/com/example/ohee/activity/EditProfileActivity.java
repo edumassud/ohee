@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
@@ -20,6 +21,7 @@ import com.example.ohee.R;
 import com.example.ohee.helpers.Permission;
 import com.example.ohee.helpers.SetFirebase;
 import com.example.ohee.helpers.SetFirebaseUser;
+import com.example.ohee.model.University;
 import com.example.ohee.model.User;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -34,6 +36,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
+import java.util.Set;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -107,6 +110,7 @@ public class EditProfileActivity extends AppCompatActivity {
                 String bio = user.getBio();
                 String university = user.getUniversityName();
 
+
                 if (user.getStatus() != null && !user.getStatus().isEmpty()) {
                     if (user.getStatus().equals("taken")) {
                         btTaken.setBackgroundResource(R.drawable.taken_background);
@@ -164,6 +168,7 @@ public class EditProfileActivity extends AppCompatActivity {
                 loggedUser.setStatus(status);
                 loggedUser.setSex(sex);
                 loggedUser.updateInfo();
+                updateUniversityData();
                 finish();
             }
         });
@@ -322,6 +327,41 @@ public class EditProfileActivity extends AppCompatActivity {
         loggedUser.setPicturePath(uri.toString());
         loggedUser.updateImg();
         Toast.makeText(this, "Picture succesfully updated", Toast.LENGTH_SHORT).show();
+    }
+
+    private void updateUniversityData() {
+
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+                DatabaseReference databaseReference = SetFirebase.getFirebaseDatabase();
+                DatabaseReference universityRef = databaseReference.child("universities").child(user.getUniversityDomain());
+
+                universityRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            University university = dataSnapshot.getValue(University.class);
+                            for (int i = 0; i <= university.getStudents().size() - 1; i++) {
+                                if (university.getStudents().get(i).getIdUser().equals(user.getIdUser())) {
+                                    university.updateUser(user, i);
+                                }
+                            }
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
 }
