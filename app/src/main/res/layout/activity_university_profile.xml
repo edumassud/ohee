@@ -22,11 +22,13 @@
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabs"
             android:layout_width="match_parent"
-            android:layout_marginTop="8dp"
             android:layout_height="5dp"
+            android:layout_marginTop="8dp"
             android:background="#000000"
-            app:tabTextColor="@color/colorPrimary"
-            app:tabIndicatorColor="@color/colorPrimary">
+            android:visibility="gone"
+            app:tabBackground="@drawable/button_background"
+            app:tabIndicatorColor="@color/colorPrimary"
+            app:tabTextColor="@color/colorPrimary">
 
             <com.google.android.material.tabs.TabItem
                 android:layout_width="wrap_content"
