@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.GridView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -36,9 +37,12 @@ public class ProfileFragment extends Fragment {
     private TextView postsCount, followingCount, followersCount;
     private TextView profileBio;
     private Button btEditProfile;
+    private GridView gridView;
 
     private FirebaseUser user = SetFirebaseUser.getUser();
     private DatabaseReference userRef = SetFirebase.getFirebaseDatabase().child("user").child(user.getUid());
+
+    private ValueEventListener valueEventListener;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -52,13 +56,14 @@ public class ProfileFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
         // Screen components
-        profileImg = view.findViewById(R.id.profileImg);
-        profileNameAndUniversity = view.findViewById(R.id.profileNameAndUniversity);
-        postsCount = view.findViewById(R.id.postsCount);
-        followersCount = view.findViewById(R.id.followersCount);
-        followingCount = view.findViewById(R.id.followingCount);
-        profileBio = view.findViewById(R.id.profileBio);
-        btEditProfile = view.findViewById(R.id.btEditProfile);
+        profileImg                  = view.findViewById(R.id.profileImg);
+        profileNameAndUniversity    = view.findViewById(R.id.profileNameAndUniversity);
+        postsCount                  = view.findViewById(R.id.postsCount);
+        followersCount              = view.findViewById(R.id.followersCount);
+        followingCount              = view.findViewById(R.id.followingCount);
+        profileBio                  = view.findViewById(R.id.profileBio);
+        btEditProfile               = view.findViewById(R.id.btEditProfile);
+        gridView                    = view.findViewById(R.id.gridView);
 
         btEditProfile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,7 +72,7 @@ public class ProfileFragment extends Fragment {
             }
         });
 
-        userRef.addValueEventListener(new ValueEventListener() {
+        valueEventListener = userRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
@@ -101,4 +106,9 @@ public class ProfileFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        //userRef.removeEventListener(valueEventListener);
+    }
 }

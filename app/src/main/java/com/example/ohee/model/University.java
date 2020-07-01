@@ -23,7 +23,7 @@ public class University implements Serializable {
     private String city;
     private String state;
     private String domain;
-    private List<User> students = new ArrayList<>();
+    private List<String> students = new ArrayList<>();
     private int count;
 
     public University(JSONObject json) throws JSONException {
@@ -57,18 +57,18 @@ public class University implements Serializable {
         universityRef.updateChildren(userValues);
     }
 
-    public void updateUser(User user, int i) {
-        DatabaseReference firebaseRef = SetFirebase.getFirebaseDatabase();
-        DatabaseReference universityRef = firebaseRef
-                .child("universities")
-                .child(getDomain())
-                .child("students")
-                .child(i + "");
-
-        Map<String, Object> userValues = mapUser(user);
-
-        universityRef.updateChildren(userValues);
-    }
+//    public void updateUser(User user, int i) {
+//        DatabaseReference firebaseRef = SetFirebase.getFirebaseDatabase();
+//        DatabaseReference universityRef = firebaseRef
+//                .child("universities")
+//                .child(getDomain())
+//                .child("students")
+//                .child(i + "");
+//
+//        Map<String, Object> userValues = mapUser(user);
+//
+//        universityRef.updateChildren(userValues);
+//    }
 
     public void save() {
         DatabaseReference firebase = SetFirebase.getFirebaseDatabase();
@@ -77,8 +77,8 @@ public class University implements Serializable {
                 .setValue(this);
     }
 
-    public void addUser(User user) {
-        List<User> users = this.getStudents();
+    public void addUser(String user) {
+        List<String> users = this.getStudents();
         users.add(user);
         setStudents(users);
         update();
@@ -146,11 +146,11 @@ public class University implements Serializable {
         this.state = state;
     }
 
-    public List<User> getStudents() {
+    public List<String> getStudents() {
         return students;
     }
 
-    public void setStudents(List<User> students) {
+    public void setStudents(List<String> students) {
         this.students = students;
     }
 }

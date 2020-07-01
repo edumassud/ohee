@@ -200,7 +200,7 @@ public class SignUpActivity extends AppCompatActivity {
                     String idUser = task.getResult().getUser().getUid();
                     user.setIdUser(idUser);
                     user.save();
-                    university.addUser(user);
+                    university.addUser(user.getIdUser());
                     SetFirebaseUser.updateUsersName(user.getName());
 //                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
                     finish();

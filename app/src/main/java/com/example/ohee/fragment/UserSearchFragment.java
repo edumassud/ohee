@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ProgressBar;
 
 import com.example.ohee.R;
 import com.example.ohee.activity.VisitProfileActivity;
@@ -33,6 +34,7 @@ import java.util.List;
  */
 public class UserSearchFragment extends Fragment {
     private RecyclerView recycler;
+    private ProgressBar progressBar;
     private List<User> listUsers = new ArrayList<>();
     private ContactsAdapter adapter;
     private DatabaseReference database = SetFirebase.getFirebaseDatabase();
@@ -51,7 +53,8 @@ public class UserSearchFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_user_search, container, false);
 
-        recycler = view.findViewById(R.id.recycler);
+        recycler        = view.findViewById(R.id.recycler);
+        progressBar     = view.findViewById(R.id.progressBar);
 
         // Set adapter
         adapter = new ContactsAdapter(listUsers, getActivity());
@@ -113,6 +116,8 @@ public class UserSearchFragment extends Fragment {
                 if (!user.getEmail().equals(currentUser.getEmail())) {
                     listUsers.add(user);
                     adapter.notifyDataSetChanged();
+                    progressBar.setVisibility(View.GONE);
+                    recycler.setVisibility(View.VISIBLE);
                 }
             }
 

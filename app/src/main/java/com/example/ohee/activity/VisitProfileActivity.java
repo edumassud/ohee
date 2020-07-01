@@ -9,10 +9,12 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.GridView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.ohee.R;
+import com.example.ohee.adapter.AdapterGrid;
 import com.example.ohee.helpers.SetFirebase;
 import com.example.ohee.helpers.SetFirebaseUser;
 import com.example.ohee.model.Post;
@@ -21,6 +23,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,6 +36,7 @@ public class VisitProfileActivity extends AppCompatActivity {
     private Button btFollow, btGoToChat;
     private CircleImageView imgProfile;
     private TextView txtPosts, txtFollowing, txtFollowers, profileNameAndUniversity, txtBio;
+    private GridView gridView;
 
     private User selectedUser;
     private User loggedUser;
@@ -49,6 +54,8 @@ public class VisitProfileActivity extends AppCompatActivity {
 
     private ValueEventListener eventListener;
 
+    private AdapterGrid adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,6 +69,7 @@ public class VisitProfileActivity extends AppCompatActivity {
         btGoToChat                  = findViewById(R.id.btGoToChat);
         profileNameAndUniversity    = findViewById(R.id.profileNameAndUniversity);
         txtBio                      = findViewById(R.id.profileBio);
+        gridView                    = findViewById(R.id.gridView);
 
         idLoggedUSer = SetFirebaseUser.getUsersId();
 
@@ -100,6 +108,7 @@ public class VisitProfileActivity extends AppCompatActivity {
             }
         });
 
+        initImgLoader();
         loadPosts();
     }
 
@@ -145,6 +154,14 @@ public class VisitProfileActivity extends AppCompatActivity {
 
     }
 
+    private void initImgLoader() {
+        ImageLoaderConfiguration imageLoaderConfiguration = new ImageLoaderConfiguration
+                .Builder(this)
+                .build();
+        ImageLoader.getInstance().init(imageLoaderConfiguration);
+
+    }
+
     private void loadPosts() {
         userPostsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -153,10 +170,13 @@ public class VisitProfileActivity extends AppCompatActivity {
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     Post post = ds.getValue(Post.class);
                     urls.add(post.getPath());
-                    Log.i("Posts: ", post.getPath());
                 }
 
-                //txtPosts.setText(String.valueOf(urls.size()));
+                // Set adapter
+                adapter = new AdapterGrid(getApplicationContext(), R.layout.grid_post, urls);
+
+                // Set gridView
+                gridView.setAdapter(adapter);
 
             }
 

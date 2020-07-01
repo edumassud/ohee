@@ -225,7 +225,7 @@ public class FilterActivity extends AppCompatActivity {
 
         // Get img data
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        imgFilter.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        imgFilter.compress(Bitmap.CompressFormat.JPEG, 50, baos);
         byte[] imgData = baos.toByteArray();
 
         // Save img to firebase storage

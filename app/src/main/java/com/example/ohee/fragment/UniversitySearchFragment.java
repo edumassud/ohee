@@ -11,8 +11,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ProgressBar;
 
 import com.example.ohee.R;
+import com.example.ohee.activity.UniversityProfileActivity;
 import com.example.ohee.activity.VisitProfileActivity;
 import com.example.ohee.adapter.SearchAdapter;
 import com.example.ohee.adapter.SearchUniversityAdapter;
@@ -35,6 +37,7 @@ import java.util.List;
  */
 public class UniversitySearchFragment extends Fragment {
     private RecyclerView recycler;
+    private ProgressBar progressBar;
     private List<University> listUniversities = new ArrayList<>();
     private SearchUniversityAdapter adapter;
     private DatabaseReference database = SetFirebase.getFirebaseDatabase();
@@ -53,7 +56,8 @@ public class UniversitySearchFragment extends Fragment {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_university_search, container, false);
 
-        recycler = view.findViewById(R.id.recycler);
+        recycler        = view.findViewById(R.id.recycler);
+        progressBar     = view.findViewById(R.id.progressBar);
 
         // Set adapter
         adapter = new SearchUniversityAdapter(listUniversities, getActivity());
@@ -65,31 +69,31 @@ public class UniversitySearchFragment extends Fragment {
         recycler.setAdapter(adapter);
 
         // Set click
-//        recycler.addOnItemTouchListener(
-//                new RecyclerItemClickListener(
-//                        getActivity(), recycler, new RecyclerItemClickListener.OnItemClickListener() {
-//                    @Override
-//                    public void onItemClick(View view, int position) {
-//                        List<University> listUsersUpdated = adapter.getUserList();
-//                        User selectedUser = listUsersUpdated.get(position);
-//
-//                        Intent i = new Intent(getActivity(), VisitProfileActivity.class);
-//                        i.putExtra("selectedUser", selectedUser);
-//                        startActivity(i);
-//                    }
-//
-//                    @Override
-//                    public void onLongItemClick(View view, int position) {
-//
-//                    }
-//
-//                    @Override
-//                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//
-//                    }
-//                }
-//                )
-//        );
+        recycler.addOnItemTouchListener(
+                new RecyclerItemClickListener(
+                        getActivity(), recycler, new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, int position) {
+                        List<University> listUniversityUpdated = adapter.getList();
+                        University selectedUniversity = listUniversityUpdated.get(position);
+
+                        Intent i = new Intent(getActivity(), UniversityProfileActivity.class);
+                        i.putExtra("selectedUniversity", selectedUniversity);
+                        startActivity(i);
+                    }
+
+                    @Override
+                    public void onLongItemClick(View view, int position) {
+
+                    }
+
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                    }
+                }
+                )
+        );
 
         return view;
     }
@@ -114,6 +118,8 @@ public class UniversitySearchFragment extends Fragment {
                 University university = dataSnapshot.getValue(University.class);
                 listUniversities.add(university);
                 adapter.notifyDataSetChanged();
+                progressBar.setVisibility(View.GONE);
+                recycler.setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -143,7 +149,9 @@ public class UniversitySearchFragment extends Fragment {
 
         for (University university : listUniversities) {
             String name = university.getName().toLowerCase();
-            if (name.contains(txt)) {
+            String state = university.getState().toLowerCase();
+            String city = university.getCity().toLowerCase();
+            if (name.contains(txt) || state.contains(txt) || city.contains(txt)) {
                 listUniversitySearch.add(university);
             }
         }

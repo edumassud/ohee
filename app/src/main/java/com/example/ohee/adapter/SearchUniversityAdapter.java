@@ -28,6 +28,8 @@ public class SearchUniversityAdapter extends RecyclerView.Adapter<SearchUniversi
         this.context = context;
     }
 
+
+
     public List<University> getList() {
         return list;
     }

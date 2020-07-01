@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ProgressBar;
 
 import com.example.ohee.R;
 import com.example.ohee.activity.UniversityProfileActivity;
@@ -33,6 +34,7 @@ import java.util.List;
  */
 public class UniversitiesExploreFragment extends Fragment {
     private RecyclerView recycler;
+    private ProgressBar progressBar;
     private List<University> listUniversities = new ArrayList<>();
     private SearchUniversityAdapter adapter;
     private DatabaseReference database = SetFirebase.getFirebaseDatabase();
@@ -50,7 +52,8 @@ public class UniversitiesExploreFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_universities_explore, container, false);
 
-        recycler = view.findViewById(R.id.recycler);
+        recycler        = view.findViewById(R.id.recycler);
+        progressBar     = view.findViewById(R.id.progressBar);
 
         // Set adapter
         adapter = new SearchUniversityAdapter(listUniversities, getActivity());
@@ -106,9 +109,12 @@ public class UniversitiesExploreFragment extends Fragment {
         childEventListenerConversas = universityRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+
                 University university = dataSnapshot.getValue(University.class);
                 listUniversities.add(university);
                 adapter.notifyDataSetChanged();
+                progressBar.setVisibility(View.GONE);
+                recycler.setVisibility(View.VISIBLE);
             }
 
             @Override
