@@ -5,13 +5,64 @@
     android:layout_height="match_parent"
     android:fillViewport="true"
     xmlns:android="http://schemas.android.com/apk/res/android">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/colorBg"
         android:orientation="vertical"
         tools:context=".activity.FilterActivity">
 
-        <include layout="@layout/toolbar" />
+<!--        <include layout="@layout/toolbar" />-->
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@android:color/black">
+
+            <ImageView
+                android:id="@+id/btClose"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_action_navigation_close_inverted"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/btPost1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:src="@drawable/ic_check"
+                android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.625" />
+
+            <ProgressBar
+                android:id="@+id/progressBar1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="Post"
+                android:textColor="@android:color/white"
+                android:textSize="24sp"
+                app:layout_constraintBottom_toBottomOf="@+id/btClose"
+                app:layout_constraintStart_toEndOf="@+id/btClose"
+                app:layout_constraintTop_toTopOf="@+id/btClose" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <ImageView
             android:id="@+id/imgSelected"
@@ -29,13 +80,18 @@
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:hintTextColor="@android:color/white"
             android:layout_marginBottom="5dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/txtCaption"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Caption" />
+                android:hint="Caption"
+                android:textColor="@android:color/white"
+                android:textColorHighlight="@android:color/white"
+                android:textColorHint="@android:color/white"
+                android:textColorLink="@android:color/white" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <LinearLayout
@@ -50,7 +106,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@drawable/button_background"
-                android:text="private" />
+                android:text="private"
+                android:textColor="@android:color/white" />
 
             <Button
                 android:id="@+id/btHome"
@@ -60,7 +117,8 @@
                 android:layout_marginRight="4dp"
                 android:layout_weight="1"
                 android:background="@drawable/button_background"
-                android:text="home" />
+                android:text="home"
+                android:textColor="@android:color/white" />
 
             <Button
                 android:id="@+id/btPublic"
@@ -68,7 +126,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@drawable/bg_message_balloon"
-                android:text="public" />
+                android:text="public"
+                android:textColor="@android:color/white" />
         </LinearLayout>
 
         <TextView
@@ -76,7 +135,26 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="4dp"
-            android:text="Everyone can see this post." />
+            android:text="Everyone can see this post."
+            android:textColor="@android:color/white" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"/>
+
+        <Button
+            android:id="@+id/btPost"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginRight="4dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/button_background"
+            android:text="Post"
+            android:textColor="@android:color/white" />
     </LinearLayout>
 
 </ScrollView>

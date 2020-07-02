@@ -17,14 +17,22 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.ohee.R;
 import com.example.ohee.activity.EditProfileActivity;
+import com.example.ohee.adapter.AdapterGrid;
 import com.example.ohee.helpers.SetFirebase;
 import com.example.ohee.helpers.SetFirebaseUser;
+import com.example.ohee.model.Post;
 import com.example.ohee.model.User;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
+import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -38,6 +46,8 @@ public class ProfileFragment extends Fragment {
     private TextView profileBio;
     private Button btEditProfile;
     private GridView gridView;
+
+    private AdapterGrid adapter;
 
     private FirebaseUser user = SetFirebaseUser.getUser();
     private DatabaseReference userRef = SetFirebase.getFirebaseDatabase().child("user").child(user.getUid());
@@ -102,6 +112,8 @@ public class ProfileFragment extends Fragment {
 
             }
         });
+        initImgLoader();
+        loadPosts();
 
         return view;
     }
@@ -110,5 +122,53 @@ public class ProfileFragment extends Fragment {
     public void onStop() {
         super.onStop();
         //userRef.removeEventListener(valueEventListener);
+    }
+
+    private void initImgLoader() {
+        ImageLoaderConfiguration imageLoaderConfiguration = new ImageLoaderConfiguration
+                .Builder(getContext())
+                .memoryCache(new LruMemoryCache(2 * 1024 * 1024))
+                .memoryCacheSize(2 * 1024 * 1024)
+                .memoryCacheSizePercentage(13) // default
+                .diskCacheSize(50 * 1024 * 1024)
+                .diskCacheFileCount(100)
+                .build();
+        ImageLoader.getInstance().init(imageLoaderConfiguration);
+
+    }
+
+    private void loadPosts() {
+
+        DatabaseReference databaseReference = SetFirebase.getFirebaseDatabase();
+        DatabaseReference postsRef = databaseReference.child("posts");
+        DatabaseReference myPosts  = postsRef.child(user.getUid());
+
+        // Set grid size
+        int sizeGrid = getResources().getDisplayMetrics().widthPixels;
+        int sizeImg = sizeGrid / 3;
+        gridView.setColumnWidth(sizeImg);
+
+        myPosts.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<String> urls = new ArrayList<>();
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    Post post = ds.getValue(Post.class);
+                    urls.add(0, post.getPath());
+                }
+
+                // Set adapter
+                adapter = new AdapterGrid(getActivity(), R.layout.grid_post, urls);
+
+                // Set gridView
+                gridView.setAdapter(adapter);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 }

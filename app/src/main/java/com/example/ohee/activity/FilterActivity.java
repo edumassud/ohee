@@ -6,6 +6,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -18,6 +19,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -54,13 +56,14 @@ public class FilterActivity extends AppCompatActivity {
         System.loadLibrary("NativeImageProcessor");
     }
 
-    private ImageView imgSelected;
+    private ImageView imgSelected, btClose, btPost1;
     private Bitmap imgOriginal;
     private Bitmap imgFilter;
     private RecyclerView recyclerFilters;
     private TextInputEditText txtCaption;
-    private Button btPrivate, btHome, btPublic;
+    private Button btPrivate, btHome, btPublic, btPost;
     private TextView txtInfo;
+    private ProgressBar progressBar, progressBar1;
 
     private String type = "public";
 
@@ -88,15 +91,20 @@ public class FilterActivity extends AppCompatActivity {
         btPrivate           = findViewById(R.id.btPrivate);
         btPublic            = findViewById(R.id.btPublic);
         txtInfo             = findViewById(R.id.txtInfo);
+        btClose             = findViewById(R.id.btClose);
+        btPost1             = findViewById(R.id.btPost1);
+        btPost              = findViewById(R.id.btPost);
+        progressBar1        = findViewById(R.id.progressBar1);
+        progressBar         = findViewById(R.id.progressBar);
 
         idLoggedUSer = SetFirebaseUser.getUsersId();
 
-        Toolbar toolbar = findViewById(R.id.toolbarPrincipal);
-        toolbar.setTitle("Post");
-        setSupportActionBar(toolbar);
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_action_navigation_close);
+//        Toolbar toolbar = findViewById(R.id.toolbarPrincipal);
+//        toolbar.setTitle("Post");
+//        setSupportActionBar(toolbar);
+//
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_action_navigation_close);
 
         // Getting the img
         Bundle bundle = getIntent().getExtras();
@@ -148,6 +156,26 @@ public class FilterActivity extends AppCompatActivity {
         }
 
         makeChoice();
+
+        btPost1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                btPost1.setVisibility(View.GONE);
+                btPost.setVisibility(View.GONE);
+                progressBar1.setVisibility(View.VISIBLE);
+                makePost();
+            }
+        });
+
+        btPost.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                btPost1.setVisibility(View.GONE);
+                btPost.setVisibility(View.GONE);
+                progressBar.setVisibility(View.VISIBLE);
+                makePost();
+            }
+        });
     }
 
     private void makeChoice() {
@@ -188,6 +216,13 @@ public class FilterActivity extends AppCompatActivity {
                 type = "public";
 
                 txtInfo.setText("Everyone can see your post");
+            }
+        });
+
+        btClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
         });
     }
@@ -262,29 +297,29 @@ public class FilterActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_post, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        MenuInflater inflater = getMenuInflater();
+//        inflater.inflate(R.menu.menu_post, menu);
+//        return super.onCreateOptionsMenu(menu);
+//    }
 
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.btPost:
-                makePost();
-                break;
-        }
+//    @Override
+//    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+//        switch (item.getItemId()) {
+//            case R.id.btPost:
+//                makePost();
+//                break;
+//        }
+//
+//        return super.onOptionsItemSelected(item);
+//    }
 
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public boolean onSupportNavigateUp() {
-        finish();
-        return false;
-    }
+//    @Override
+//    public boolean onSupportNavigateUp() {
+//        finish();
+//        return false;
+//    }
 
     private void getLoggedUserData() {
         loggedUserRef = usersRef.child(idLoggedUSer);

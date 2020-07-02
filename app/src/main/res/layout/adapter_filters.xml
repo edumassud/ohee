@@ -11,9 +11,10 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:text="TextView"
-        android:textAlignment="center" />
+        android:textAlignment="center"
+        android:textColor="@android:color/white" />
 
-    <ImageView
+    <com.example.ohee.helpers.SquareImgView
         android:id="@+id/imgFilter"
         android:layout_width="80dp"
         android:layout_height="80dp"
