@@ -16,5 +16,6 @@
     <com.miguelcatalan.materialsearchview.MaterialSearchView
         android:id="@+id/materialSearchPrincipal"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize" />
+        android:layout_height="?attr/actionBarSize"
+        />
 </FrameLayout>

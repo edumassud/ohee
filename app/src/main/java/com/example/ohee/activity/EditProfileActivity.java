@@ -128,8 +128,11 @@ public class EditProfileActivity extends AppCompatActivity {
                     if (user.getSex().equals("male")) {
                         btDude.setBackgroundResource(R.drawable.dude_background);
                         sex = "male";
-                    } else {
+                    } else if (user.getSex().equals("female")){
                         btChick.setBackgroundResource(R.drawable.chick_background);
+                        sex = "female";
+                    } else if (user.getSex().equals("other")){
+                        btOther.setBackgroundResource(R.drawable.other_background);
                         sex = "female";
                     }
                 }

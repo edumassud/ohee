@@ -169,6 +169,12 @@ public class VisitProfileActivity extends AppCompatActivity {
     }
 
     private void loadPosts() {
+
+        // Set grid size
+        int sizeGrid = getResources().getDisplayMetrics().widthPixels;
+        int sizeImg = sizeGrid / 3;
+        gridView.setColumnWidth(sizeImg);
+
         userPostsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
