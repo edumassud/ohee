@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="200dp"
     android:layout_marginTop="10dp"
-    android:background="#000000"
     android:orientation="vertical"
     android:padding="8dp"
     tools:context=".fragment.UniversityProfileMainFragment">
@@ -32,33 +31,5 @@
         android:layout_height="wrap_content"
         android:text="Count"
         android:textColor="#ffffff" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="bottom|center_horizontal"
-        android:orientation="horizontal">
-
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:layout_width="10dp"
-            android:layout_height="10dp"
-            android:layout_marginRight="1dp"
-            android:src="@color/colorPrimary" />
-
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:layout_width="10dp"
-            android:layout_height="10dp"
-            android:layout_marginLeft="1dp"
-            android:layout_marginRight="1dp"
-            android:src="@color/colorPrimaryDark" />
-
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:layout_width="10dp"
-            android:layout_height="10dp"
-            android:layout_marginLeft="1dp"
-            android:src="@color/colorPrimaryDark" />
-
-
-    </LinearLayout>
 
 </LinearLayout>
