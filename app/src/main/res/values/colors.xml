@@ -5,5 +5,8 @@
     <color name="colorPrimaryDark">#090C3B</color>
     <color name="colorAccent">#82CEDA</color>
     <color name="colorBg">#2D3034</color>
+    <color name="colorSingle">#39DAFF</color>
+    <color name="colorComplicated">#FFFA03</color>
+    <color name="colorTaken">#F51B01</color>
 </resources>
 

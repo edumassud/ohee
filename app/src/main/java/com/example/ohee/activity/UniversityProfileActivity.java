@@ -13,6 +13,7 @@ import android.os.Bundle;
 import com.example.ohee.R;
 import com.example.ohee.fragment.FollowingFeedFragment;
 import com.example.ohee.fragment.HomeFragment;
+import com.example.ohee.fragment.StatutsDistFragment;
 import com.example.ohee.fragment.UniversityDataFragment;
 import com.example.ohee.fragment.UniversityProfileMainFragment;
 import com.example.ohee.fragment.YourUniversityFeedFragment;
@@ -63,14 +64,16 @@ public class UniversityProfileActivity extends AppCompatActivity {
         public Fragment getItem(int position) {
             if (position == 0) {
                 return new UniversityProfileMainFragment(university);
-            } else {
+            } else if (position == 1) {
                 return new UniversityDataFragment(university);
+            } else {
+                return new StatutsDistFragment(university);
             }
         }
 
         @Override
         public int getCount() {
-            return 2;
+            return 3;
         }
     }
 }

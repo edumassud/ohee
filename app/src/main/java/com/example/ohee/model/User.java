@@ -56,6 +56,17 @@ public class User implements Serializable {
         userRef.updateChildren(userValues);
     }
 
+    public void updatePersonalInfo() {
+        DatabaseReference firebaseRef = SetFirebase.getFirebaseDatabase();
+        DatabaseReference userRef = firebaseRef
+                .child("user")
+                .child(getIdUser());
+
+        Map<String, Object> userValues = convertPersonalInfoToMap();
+
+        userRef.updateChildren(userValues);
+    }
+
     public void updateImg() {
         DatabaseReference firebaseRef = SetFirebase.getFirebaseDatabase();
         DatabaseReference userRef = firebaseRef
@@ -75,6 +86,17 @@ public class User implements Serializable {
         usersMap.put("postCount", getPostCount());
         usersMap.put("followingCount", getFollowingCount());
         usersMap.put("followerCount", getFollowerCount());
+        usersMap.put("status", getStatus());
+        usersMap.put("sex", getSex());
+
+        return usersMap;
+    }
+
+    public Map<String, Object> convertPersonalInfoToMap() {
+        HashMap<String, Object> usersMap = new HashMap<>();
+        usersMap.put("name", getName());
+        usersMap.put("bio", getBio());
+        usersMap.put("searchName", getName().toUpperCase());
         usersMap.put("status", getStatus());
         usersMap.put("sex", getSex());
 

@@ -167,7 +167,7 @@ public class EditProfileActivity extends AppCompatActivity {
                 loggedUser.setBio(newBio);
                 loggedUser.setStatus(status);
                 loggedUser.setSex(sex);
-                loggedUser.updateInfo();
+                loggedUser.updatePersonalInfo();
                 //updateUniversityData();
                 finish();
             }
