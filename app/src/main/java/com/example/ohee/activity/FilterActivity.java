@@ -1,6 +1,7 @@
 package com.example.ohee.activity;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -11,6 +12,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -61,7 +63,7 @@ public class FilterActivity extends AppCompatActivity {
     private Bitmap imgFilter;
     private RecyclerView recyclerFilters;
     private TextInputEditText txtCaption;
-    private Button btPrivate, btHome, btPublic, btPost;
+    private Button btPrivate, btHome, btPublic, btPost, btPickImg;
     private TextView txtInfo;
     private ProgressBar progressBar, progressBar1;
 
@@ -78,6 +80,8 @@ public class FilterActivity extends AppCompatActivity {
     private DatabaseReference usersRef = databaseReference.child("user");
 
     private List<ThumbnailItem> listFilters = new ArrayList<>();
+
+    private static final int GALLERY_SELECTION = 200;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,24 +100,28 @@ public class FilterActivity extends AppCompatActivity {
         btPost              = findViewById(R.id.btPost);
         progressBar1        = findViewById(R.id.progressBar1);
         progressBar         = findViewById(R.id.progressBar);
+        btPickImg           = findViewById(R.id.btPickImage);
 
         idLoggedUSer = SetFirebaseUser.getUsersId();
 
-//        Toolbar toolbar = findViewById(R.id.toolbarPrincipal);
-//        toolbar.setTitle("Post");
-//        setSupportActionBar(toolbar);
-//
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_action_navigation_close);
-
         // Getting the img
-        Bundle bundle = getIntent().getExtras();
-        if (bundle != null) {
-            byte[] imgData = bundle.getByteArray("selectedPic");
-            imgOriginal = BitmapFactory.decodeByteArray(imgData, 0, imgData.length);
-            imgSelected.setImageBitmap(imgOriginal);
+//        Bundle bundle = getIntent().getExtras();
+//        if (bundle != null) {
+//            byte[] imgData = bundle.getByteArray("selectedPic");
+//            imgOriginal = BitmapFactory.decodeByteArray(imgData, 0, imgData.length);
+//            imgSelected.setImageBitmap(imgOriginal);
+//
+//            imgFilter = imgOriginal.copy(imgOriginal.getConfig(), true);
 
-            imgFilter = imgOriginal.copy(imgOriginal.getConfig(), true);
+        btPickImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                if (i.resolveActivity(getPackageManager()) != null) {
+                    startActivityForResult(i, GALLERY_SELECTION);
+                }
+            }
+        });
 
             // Set adapter
             adapter = new AdapterFilters(listFilters, getApplicationContext());
@@ -152,30 +160,77 @@ public class FilterActivity extends AppCompatActivity {
                     )
             );
 
-            getFilters();
-        }
+            //getFilters();
+
 
         makeChoice();
 
         btPost1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                btPost1.setVisibility(View.GONE);
-                btPost.setVisibility(View.GONE);
-                progressBar1.setVisibility(View.VISIBLE);
-                makePost();
+                if (btPickImg.getVisibility() == View.GONE) {
+                    btPost1.setVisibility(View.GONE);
+                    btPost.setVisibility(View.GONE);
+                    progressBar1.setVisibility(View.VISIBLE);
+                    makePost();
+                } else {
+                    Toast.makeText(FilterActivity.this, "Pick an image first", Toast.LENGTH_SHORT).show();
+                }
+
             }
         });
 
         btPost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                btPost1.setVisibility(View.GONE);
-                btPost.setVisibility(View.GONE);
-                progressBar.setVisibility(View.VISIBLE);
-                makePost();
+                if (btPickImg.getVisibility() == View.GONE) {
+                    btPost1.setVisibility(View.GONE);
+                    btPost.setVisibility(View.GONE);
+                    progressBar.setVisibility(View.VISIBLE);
+                    makePost();
+                }
+                else {
+                    Toast.makeText(FilterActivity.this, "Pick an image first", Toast.LENGTH_SHORT).show();
+                }
+
             }
         });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_OK && data != null) {
+            Bitmap img = null;
+
+            try {
+                switch (requestCode) {
+                    case GALLERY_SELECTION:
+                        Uri selectedImage = data.getData();
+                        img = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
+                }
+
+                if (img != null) {
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    img.compress(Bitmap.CompressFormat.JPEG, 50, baos);
+                    byte[] imgData = baos.toByteArray();
+
+                    // Send to filter application
+                    imgOriginal = BitmapFactory.decodeByteArray(imgData, 0, imgData.length);
+                    imgSelected.setImageBitmap(imgOriginal);
+
+                    imgFilter = imgOriginal.copy(imgOriginal.getConfig(), true);
+
+                    btPickImg.setVisibility(View.GONE);
+                    imgSelected.setVisibility(View.VISIBLE);
+                    getFilters();
+
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void makeChoice() {
@@ -230,6 +285,7 @@ public class FilterActivity extends AppCompatActivity {
     private void getFilters() {
         listFilters.clear();
         ThumbnailsManager.clearThumbs();
+        recyclerFilters.setVisibility(View.VISIBLE);
 
         // Set no filter
         ThumbnailItem noFilter = new ThumbnailItem();

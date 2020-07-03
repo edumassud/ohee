@@ -1,5 +1,6 @@
 package com.example.ohee.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -92,12 +93,13 @@ public class MainActivity extends AppCompatActivity {
         fabPost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.viewPager, new PostFragment()).commit();
-                navExplore.setImageResource(R.drawable.ic_explore_unselected);
-                navHome.setImageResource(R.drawable.ic_home_unselected);
-                navNotifications.setImageResource(R.drawable.ic_notifications_unselected);
-                navProfile.setImageResource(R.drawable.ic_profile_unselected);
+                startActivity(new Intent(getApplicationContext(), FilterActivity.class));
+//                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+//                fragmentTransaction.replace(R.id.viewPager, new PostFragment()).commit();
+//                navExplore.setImageResource(R.drawable.ic_explore_unselected);
+//                navHome.setImageResource(R.drawable.ic_home_unselected);
+//                navNotifications.setImageResource(R.drawable.ic_notifications_unselected);
+//                navProfile.setImageResource(R.drawable.ic_profile_unselected);
             }
         });
     }

@@ -64,17 +64,27 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <Button
+            android:id="@+id/btPickImage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Pick image"
+            android:layout_margin="4dp"
+            android:background="@drawable/button_background"/>
+
         <ImageView
             android:id="@+id/imgSelected"
             android:layout_width="match_parent"
             android:layout_height="420dp"
             android:layout_marginBottom="4dp"
+            android:visibility="gone"
             android:scaleType="centerCrop"
             app:srcCompat="@drawable/avatar" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerFilters"
             android:layout_width="match_parent"
+            android:visibility="gone"
             android:layout_height="110dp" />
 
         <com.google.android.material.textfield.TextInputLayout
@@ -96,7 +106,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:padding="4dp">
 
