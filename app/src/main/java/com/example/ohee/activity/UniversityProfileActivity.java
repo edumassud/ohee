@@ -11,6 +11,7 @@ import androidx.viewpager.widget.ViewPager;
 import android.os.Bundle;
 
 import com.example.ohee.R;
+import com.example.ohee.fragment.ContactsFragment;
 import com.example.ohee.fragment.FollowingFeedFragment;
 import com.example.ohee.fragment.HomeFragment;
 import com.example.ohee.fragment.StatutsDistFragment;
@@ -23,6 +24,8 @@ import com.google.android.material.tabs.TabLayout;
 public class UniversityProfileActivity extends AppCompatActivity {
     private TabLayout tabs;
     private ViewPager pager;
+    private TabLayout tabsContent;
+    private ViewPager pagerContent;
 
     private University university;
 
@@ -32,12 +35,17 @@ public class UniversityProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_university_profile);
 
-        tabs    = findViewById(R.id.tabs);
-        pager   = findViewById(R.id.pager);
+        tabs            = findViewById(R.id.tabs);
+        pager           = findViewById(R.id.pager);
+        tabsContent     = findViewById(R.id.tabContent);
+        pagerContent    = findViewById(R.id.pagerContent);
 
 
         pager.setAdapter(new PagerAdapter(getSupportFragmentManager()));
         tabs.setupWithViewPager(pager);
+
+        pagerContent.setAdapter(new PagerAdapterContent(getSupportFragmentManager()));
+        tabsContent.setupWithViewPager(pagerContent);
 
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
@@ -47,17 +55,9 @@ public class UniversityProfileActivity extends AppCompatActivity {
 
     private class PagerAdapter extends FragmentStatePagerAdapter {
 
-//        private String[] tabTitles = new String[]{"Following", "Your University"};
-
         public PagerAdapter(@NonNull FragmentManager fm) {
             super(fm);
         }
-
-//        @Nullable
-//        @Override
-//        public CharSequence getPageTitle(int position) {
-//            return tabTitles[position];
-//        }
 
         @NonNull
         @Override
@@ -74,6 +74,28 @@ public class UniversityProfileActivity extends AppCompatActivity {
         @Override
         public int getCount() {
             return 3;
+        }
+    }
+
+    private class PagerAdapterContent extends FragmentStatePagerAdapter {
+
+        public PagerAdapterContent(@NonNull FragmentManager fm) {
+            super(fm);
+        }
+
+        @NonNull
+        @Override
+        public Fragment getItem(int position) {
+            if (position == 0) {
+                return new YourUniversityFeedFragment();
+            } else {
+                return new ContactsFragment();
+            }
+        }
+
+        @Override
+        public int getCount() {
+            return 2;
         }
     }
 }
