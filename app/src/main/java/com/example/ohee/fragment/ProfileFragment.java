@@ -7,6 +7,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +27,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -50,7 +52,12 @@ public class ProfileFragment extends Fragment {
     private AdapterGrid adapter;
 
     private FirebaseUser user = SetFirebaseUser.getUser();
-    private DatabaseReference userRef = SetFirebase.getFirebaseDatabase().child("user").child(user.getUid());
+    private DatabaseReference databaseReference = SetFirebase.getFirebaseDatabase();
+    private DatabaseReference userRef = databaseReference.child("user").child(user.getUid());
+    private DatabaseReference postsRef = databaseReference.child("posts");
+
+    private String universityDomain = "";
+
 
     private ValueEventListener valueEventListener;
 
@@ -92,6 +99,8 @@ public class ProfileFragment extends Fragment {
                 String followers                = String.valueOf(user.getFollowerCount());
                 String bio                      = String.valueOf(user.getBio());
                 String picturePath              = String.valueOf(user.getPicturePath());
+                universityDomain                = user.getUniversityDomain();
+                loadPosts();
 
                 // Setting data on screen
                 postsCount.setText(posts);
@@ -113,7 +122,7 @@ public class ProfileFragment extends Fragment {
             }
         });
         initImgLoader();
-        loadPosts();
+
 
         return view;
     }
@@ -138,10 +147,8 @@ public class ProfileFragment extends Fragment {
     }
 
     private void loadPosts() {
-
-        DatabaseReference databaseReference = SetFirebase.getFirebaseDatabase();
-        DatabaseReference postsRef = databaseReference.child("posts");
-        DatabaseReference myPosts  = postsRef.child(user.getUid());
+        DatabaseReference myUniversitysPost  = postsRef.child(universityDomain);
+        Query myPosts = myUniversitysPost.orderByChild("idUser").equalTo(user.getUid());
 
         // Set grid size
         int sizeGrid = getResources().getDisplayMetrics().widthPixels;
@@ -171,4 +178,6 @@ public class ProfileFragment extends Fragment {
             }
         });
     }
+
+
 }

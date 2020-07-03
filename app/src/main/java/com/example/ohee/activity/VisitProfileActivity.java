@@ -22,6 +22,7 @@ import com.example.ohee.model.User;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -43,13 +44,13 @@ public class VisitProfileActivity extends AppCompatActivity {
     private User loggedUser;
 
     private DatabaseReference databaseReference = SetFirebase.getFirebaseDatabase();
-    private DatabaseReference usersRef = databaseReference.child("user");
+    private DatabaseReference usersRef          = databaseReference.child("user");
+    private DatabaseReference followingRef      = databaseReference.child("following");
+    private DatabaseReference followerRef       = databaseReference.child("followers");
+    private DatabaseReference postsRef          = databaseReference.child("posts");
+    private DatabaseReference usersUniversitysPosts;
     private DatabaseReference userHostRef;
     private DatabaseReference loggedUserRef;
-    private DatabaseReference followingRef = databaseReference.child("following");
-    private DatabaseReference followerRef = databaseReference.child("followers");
-    private DatabaseReference postsRef = databaseReference.child("posts");
-    private DatabaseReference userPostsRef;
 
     private String idLoggedUSer;
 
@@ -82,7 +83,7 @@ public class VisitProfileActivity extends AppCompatActivity {
             selectedUser = (User) bundle.getSerializable("selectedUser");
 
             // Get posts ref
-            userPostsRef = postsRef.child(selectedUser.getIdUser());
+            usersUniversitysPosts = postsRef.child(selectedUser.getUniversityDomain());
 
             // Customize name & university
             profileNameAndUniversity.setText(selectedUser.getName() + " • " + selectedUser.getUniversityName());
@@ -175,13 +176,15 @@ public class VisitProfileActivity extends AppCompatActivity {
         int sizeImg = sizeGrid / 3;
         gridView.setColumnWidth(sizeImg);
 
-        userPostsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        usersUniversitysPosts.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 List<String> urls = new ArrayList<>();
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     Post post = ds.getValue(Post.class);
-                    urls.add(post.getPath());
+                    if (post.getIdUser().equals(selectedUser.getIdUser())) {
+                        urls.add(post.getPath());
+                    }
                 }
 
                 // Set adapter

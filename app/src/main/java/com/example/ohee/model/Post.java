@@ -4,7 +4,7 @@ import com.example.ohee.helpers.SetFirebase;
 import com.google.firebase.database.DatabaseReference;
 
 public class Post {
-    private String idUser, id, caption, path, type;
+    private String idUser, id, caption, path, type, universityDomain;
 
     public Post() {
         DatabaseReference databaseReference = SetFirebase.getFirebaseDatabase();
@@ -18,7 +18,7 @@ public class Post {
     public void save() {
         DatabaseReference firebase = SetFirebase.getFirebaseDatabase();
         DatabaseReference postsRef = firebase.child("posts")
-                .child(getIdUser())
+                .child(universityDomain)
                 .child(getId());
         postsRef.setValue(this);
     }
@@ -61,5 +61,13 @@ public class Post {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getUniversityDomain() {
+        return universityDomain;
+    }
+
+    public void setUniversityDomain(String universityDomain) {
+        this.universityDomain = universityDomain;
     }
 }

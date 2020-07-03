@@ -16,7 +16,9 @@ import com.example.ohee.fragment.FollowingFeedFragment;
 import com.example.ohee.fragment.HomeFragment;
 import com.example.ohee.fragment.StatutsDistFragment;
 import com.example.ohee.fragment.UniversityDataFragment;
+import com.example.ohee.fragment.UniversityGridFragment;
 import com.example.ohee.fragment.UniversityProfileMainFragment;
+import com.example.ohee.fragment.UniversityStudentsFragment;
 import com.example.ohee.fragment.YourUniversityFeedFragment;
 import com.example.ohee.model.University;
 import com.google.android.material.tabs.TabLayout;
@@ -87,9 +89,9 @@ public class UniversityProfileActivity extends AppCompatActivity {
         @Override
         public Fragment getItem(int position) {
             if (position == 0) {
-                return new YourUniversityFeedFragment();
+                return new UniversityGridFragment(university);
             } else {
-                return new ContactsFragment();
+                return new UniversityStudentsFragment(university);
             }
         }
 

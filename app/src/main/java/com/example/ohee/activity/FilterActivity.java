@@ -312,6 +312,7 @@ public class FilterActivity extends AppCompatActivity {
         Post post = new Post();
         post.setIdUser(idLoggedUser);
         post.setCaption(txtCaption.getText().toString());
+        post.setUniversityDomain(loggedUser.getUniversityDomain());
         post.setType(type);
 
         // Get img data
