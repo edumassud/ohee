@@ -3,7 +3,9 @@ package com.example.ohee.model;
 import com.example.ohee.helpers.SetFirebase;
 import com.google.firebase.database.DatabaseReference;
 
-public class Post {
+import java.io.Serializable;
+
+public class Post implements Serializable {
     private String idUser, id, caption, path, type, universityDomain;
 
     public Post() {

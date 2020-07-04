@@ -37,7 +37,6 @@ public class UniversityDataFragment extends Fragment {
 
     private PieChartView pieChart;
     private TextView txtDudesPercent, txtChicksPercent, txtOtherPercent;
-    private ImageView imgOther;
 
     private float dudesCount = 0;
     private float chicksCount = 0;
@@ -61,25 +60,9 @@ public class UniversityDataFragment extends Fragment {
         txtDudesPercent     = view.findViewById(R.id.txtDudePercent);
         txtChicksPercent    = view.findViewById(R.id.txtChickPercent);
         txtOtherPercent     = view.findViewById(R.id.txtOtherPercent);
-        imgOther            = view.findViewById(R.id.imgOther);
 
         pieChart = view.findViewById(R.id.pieChart);
-        pieChart.setCenterColor(R.color.colorBg);
-
-
-//        chart = (PieChart) view.findViewById(R.id.chart);
-//        chart.setNoDataText("");
-//        chart.setEntryLabelColor(Color.WHITE);
-//        chart.setUsePercentValues(true);
-//        chart.getDescription().setEnabled(false);
-//        chart.getLegend().setEnabled(false);
-//        chart.setDragDecelerationFrictionCoef(0.95f);
-//        chart.setDrawHoleEnabled(true);
-//        chart.setHoleColor(Color.TRANSPARENT);
-//        chart.setDrawCenterText(true);
-//        chart.setRotationAngle(0);
-//        chart.setRotationEnabled(false);
-//        chart.setHighlightPerTapEnabled(false);
+        pieChart.setCenterColor(R.color.colorBlack);
 
         getUsersData();
 
@@ -89,10 +72,10 @@ public class UniversityDataFragment extends Fragment {
     private void getUsersData() {
        DatabaseReference databaseReference = SetFirebase.getFirebaseDatabase();
        DatabaseReference usersRef = databaseReference.child("user");
-        Query searchStudents;
+       Query searchStudents;
 
        for (int i = 0; i < students.size(); i++) {
-           searchStudents   = usersRef.orderByChild("idUser").equalTo(students.get(i));
+           searchStudents  = usersRef.orderByChild("idUser").equalTo(students.get(i));
 
            searchStudents.addListenerForSingleValueEvent(new ValueEventListener() {
                @Override
@@ -112,8 +95,6 @@ public class UniversityDataFragment extends Fragment {
                }
            });
        }
-
-
     }
 
     private void setUsersData() {
@@ -125,20 +106,15 @@ public class UniversityDataFragment extends Fragment {
 
         txtDudesPercent.setText("Dudes: " + Math.round(dudesPerCent * 100) + " %");
         txtChicksPercent.setText("Girls: " + Math.round(chicksPerCent * 100) + " %");
+        txtOtherPercent.setText("Other: " + Math.round(otherPerCent * 100) + " %");
+
 
         float[] dataSet;
         int[] colors;
-        if (otherPerCent > 5) {
-            dataSet = new float[]{dudesPerCent, chicksPerCent, otherPerCent};
-            colors = new int[]{R.color.colorPrimary, R.color.colorPink, R.color.colorPrimaryDark};
-            txtOtherPercent.setText("Other: " + Math.round(otherPerCent * 100) + " %");
-        } else {
-            dataSet = new float[]{dudesPerCent, chicksPerCent};
-            colors = new int[]{R.color.colorPrimary, R.color.colorPink};
-            txtOtherPercent.setVisibility(View.GONE);
-            imgOther.setVisibility(View.GONE);
-        }
 
+        dataSet = new float[]{dudesPerCent, chicksPerCent, otherPerCent};
+        colors = new int[]{R.color.colorPrimary, R.color.colorPink, R.color.other};
+        
         pieChart.setDataPoints(dataSet);
         pieChart.setSliceColor(colors);
     }

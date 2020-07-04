@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.TextView;
@@ -53,6 +54,7 @@ public class VisitProfileActivity extends AppCompatActivity {
     private DatabaseReference loggedUserRef;
 
     private String idLoggedUSer;
+    private List<Post> posts;
 
     private ValueEventListener eventListener;
 
@@ -112,6 +114,19 @@ public class VisitProfileActivity extends AppCompatActivity {
 
         initImgLoader();
         loadPosts();
+
+        // Set click
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Post post = posts.get(position);
+                Intent i = new Intent(getApplicationContext(), PostActivity.class);
+                i.putExtra("selectedPost", post);
+                i.putExtra("selectedUser", selectedUser);
+
+                startActivity(i);
+            }
+        });
     }
 
     @Override
@@ -171,6 +186,8 @@ public class VisitProfileActivity extends AppCompatActivity {
 
     private void loadPosts() {
 
+        posts = new ArrayList<>();
+
         // Set grid size
         int sizeGrid = getResources().getDisplayMetrics().widthPixels;
         int sizeImg = sizeGrid / 3;
@@ -183,6 +200,7 @@ public class VisitProfileActivity extends AppCompatActivity {
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     Post post = ds.getValue(Post.class);
                     if (post.getIdUser().equals(selectedUser.getIdUser())) {
+                        posts.add(post);
                         urls.add(post.getPath());
                     }
                 }

@@ -19,6 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
+            app:cardCornerRadius="10dp"
             android:background="@drawable/card_bg"
             app:cardBackgroundColor="@android:color/black"
             app:cardElevation="3dp"

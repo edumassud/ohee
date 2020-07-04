@@ -15,6 +15,7 @@
         android:background="@drawable/card_bg"
         app:cardBackgroundColor="@android:color/black"
         app:cardElevation="3dp"
+        app:cardCornerRadius="10dp"
         app:contentPadding="8dp"
         app:layout_constraintTop_toTopOf="parent"
         tools:layout_editor_absoluteX="70dp">
