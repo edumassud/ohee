@@ -49,6 +49,19 @@ public class Post implements Serializable {
             object.put("/feedFollowing/" + id, dataFollowers);
         }
 
+        if (getType().equals("public")) {
+            HashMap<String, Object> dataPost = new HashMap<>();
+            dataPost.put("path", getPath());
+            dataPost.put("caption", getCaption());
+            dataPost.put("id", getId());
+            dataPost.put("idUser", getIdUser());
+            dataPost.put("userName", loggedUser.getName());
+            dataPost.put("userPic", loggedUser.getPicturePath());
+            dataPost.put("userDomain", loggedUser.getUniversityDomain());
+
+            object.put("/feedExplore/" + getId(), dataPost);
+        }
+
         firebase.updateChildren(object);
     }
 

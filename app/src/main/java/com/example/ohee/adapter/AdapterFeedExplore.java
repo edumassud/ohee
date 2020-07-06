@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.ohee.R;
+import com.example.ohee.model.FeedExplore;
 import com.example.ohee.model.FeedFollowing;
 import com.like.LikeButton;
 
@@ -21,11 +22,11 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class AdapterFeedFollowing extends RecyclerView.Adapter<AdapterFeedFollowing.MyViewHolder> {
-    private List<FeedFollowing> posts;
+public class AdapterFeedExplore extends RecyclerView.Adapter<AdapterFeedExplore.MyViewHolder> {
+    private List<FeedExplore> posts;
     private Context context;
 
-    public AdapterFeedFollowing(List<FeedFollowing> posts, Context context) {
+    public AdapterFeedExplore(List<FeedExplore> posts, Context context) {
         this.posts = posts;
         this.context = context;
     }
@@ -39,13 +40,13 @@ public class AdapterFeedFollowing extends RecyclerView.Adapter<AdapterFeedFollow
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        FeedFollowing feed = posts.get(position);
+        FeedExplore feed = posts.get(position);
 
         if (feed != null) {
 
             // Set imgs info
-            if (feed.getuserPic() != null) {
-                Uri urlProfile = Uri.parse(feed.getuserPic());
+            if (feed.getUserPic() != null) {
+                Uri urlProfile = Uri.parse(feed.getUserPic());
                 Glide.with(context).load(urlProfile).into(holder.imgProfile);
             }
             if (feed.getPath() != null) {

@@ -15,7 +15,7 @@ import com.example.ohee.R;
 import com.example.ohee.adapter.AdapterFeedFollowing;
 import com.example.ohee.helpers.SetFirebase;
 import com.example.ohee.helpers.SetFirebaseUser;
-import com.example.ohee.model.Feed;
+import com.example.ohee.model.FeedFollowing;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -32,12 +32,12 @@ public class FollowingFeedFragment extends Fragment {
     private RecyclerView recycler;
     private AdapterFeedFollowing adapter;
 
-    private List<Feed> posts = new ArrayList<>();
+    private List<FeedFollowing> posts = new ArrayList<>();
 
     private String loggedUserId = SetFirebaseUser.getUsersId();
 
     DatabaseReference databaseReference = SetFirebase.getFirebaseDatabase();
-    DatabaseReference feedRef = databaseReference.child("feed").child(loggedUserId);
+    DatabaseReference feedRef = databaseReference.child("feedFollowing").child(loggedUserId);
 
     private ValueEventListener valueEventListener;
 
@@ -85,7 +85,7 @@ public class FollowingFeedFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 posts.clear();
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    posts.add(ds.getValue(Feed.class));
+                    posts.add(ds.getValue(FeedFollowing.class));
                 }
                 Collections.reverse(posts);
                 adapter.notifyDataSetChanged();

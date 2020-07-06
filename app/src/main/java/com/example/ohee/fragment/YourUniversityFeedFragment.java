@@ -12,11 +12,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.ohee.R;
-import com.example.ohee.adapter.AdapterFeedFollowing;
 import com.example.ohee.adapter.AdapterFeedHome;
 import com.example.ohee.helpers.SetFirebase;
 import com.example.ohee.helpers.SetFirebaseUser;
-import com.example.ohee.model.Feed;
 import com.example.ohee.model.Post;
 import com.example.ohee.model.User;
 import com.google.firebase.database.DataSnapshot;
@@ -93,7 +91,11 @@ public class YourUniversityFeedFragment extends Fragment {
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         posts.clear();
                         for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                            posts.add(ds.getValue(Post.class));
+                            Post post = ds.getValue(Post.class);
+                            if (!post.getType().equals("private")) {
+                                posts.add(post);
+                            }
+
                         }
                         Collections.reverse(posts);
                         adapter.notifyDataSetChanged();

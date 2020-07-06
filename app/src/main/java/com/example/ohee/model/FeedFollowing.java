@@ -1,9 +1,9 @@
 package com.example.ohee.model;
 
-public class Feed {
+public class FeedFollowing {
     private String id, path, caption, userName, userPic;
 
-    public Feed() {
+    public FeedFollowing() {
     }
 
     public String getId() {

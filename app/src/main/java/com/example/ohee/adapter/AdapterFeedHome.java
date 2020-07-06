@@ -15,8 +15,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.ohee.R;
 import com.example.ohee.helpers.SetFirebase;
-import com.example.ohee.helpers.SetFirebaseUser;
-import com.example.ohee.model.Feed;
 import com.example.ohee.model.Post;
 import com.example.ohee.model.User;
 import com.google.firebase.database.DataSnapshot;
