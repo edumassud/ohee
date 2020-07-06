@@ -116,6 +116,7 @@ public class ChatsFragment extends Fragment {
         conversasRef.removeEventListener(childEventListenerConversas);
     }
 
+
     public void recuperarConversas() {
         listaConversas.clear();
         childEventListenerConversas = conversasRef.addChildEventListener(new ChildEventListener() {

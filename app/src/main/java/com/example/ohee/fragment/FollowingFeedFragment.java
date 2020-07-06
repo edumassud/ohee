@@ -61,21 +61,6 @@ public class FollowingFeedFragment extends Fragment {
 
         recycler = view.findViewById(R.id.recycler);
 
-        feedRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Feed post = dataSnapshot.getValue(Feed.class);
-                if (post != null && post.getPath() != null) {
-                    posts.add(0, post);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
         // Set adapter
         adapter = new AdapterPosts(posts, getActivity());
 
@@ -98,6 +83,7 @@ public class FollowingFeedFragment extends Fragment {
     public void onStop() {
         super.onStop();
         feedRef.removeEventListener(valueEventListener);
+        posts.clear();
     }
 
     private void getFeed() {
@@ -105,7 +91,7 @@ public class FollowingFeedFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                        posts.add(ds.getValue(Feed.class));
+                    posts.add(ds.getValue(Feed.class));
                 }
                 Collections.reverse(posts);
                 adapter.notifyDataSetChanged();

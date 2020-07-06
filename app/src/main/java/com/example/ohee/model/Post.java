@@ -44,34 +44,7 @@ public class Post implements Serializable {
 
         }
 
-firebase.updateChildren(object);
-//        DatabaseReference postsRef = firebase.child("posts")
-//                .child(universityDomain)
-//                .child(getId());
-//
-//
-//        postsRef.setValue(this);
-    }
-
-    public void updateFeed(DataSnapshot ds) {
-        DatabaseReference firebase = SetFirebase.getFirebaseDatabase();
-        Map object = new HashMap<>();
-        User loggedUser = SetFirebaseUser.getUserData();
-
-        for (DataSnapshot followers : ds.getChildren()) {
-            HashMap<String, Object> dataFollowers = new HashMap<>();
-            dataFollowers.put("path", getPath());
-            dataFollowers.put("caption", getCaption());
-            dataFollowers.put("id", getId());
-            dataFollowers.put("userName", loggedUser.getName());
-            dataFollowers.put("userPic", loggedUser.getPicturePath());
-
-            String id = followers.getKey() + "/" + getId();
-            object.put("/feed/" + id, dataFollowers);
-
-        }
-
-        firebase.updateChildren(object);
+    firebase.updateChildren(object);
     }
 
     public String getIdUser() {
