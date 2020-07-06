@@ -335,5 +335,32 @@ public class VisitProfileActivity extends AppCompatActivity {
         loggedUser.updateInfo();
         selectedUser.updateInfo();
 
+        postsRef.child(selectedUser.getUniversityDomain()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    Post post = ds.getValue(Post.class);
+
+                    HashMap<String, Object> dataFollowers = new HashMap<>();
+                    dataFollowers.put("path", post.getPath());
+                    dataFollowers.put("caption", post.getCaption());
+                    dataFollowers.put("id", post.getId());
+                    dataFollowers.put("userName", selectedUser.getName());
+                    dataFollowers.put("userPic", selectedUser.getPicturePath());
+
+                    if (post.getIdUser().equals(selectedUser.getIdUser())) {
+                        DatabaseReference feed = databaseReference.child("feed").child(idLoggedUSer);
+                        feed.updateChildren(dataFollowers);
+                    }
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
     }
 }

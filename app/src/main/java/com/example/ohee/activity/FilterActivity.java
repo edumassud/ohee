@@ -349,7 +349,7 @@ public class FilterActivity extends AppCompatActivity {
                         loggedUser.setPostCount(loggedUser.getPostCount() + 1);
                         loggedUser.updateInfo();
 
-                        finish();
+                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
                     }
                 });
             }

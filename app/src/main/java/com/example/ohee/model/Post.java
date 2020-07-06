@@ -53,6 +53,27 @@ firebase.updateChildren(object);
 //        postsRef.setValue(this);
     }
 
+    public void updateFeed(DataSnapshot ds) {
+        DatabaseReference firebase = SetFirebase.getFirebaseDatabase();
+        Map object = new HashMap<>();
+        User loggedUser = SetFirebaseUser.getUserData();
+
+        for (DataSnapshot followers : ds.getChildren()) {
+            HashMap<String, Object> dataFollowers = new HashMap<>();
+            dataFollowers.put("path", getPath());
+            dataFollowers.put("caption", getCaption());
+            dataFollowers.put("id", getId());
+            dataFollowers.put("userName", loggedUser.getName());
+            dataFollowers.put("userPic", loggedUser.getPicturePath());
+
+            String id = followers.getKey() + "/" + getId();
+            object.put("/feed/" + id, dataFollowers);
+
+        }
+
+        firebase.updateChildren(object);
+    }
+
     public String getIdUser() {
         return idUser;
     }

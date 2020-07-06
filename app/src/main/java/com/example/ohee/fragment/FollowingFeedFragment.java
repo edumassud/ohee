@@ -28,6 +28,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -64,8 +65,8 @@ public class FollowingFeedFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Feed post = dataSnapshot.getValue(Feed.class);
-                if (post.getPath() != null) {
-                    posts.add(post);
+                if (post != null && post.getPath() != null) {
+                    posts.add(0, post);
                 }
             }
 
@@ -106,6 +107,7 @@ public class FollowingFeedFragment extends Fragment {
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                         posts.add(ds.getValue(Feed.class));
                 }
+                Collections.reverse(posts);
                 adapter.notifyDataSetChanged();
             }
 

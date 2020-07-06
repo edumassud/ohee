@@ -71,7 +71,7 @@ public class SearchActivity extends AppCompatActivity {
             public boolean onQueryTextChange(String newText) {
                 if (viewPager.getCurrentItem() == 0) {
                     UserSearchFragment fragment = (UserSearchFragment) adapter.getPage(0);
-                    if (newText != null && !newText.isEmpty()) {
+                    if (fragment != null && newText != null && !newText.isEmpty()) {
                         fragment.searchUser(newText.toLowerCase());
                     }
                     else {
