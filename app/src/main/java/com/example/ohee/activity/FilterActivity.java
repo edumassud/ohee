@@ -73,6 +73,8 @@ public class FilterActivity extends AppCompatActivity {
 
     private String idLoggedUser = SetFirebaseUser.getUsersId();
 
+    private DataSnapshot ds;
+
     private User loggedUser;
     private String idLoggedUSer;
     private DatabaseReference databaseReference = SetFirebase.getFirebaseDatabase();
@@ -341,7 +343,7 @@ public class FilterActivity extends AppCompatActivity {
                     public void onSuccess(Uri uri) {
                         post.setPath(uri.toString());
 
-                        post.save();
+                        post.save(ds);
 
                         // Increment post count
                         loggedUser.setPostCount(loggedUser.getPostCount() + 1);
@@ -354,29 +356,6 @@ public class FilterActivity extends AppCompatActivity {
         });
     }
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        MenuInflater inflater = getMenuInflater();
-//        inflater.inflate(R.menu.menu_post, menu);
-//        return super.onCreateOptionsMenu(menu);
-//    }
-
-//    @Override
-//    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-//        switch (item.getItemId()) {
-//            case R.id.btPost:
-//                makePost();
-//                break;
-//        }
-//
-//        return super.onOptionsItemSelected(item);
-//    }
-
-//    @Override
-//    public boolean onSupportNavigateUp() {
-//        finish();
-//        return false;
-//    }
 
     private void getLoggedUserData() {
         loggedUserRef = usersRef.child(idLoggedUSer);
@@ -384,6 +363,19 @@ public class FilterActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 loggedUser = dataSnapshot.getValue(User.class);
+
+                DatabaseReference followersRef = databaseReference.child("followers").child(idLoggedUSer);
+                followersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                     ds = dataSnapshot;
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
             }
 
             @Override

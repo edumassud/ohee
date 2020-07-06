@@ -292,6 +292,9 @@ public class VisitProfileActivity extends AppCompatActivity {
         loggedUser.setFollowingCount(loggedUser.getFollowingCount() - 1);
         selectedUser.setFollowerCount(selectedUser.getFollowerCount() - 1);
 
+        loggedUser.changeFollowing(selectedUser.getIdUser(), "remove");
+        selectedUser.changeFollower(loggedUser.getIdUser(), "remove");
+
         loggedUser.updateInfo();
         selectedUser.updateInfo();
 
@@ -302,10 +305,12 @@ public class VisitProfileActivity extends AppCompatActivity {
         HashMap<String, Object> friendsData = new HashMap<>();
         friendsData.put("name", friendsUser.getName());
         friendsData.put("picturePath", friendsUser.getPicturePath());
+        friendsData.put("university", friendsUser.getUniversityName());
 
         HashMap<String, Object> loggedUserData = new HashMap<>();
         loggedUserData.put("name", loggedUser.getName());
         loggedUserData.put("picturePath", loggedUser.getPicturePath());
+        friendsData.put("university", loggedUser.getUniversityName());
 
         DatabaseReference followingNode = followingRef
                 .child(loggedUser.getIdUser())
@@ -323,6 +328,9 @@ public class VisitProfileActivity extends AppCompatActivity {
 
         loggedUser.setFollowingCount(loggedUser.getFollowingCount() + 1);
         selectedUser.setFollowerCount(selectedUser.getFollowerCount() + 1);
+
+        loggedUser.changeFollowing(selectedUser.getIdUser(), "add");
+        selectedUser.changeFollower(loggedUser.getIdUser(), "add");
 
         loggedUser.updateInfo();
         selectedUser.updateInfo();

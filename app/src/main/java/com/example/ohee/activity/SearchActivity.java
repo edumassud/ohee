@@ -75,7 +75,9 @@ public class SearchActivity extends AppCompatActivity {
                         fragment.searchUser(newText.toLowerCase());
                     }
                     else {
-                        fragment.reloadUsers();
+                        if (fragment != null) {
+                            fragment.reloadUsers();
+                        }
                     }
                     return true;
                 } else {

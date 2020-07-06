@@ -11,7 +11,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Exclude;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class User implements Serializable {
@@ -20,6 +22,8 @@ public class User implements Serializable {
     private int postCount = 0;
     private int followerCount = 0;
     private int followingCount = 0;
+    private List<String> following = new ArrayList<>();
+    private List<String> followers = new ArrayList<>();
 
     public User(String name, String email, String password, String universityName, String universityDomain) {
 
@@ -67,6 +71,40 @@ public class User implements Serializable {
         userRef.updateChildren(userValues);
     }
 
+    public void changeFollower(String user, String act) {
+        List<String> followers = this.getFollowers();
+        if (act.equals("add")) {
+            followers.add(user);
+        } else if (act.equals("remove")) {
+            followers.remove(user);
+        }
+        setFollowers(followers);
+        updateLists();
+    }
+
+    public void changeFollowing(String user, String act) {
+        List<String> following = this.getFollowing();
+        if (act.equals("add")) {
+            following.add(user);
+        } else if (act.equals("remove")) {
+            following.remove(user);
+        }
+        setFollowing(following);
+        updateLists();
+    }
+
+    public void updateLists() {
+        DatabaseReference firebaseRef = SetFirebase.getFirebaseDatabase();
+        DatabaseReference userRef = firebaseRef
+                .child("user")
+                .child(getIdUser());
+
+        Map<String, Object> userValues = convertInfoToMap();
+
+        userRef.updateChildren(userValues);
+    }
+
+
     public void updateImg() {
         DatabaseReference firebaseRef = SetFirebase.getFirebaseDatabase();
         DatabaseReference userRef = firebaseRef
@@ -88,6 +126,8 @@ public class User implements Serializable {
         usersMap.put("followerCount", getFollowerCount());
         usersMap.put("status", getStatus());
         usersMap.put("sex", getSex());
+        usersMap.put("followers", getFollowers());
+        usersMap.put("following", getFollowing());
 
         return usersMap;
     }
@@ -221,5 +261,21 @@ public class User implements Serializable {
 
     public void setUniversityDomain(String universityDomain) {
         this.universityDomain = universityDomain;
+    }
+
+    public List<String> getFollowing() {
+        return following;
+    }
+
+    public void setFollowing(List<String> following) {
+        this.following = following;
+    }
+
+    public List<String> getFollowers() {
+        return followers;
+    }
+
+    public void setFollowers(List<String> followers) {
+        this.followers = followers;
     }
 }

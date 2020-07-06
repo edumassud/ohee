@@ -114,7 +114,7 @@ public class UniversityDataFragment extends Fragment {
 
         dataSet = new float[]{dudesPerCent, chicksPerCent, otherPerCent};
         colors = new int[]{R.color.colorPrimary, R.color.colorPink, R.color.other};
-        
+
         pieChart.setDataPoints(dataSet);
         pieChart.setSliceColor(colors);
     }
