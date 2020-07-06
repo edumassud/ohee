@@ -12,9 +12,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.ohee.R;
-import com.example.ohee.adapter.AdapterPosts;
+import com.example.ohee.adapter.AdapterFeedFollowing;
+import com.example.ohee.adapter.AdapterFeedHome;
 import com.example.ohee.helpers.SetFirebase;
 import com.example.ohee.helpers.SetFirebaseUser;
+import com.example.ohee.model.Feed;
 import com.example.ohee.model.Post;
 import com.example.ohee.model.User;
 import com.google.firebase.database.DataSnapshot;
@@ -23,12 +25,24 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class YourUniversityFeedFragment extends Fragment {
+    private RecyclerView recycler;
+    private AdapterFeedHome adapter;
+
+    private List<Post> posts = new ArrayList<>();
+
+    private String loggedUserId = SetFirebaseUser.getUsersId();
+
+    DatabaseReference databaseReference = SetFirebase.getFirebaseDatabase();
+    DatabaseReference userRef = databaseReference.child("user").child(loggedUserId);
+
+    private ValueEventListener valueEventListener;
 
     public YourUniversityFeedFragment() {
         // Required empty public constructor
@@ -41,9 +55,62 @@ public class YourUniversityFeedFragment extends Fragment {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_your_university_feed, container, false);
 
+        recycler = view.findViewById(R.id.recycler);
 
+        // Set adapter
+        adapter = new AdapterFeedHome(posts, getActivity());
+
+        // Set recycler
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        recycler.setLayoutManager(layoutManager);
+        recycler.setHasFixedSize(true);
+        recycler.setAdapter(adapter);
 
         return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        getFeed();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        userRef.removeEventListener(valueEventListener);
+        posts.clear();
+    }
+
+    private void getFeed() {
+        valueEventListener = userRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+                DatabaseReference postsRef = databaseReference.child("posts").child(user.getUniversityDomain());
+                postsRef.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        posts.clear();
+                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                            posts.add(ds.getValue(Post.class));
+                        }
+                        Collections.reverse(posts);
+                        adapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
 }

@@ -364,18 +364,19 @@ public class FilterActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 loggedUser = dataSnapshot.getValue(User.class);
 
-                DatabaseReference followersRef = databaseReference.child("followers").child(idLoggedUSer);
-                followersRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                     ds = dataSnapshot;
-                    }
+                    DatabaseReference followersRef = databaseReference.child("followers").child(idLoggedUSer);
+                    followersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            ds = dataSnapshot;
+                        }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                    }
-                });
+                        }
+                    });
+
             }
 
             @Override

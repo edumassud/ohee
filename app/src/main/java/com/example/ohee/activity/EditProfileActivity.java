@@ -332,39 +332,4 @@ public class EditProfileActivity extends AppCompatActivity {
         Toast.makeText(this, "Picture succesfully updated", Toast.LENGTH_SHORT).show();
     }
 
-//    private void updateUniversityData() {
-//
-//        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                User user = dataSnapshot.getValue(User.class);
-//                DatabaseReference databaseReference = SetFirebase.getFirebaseDatabase();
-//                DatabaseReference universityRef = databaseReference.child("universities").child(user.getUniversityDomain());
-//
-//                universityRef.addListenerForSingleValueEvent(new ValueEventListener() {
-//                    @Override
-//                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                            University university = dataSnapshot.getValue(University.class);
-//                            for (int i = 0; i <= university.getStudents().size() - 1; i++) {
-//                                if (university.getStudents().get(i).equals(user.getIdUser())) {
-//                                    university.updateUser(user, i);
-//                                }
-//                            }
-//
-//                    }
-//
-//                    @Override
-//                    public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//                    }
-//                });
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        });
-//    }
-
 }

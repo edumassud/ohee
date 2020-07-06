@@ -14,8 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.ohee.R;
-import com.example.ohee.activity.VisitProfileActivity;
 import com.example.ohee.helpers.SetFirebase;
+import com.example.ohee.helpers.SetFirebaseUser;
 import com.example.ohee.model.Feed;
 import com.example.ohee.model.Post;
 import com.example.ohee.model.User;
@@ -29,11 +29,11 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyViewHolder> {
-    private List<Feed> posts;
+public class AdapterFeedHome extends RecyclerView.Adapter<AdapterFeedHome.MyViewHolder> {
+    private List<Post> posts;
     private Context context;
 
-    public AdapterPosts(List<Feed> posts, Context context) {
+    public AdapterFeedHome(List<Post> posts, Context context) {
         this.posts = posts;
         this.context = context;
     }
@@ -47,24 +47,38 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        Feed feed = posts.get(position);
+        Post post = posts.get(position);
 
-        if (feed != null) {
+        if (post != null) {
 
-            // Set imgs info
-            if (feed.getuserPic() != null) {
-                Uri urlProfile = Uri.parse(feed.getuserPic());
-                Glide.with(context).load(urlProfile).into(holder.imgProfile);
-            }
-            if (feed.getPath() != null) {
-                Uri urlPost = Uri.parse(feed.getPath());
-                Glide.with(context).load(urlPost).into(holder.imgPost);
+            // Set post info
+            if (post.getPath() != null) {
+                Uri urlProfile = Uri.parse(post.getPath());
+                Glide.with(context).load(urlProfile).into(holder.imgPost);
             }
 
-            // Set txts
-            holder.txtCaption.setText(feed.getCaption());
-            holder.txtName.setText(feed.getUserName());
-            holder.txtNameCap.setText(feed.getUserName());
+            holder.txtCaption.setText(post.getCaption());
+
+            DatabaseReference databaseReference = SetFirebase.getFirebaseDatabase();
+            DatabaseReference userRef = databaseReference.child("user").child(post.getIdUser());
+
+            userRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    User user = dataSnapshot.getValue(User.class);
+                    if (user.getPicturePath() != null) {
+                        Uri urlPost = Uri.parse(user.getPicturePath());
+                        Glide.with(context).load(urlPost).into(holder.imgProfile);
+                     }
+                    holder.txtName.setText(user.getName());
+                    holder.txtNameCap.setText(user.getName());
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
         }
     }
 

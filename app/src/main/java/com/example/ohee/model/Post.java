@@ -1,9 +1,15 @@
 package com.example.ohee.model;
 
+import android.provider.ContactsContract;
+
+import androidx.annotation.NonNull;
+
 import com.example.ohee.helpers.SetFirebase;
 import com.example.ohee.helpers.SetFirebaseUser;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -40,11 +46,10 @@ public class Post implements Serializable {
             dataFollowers.put("userPic", loggedUser.getPicturePath());
 
             String id = followers.getKey() + "/" + getId();
-            object.put("/feed/" + id, dataFollowers);
-
+            object.put("/feedFollowing/" + id, dataFollowers);
         }
 
-    firebase.updateChildren(object);
+        firebase.updateChildren(object);
     }
 
     public String getIdUser() {
