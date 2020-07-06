@@ -13,8 +13,10 @@ import android.widget.GridView;
 import com.example.ohee.R;
 import com.example.ohee.adapter.AdapterGrid;
 import com.example.ohee.helpers.SetFirebase;
+import com.example.ohee.helpers.SetFirebaseUser;
 import com.example.ohee.model.Post;
 import com.example.ohee.model.University;
+import com.example.ohee.model.User;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -38,6 +40,7 @@ public class UniversityGridFragment extends Fragment {
 
     DatabaseReference databaseReference = SetFirebase.getFirebaseDatabase();
     DatabaseReference postsRef = databaseReference.child("posts");
+    DatabaseReference userRef = databaseReference.child("user").child(SetFirebaseUser.getUsersId());
 
 
     public UniversityGridFragment() {
@@ -83,21 +86,37 @@ public class UniversityGridFragment extends Fragment {
 
         DatabaseReference thisUniversitysPosts = postsRef.child(university.getDomain());
 
-        thisUniversitysPosts.addListenerForSingleValueEvent(new ValueEventListener() {
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                List<String> urls = new ArrayList<>();
-                for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    Post post = ds.getValue(Post.class);
-                    urls.add(post.getPath());
-                }
+                User user = dataSnapshot.getValue(User.class);
+                thisUniversitysPosts.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        List<String> urls = new ArrayList<>();
+                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                            Post post = ds.getValue(Post.class);
+                            if (post.getType().equals("public")
+                                    || (post.getType().equals("home") && user.getUniversityDomain().equals(post.getUniversityDomain()))
+                            || (post.getType().equals("private") && user.getFollowing().contains(post.getIdUser()))) {
+                                urls.add(post.getPath());
+                            }
 
-                // Set adapter
-                adapter = new AdapterGrid(getActivity(), R.layout.grid_post, urls);
+                        }
 
-                // Set gridView
-                grid.setAdapter(adapter);
+                        // Set adapter
+                        adapter = new AdapterGrid(getActivity(), R.layout.grid_post, urls);
 
+                        // Set gridView
+                        grid.setAdapter(adapter);
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
             }
 
             @Override
@@ -105,6 +124,8 @@ public class UniversityGridFragment extends Fragment {
 
             }
         });
+
+
     }
 
     private void getPosts(String id) {

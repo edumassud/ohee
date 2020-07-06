@@ -46,6 +46,7 @@ public class VisitProfileActivity extends AppCompatActivity {
 
     private DatabaseReference databaseReference = SetFirebase.getFirebaseDatabase();
     private DatabaseReference usersRef          = databaseReference.child("user");
+    private DatabaseReference userRef          = databaseReference.child("user").child(SetFirebaseUser.getUsersId());
     private DatabaseReference followingRef      = databaseReference.child("following");
     private DatabaseReference followerRef       = databaseReference.child("followers");
     private DatabaseReference postsRef          = databaseReference.child("posts");
@@ -193,24 +194,37 @@ public class VisitProfileActivity extends AppCompatActivity {
         int sizeImg = sizeGrid / 3;
         gridView.setColumnWidth(sizeImg);
 
-        usersUniversitysPosts.addListenerForSingleValueEvent(new ValueEventListener() {
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                List<String> urls = new ArrayList<>();
-                for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    Post post = ds.getValue(Post.class);
-                    if (post.getIdUser().equals(selectedUser.getIdUser())) {
-                        posts.add(post);
-                        urls.add(post.getPath());
+                User user = dataSnapshot.getValue(User.class);
+                usersUniversitysPosts.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        List<String> urls = new ArrayList<>();
+                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                            Post post = ds.getValue(Post.class);
+                            if (post.getIdUser().equals(selectedUser.getIdUser()) && (post.getType().equals("public")
+                                    || (post.getType().equals("home") && user.getUniversityDomain().equals(post.getUniversityDomain()))
+                                    || (post.getType().equals("private") && user.getFollowing().contains(post.getIdUser())))) {
+                                posts.add(post);
+                                urls.add(post.getPath());
+                            }
+                        }
+
+                        // Set adapter
+                        adapter = new AdapterGrid(getApplicationContext(), R.layout.grid_post, urls);
+
+                        // Set gridView
+                        gridView.setAdapter(adapter);
+
                     }
-                }
 
-                // Set adapter
-                adapter = new AdapterGrid(getApplicationContext(), R.layout.grid_post, urls);
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                // Set gridView
-                gridView.setAdapter(adapter);
-
+                    }
+                });
             }
 
             @Override
@@ -218,6 +232,8 @@ public class VisitProfileActivity extends AppCompatActivity {
 
             }
         });
+
+
     }
 
     private void getLoggedUserData() {
