@@ -21,6 +21,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -63,8 +64,9 @@ public class FilterActivity extends AppCompatActivity {
     private Bitmap imgFilter;
     private RecyclerView recyclerFilters;
     private TextInputEditText txtCaption;
-    private Button btPrivate, btHome, btPublic, btPost, btPickImg;
+    private Button btPrivate, btHome, btPublic, btPost, btPickImg, btInclusive, btExclusive;
     private TextView txtInfo;
+    private LinearLayout extraOpts;
     private ProgressBar progressBar, progressBar1;
 
     private String type = "public";
@@ -103,17 +105,11 @@ public class FilterActivity extends AppCompatActivity {
         progressBar1        = findViewById(R.id.progressBar1);
         progressBar         = findViewById(R.id.progressBar);
         btPickImg           = findViewById(R.id.btPickImage);
+        btInclusive         = findViewById(R.id.btInclusive);
+        btExclusive         = findViewById(R.id.btExclusive);
+        extraOpts           = findViewById(R.id.extraOpts);
 
         idLoggedUSer = SetFirebaseUser.getUsersId();
-
-        // Getting the img
-//        Bundle bundle = getIntent().getExtras();
-//        if (bundle != null) {
-//            byte[] imgData = bundle.getByteArray("selectedPic");
-//            imgOriginal = BitmapFactory.decodeByteArray(imgData, 0, imgData.length);
-//            imgSelected.setImageBitmap(imgOriginal);
-//
-//            imgFilter = imgOriginal.copy(imgOriginal.getConfig(), true);
 
         btPickImg.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -244,6 +240,8 @@ public class FilterActivity extends AppCompatActivity {
                 btHome.setBackgroundResource(R.drawable.button_background);
                 btPublic.setBackgroundResource(R.drawable.button_background);
 
+                extraOpts.setVisibility(View.GONE);
+
                 type = "private";
 
                 txtInfo.setText("Only people following you can see this post.");
@@ -257,9 +255,24 @@ public class FilterActivity extends AppCompatActivity {
                 btPrivate.setBackgroundResource(R.drawable.button_background);
                 btPublic.setBackgroundResource(R.drawable.button_background);
 
-                type = "home";
+                extraOpts.setVisibility(View.VISIBLE);
 
-                txtInfo.setText("Only students from your  can see this post.");
+                type = "homeInclusive";
+
+                usersRef.child(SetFirebaseUser.getUsersId()).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        User user = dataSnapshot.getValue(User.class);
+                        txtInfo.setText("Students from " + user.getUniversityName() + " and your followers can see this post.");
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+                makeHomeChoice();
             }
         });
 
@@ -269,6 +282,8 @@ public class FilterActivity extends AppCompatActivity {
                 btPublic.setBackgroundResource(R.drawable.bg_message_balloon);
                 btHome.setBackgroundResource(R.drawable.button_background);
                 btPrivate.setBackgroundResource(R.drawable.button_background);
+
+                extraOpts.setVisibility(View.GONE);
 
                 type = "public";
 
@@ -280,6 +295,54 @@ public class FilterActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 finish();
+            }
+        });
+    }
+
+    private void makeHomeChoice() {
+        btInclusive.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                btInclusive.setBackgroundResource(R.drawable.bg_message_balloon);
+                btExclusive.setBackgroundResource(R.drawable.button_background);
+
+                type = "homeInclusive";
+
+                usersRef.child(SetFirebaseUser.getUsersId()).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        User user = dataSnapshot.getValue(User.class);
+                        txtInfo.setText("Students from " + user.getUniversityName() + " and your followers can see this post.");
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+            }
+        });
+
+        btExclusive.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                btExclusive.setBackgroundResource(R.drawable.bg_message_balloon);
+                btInclusive.setBackgroundResource(R.drawable.button_background);
+
+                type = "homeExclusive";
+
+                usersRef.child(SetFirebaseUser.getUsersId()).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        User user = dataSnapshot.getValue(User.class);
+                        txtInfo.setText("Only students from " + user.getUniversityName() + " can see this post.");
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
             }
         });
     }

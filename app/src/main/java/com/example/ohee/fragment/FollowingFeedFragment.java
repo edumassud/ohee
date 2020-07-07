@@ -16,6 +16,7 @@ import com.example.ohee.adapter.AdapterFeedFollowing;
 import com.example.ohee.helpers.SetFirebase;
 import com.example.ohee.helpers.SetFirebaseUser;
 import com.example.ohee.model.FeedFollowing;
+import com.example.ohee.model.User;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -38,6 +39,7 @@ public class FollowingFeedFragment extends Fragment {
 
     DatabaseReference databaseReference = SetFirebase.getFirebaseDatabase();
     DatabaseReference feedRef = databaseReference.child("feedFollowing").child(loggedUserId);
+    DatabaseReference userRef = databaseReference.child("user").child(loggedUserId);
 
     private ValueEventListener valueEventListener;
 
@@ -75,20 +77,37 @@ public class FollowingFeedFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
-        feedRef.removeEventListener(valueEventListener);
-        posts.clear();
+        if (valueEventListener != null) {
+            feedRef.removeEventListener(valueEventListener);
+        }
+
     }
 
     private void getFeed() {
-        valueEventListener = feedRef.addValueEventListener(new ValueEventListener() {
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                posts.clear();
-                for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    posts.add(ds.getValue(FeedFollowing.class));
-                }
-                Collections.reverse(posts);
-                adapter.notifyDataSetChanged();
+                User user = dataSnapshot.getValue(User.class);
+                valueEventListener = feedRef.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        posts.clear();
+                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                            FeedFollowing post = ds.getValue(FeedFollowing.class);
+                            boolean dontAdd = post.getType().equals("homeExclusive") && !user.getUniversityDomain().equals(post.getDomain());
+                            if (!dontAdd) {
+                                posts.add(ds.getValue(FeedFollowing.class));
+                            }
+                        }
+                        Collections.reverse(posts);
+                        adapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
             }
 
             @Override

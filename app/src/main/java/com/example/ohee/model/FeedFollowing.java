@@ -1,7 +1,7 @@
 package com.example.ohee.model;
 
 public class FeedFollowing {
-    private String id, path, caption, userName, userPic;
+    private String id, path, caption, userName, userPic, type, domain;
 
     public FeedFollowing() {
     }
@@ -44,5 +44,21 @@ public class FeedFollowing {
 
     public void setuserPic(String userPic) {
         this.userPic = userPic;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getDomain() {
+        return domain;
+    }
+
+    public void setDomain(String domain) {
+        this.domain = domain;
     }
 }

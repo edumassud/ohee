@@ -96,7 +96,10 @@ public class ExploreUsersFragment extends Fragment {
                         posts.clear();
                         for (DataSnapshot ds : dataSnapshot.getChildren()) {
                             FeedExplore post = ds.getValue(FeedExplore.class);
-                            if (!user.getFollowing().contains(post.getIdUser()) && !user.getUniversityDomain().equals(post.getUserDomain()) && !user.getIdUser().equals(post.getIdUser())) {
+                            boolean dontFollow = !user.getFollowing().contains(post.getIdUser());
+                            boolean differentUniversities = !user.getUniversityDomain().equals(post.getUserDomain());
+                            boolean notMe = !user.getIdUser().equals(post.getIdUser());
+                            if (dontFollow && differentUniversities && notMe) {
                                 posts.add(post);
                             }
 

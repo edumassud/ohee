@@ -171,7 +171,6 @@ public class EditProfileActivity extends AppCompatActivity {
                 loggedUser.setStatus(status);
                 loggedUser.setSex(sex);
                 loggedUser.updatePersonalInfo();
-                //updateUniversityData();
                 finish();
             }
         });

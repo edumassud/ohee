@@ -96,9 +96,13 @@ public class UniversityGridFragment extends Fragment {
                         List<String> urls = new ArrayList<>();
                         for (DataSnapshot ds : dataSnapshot.getChildren()) {
                             Post post = ds.getValue(Post.class);
-                            if (post.getType().equals("public")
-                                    || (post.getType().equals("home") && user.getUniversityDomain().equals(post.getUniversityDomain()))
-                            || (post.getType().equals("private") && user.getFollowing().contains(post.getIdUser()))) {
+
+                            boolean isPublic = post.getType().equals("public");
+                            boolean sameSchoolFriend = user.getFollowing().contains(post.getIdUser()) && post.getUniversityDomain().equals(user.getUniversityDomain());
+                            boolean sameSchool = user.getUniversityDomain().equals(post.getUniversityDomain()) && !post.getType().equals("private");
+                            boolean isFriend = user.getFollowing().contains(post.getIdUser()) && !post.getType().equals("homeExclusive");
+
+                            if (isPublic || sameSchoolFriend || sameSchool || isFriend) {
                                 urls.add(post.getPath());
                             }
 

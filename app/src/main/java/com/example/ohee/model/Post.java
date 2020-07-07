@@ -42,6 +42,8 @@ public class Post implements Serializable {
             dataFollowers.put("path", getPath());
             dataFollowers.put("caption", getCaption());
             dataFollowers.put("id", getId());
+            dataFollowers.put("type", getType());
+            dataFollowers.put("domain", getUniversityDomain());
             dataFollowers.put("userName", loggedUser.getName());
             dataFollowers.put("userPic", loggedUser.getPicturePath());
 
@@ -55,9 +57,9 @@ public class Post implements Serializable {
             dataPost.put("caption", getCaption());
             dataPost.put("id", getId());
             dataPost.put("idUser", getIdUser());
+            dataPost.put("userDomain", getUniversityDomain());
             dataPost.put("userName", loggedUser.getName());
             dataPost.put("userPic", loggedUser.getPicturePath());
-            dataPost.put("userDomain", loggedUser.getUniversityDomain());
 
             object.put("/feedExplore/" + getId(), dataPost);
         }
