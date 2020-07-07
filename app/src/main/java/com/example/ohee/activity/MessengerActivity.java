@@ -37,7 +37,7 @@ public class MessengerActivity extends AppCompatActivity {
                 getSupportFragmentManager(),
                 FragmentPagerItems.with(this)
                         .add("Chats", ChatsFragment.class)
-                        .add("Contacts", ContactsFragment.class)
+                        .add("Friends", ContactsFragment.class)
                         .create());
         final ViewPager viewPager = findViewById(R.id.viewPager);
         viewPager.setAdapter(adapter);

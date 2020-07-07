@@ -37,6 +37,7 @@ public class ContactsFragment extends Fragment {
     private ContactsAdapter adapter;
     private ArrayList<User> listaContatos = new ArrayList<>();
     private DatabaseReference usuariosRef;
+    private DatabaseReference usuarioRef;
     private ValueEventListener valueEventListenerContatos;
     private FirebaseUser usuarioAtual;
 
@@ -52,6 +53,7 @@ public class ContactsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_contatos, container, false);
 
         usuariosRef = SetFirebase.getFirebaseDatabase().child("user");
+        usuarioRef  = SetFirebase.getFirebaseDatabase().child("user").child(SetFirebaseUser.getUsersId());
         recyclerViewListaContatos = view.findViewById(R.id.recyclerViewListaConversas);
         usuarioAtual = SetFirebaseUser.getUser();
 
@@ -117,18 +119,31 @@ public class ContactsFragment extends Fragment {
     }
 
     public void recuperarContatos() {
-        valueEventListenerContatos = usuariosRef.addValueEventListener(new ValueEventListener() {
+        usuarioRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                limparListaContatos();
-                for (DataSnapshot dados : dataSnapshot.getChildren()) {
-                    User usuario = dados.getValue(User.class);
-                    if (!usuario.getEmail().equals(usuarioAtual.getEmail())) {
-                        listaContatos.add(usuario);
+                User user = dataSnapshot.getValue(User.class);
+                valueEventListenerContatos = usuariosRef.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        limparListaContatos();
+                        for (DataSnapshot dados : dataSnapshot.getChildren()) {
+                            User usuario = dados.getValue(User.class);
+                            boolean notMe = !usuario.getEmail().equals(usuarioAtual.getEmail());
+                            boolean myFriend = user.getFollowing().contains(usuario.getIdUser());
+                            if (notMe && myFriend) {
+                                listaContatos.add(usuario);
+                            }
+
+                        }
+                        adapter.notifyDataSetChanged();
                     }
 
-                }
-                adapter.notifyDataSetChanged();
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
             }
 
             @Override

@@ -29,15 +29,33 @@
                 android:layout_weight="1"
                 android:src="@drawable/avatar" />
 
-            <TextView
-                android:id="@+id/txtUserName"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_weight="15"
-                android:text="Username"
-                android:textColor="@android:color/white"
-                android:textSize="18sp" />
+                android:orientation="vertical"
+                android:layout_weight="15" >
+
+                <TextView
+                    android:id="@+id/txtUserName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:text="Username"
+                    android:textColor="@android:color/white"
+                    android:textSize="18sp" />
+                <TextView
+                    android:id="@+id/txtUniversity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:text="Username"
+                    android:visibility="gone"
+                    android:textColor="@android:color/darker_gray"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+
         </LinearLayout>
 
         <com.example.ohee.helpers.SquareImgView

@@ -46,7 +46,6 @@ public class VisitProfileActivity extends AppCompatActivity {
 
     private DatabaseReference databaseReference = SetFirebase.getFirebaseDatabase();
     private DatabaseReference usersRef          = databaseReference.child("user");
-    private DatabaseReference userRef          = databaseReference.child("user").child(SetFirebaseUser.getUsersId());
     private DatabaseReference followingRef      = databaseReference.child("following");
     private DatabaseReference followerRef       = databaseReference.child("followers");
     private DatabaseReference postsRef          = databaseReference.child("posts");
@@ -194,10 +193,12 @@ public class VisitProfileActivity extends AppCompatActivity {
         int sizeImg = sizeGrid / 3;
         gridView.setColumnWidth(sizeImg);
 
+        DatabaseReference userRef = databaseReference.child("user").child(SetFirebaseUser.getUsersId());
+
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                User user = dataSnapshot.getValue(User.class);
+                User loggedUser = dataSnapshot.getValue(User.class);
                 usersUniversitysPosts.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -205,12 +206,13 @@ public class VisitProfileActivity extends AppCompatActivity {
                         for (DataSnapshot ds : dataSnapshot.getChildren()) {
                             Post post = ds.getValue(Post.class);
 
+                            boolean usersPost = post.getIdUser().equals(selectedUser.getIdUser());
                             boolean isPublic = post.getType().equals("public");
-                            boolean sameSchoolFriend = user.getFollowing().contains(post.getIdUser()) && post.getUniversityDomain().equals(user.getUniversityDomain());
-                            boolean sameSchool = user.getUniversityDomain().equals(post.getUniversityDomain()) && !post.getType().equals("private");
-                            boolean isFriend = user.getFollowing().contains(post.getIdUser()) && !post.getType().equals("homeExclusive");
+                            boolean sameSchoolFriend = loggedUser.getFollowing().contains(post.getIdUser()) && post.getUniversityDomain().equals(loggedUser.getUniversityDomain());
+                            boolean sameSchool = loggedUser.getUniversityDomain().equals(post.getUniversityDomain()) && !post.getType().equals("private");
+                            boolean isFriend = loggedUser.getFollowing().contains(post.getIdUser()) && !post.getType().equals("homeExclusive");
 
-                            if (isPublic || sameSchoolFriend || sameSchool || isFriend) {
+                            if (usersPost && (isPublic || sameSchoolFriend || sameSchool || isFriend)) {
                                 posts.add(post);
                                 urls.add(post.getPath());
                             }

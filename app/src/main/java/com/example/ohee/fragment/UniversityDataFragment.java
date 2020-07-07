@@ -82,10 +82,16 @@ public class UniversityDataFragment extends Fragment {
                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
                        User user = ds.getValue(User.class);
-                       if (user.getSex().equals("male")) {dudesCount = dudesCount + 1;}
-                       else if (user.getSex().equals("female")) {chicksCount = chicksCount + 1;}
-                       else if (user.getSex().equals("other")) {otherCount++;}
-                       setUsersData();
+                       if (user.getSex() != null) {
+                           if (user.getSex().equals("male")) {
+                               dudesCount = dudesCount + 1;
+                           } else if (user.getSex().equals("female")) {
+                               chicksCount = chicksCount + 1;
+                           } else if (user.getSex().equals("other")) {
+                               otherCount++;
+                           }
+                           setUsersData();
+                       }
                    }
                }
 

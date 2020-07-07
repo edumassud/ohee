@@ -96,13 +96,13 @@ public class AdapterFeedHome extends RecyclerView.Adapter<AdapterFeedHome.MyView
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            imgProfile  = itemView.findViewById(R.id.imgUser);
-            imgPost     = itemView.findViewById(R.id.imgPost);
-            txtName     = itemView.findViewById(R.id.txtUserName);
-            txtNameCap  = itemView.findViewById(R.id.txtNamCap);
-            txtCaption  = itemView.findViewById(R.id.txtCaption);
-            btLike      = itemView.findViewById(R.id.btLike);
-            linear      = itemView.findViewById(R.id.linear);
+            imgProfile      = itemView.findViewById(R.id.imgUser);
+            imgPost         = itemView.findViewById(R.id.imgPost);
+            txtName         = itemView.findViewById(R.id.txtUserName);
+            txtNameCap      = itemView.findViewById(R.id.txtNamCap);
+            txtCaption      = itemView.findViewById(R.id.txtCaption);
+            btLike          = itemView.findViewById(R.id.btLike);
+            linear          = itemView.findViewById(R.id.linear);
         }
     }
 }

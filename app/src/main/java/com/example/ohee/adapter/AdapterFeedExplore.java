@@ -14,8 +14,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.ohee.R;
+import com.example.ohee.helpers.SetFirebase;
+import com.example.ohee.helpers.SetFirebaseUser;
 import com.example.ohee.model.FeedExplore;
 import com.example.ohee.model.FeedFollowing;
+import com.example.ohee.model.User;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 import com.like.LikeButton;
 
 import java.util.List;
@@ -56,8 +63,27 @@ public class AdapterFeedExplore extends RecyclerView.Adapter<AdapterFeedExplore.
 
             // Set txts
             holder.txtCaption.setText(feed.getCaption());
-            holder.txtName.setText(feed.getUserName());
             holder.txtNameCap.setText(feed.getUserName());
+            holder.txtName.setText(feed.getUserName());
+
+            // Set university
+            DatabaseReference userRef = SetFirebase.getFirebaseDatabase()
+                    .child("user")
+                    .child(feed.getIdUser());
+            userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    User user = dataSnapshot.getValue(User.class);
+                    holder.txtUniversity.setVisibility(View.VISIBLE);
+                    holder.txtUniversity.setText(user.getUniversityName());
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+
         }
     }
 
@@ -70,20 +96,21 @@ public class AdapterFeedExplore extends RecyclerView.Adapter<AdapterFeedExplore.
     public class MyViewHolder extends RecyclerView.ViewHolder {
         private CircleImageView imgProfile;
         private ImageView imgPost;
-        private TextView txtName, txtNameCap, txtCaption;
+        private TextView txtName, txtNameCap, txtCaption, txtUniversity;
         private LikeButton btLike;
         private LinearLayout linear;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            imgProfile  = itemView.findViewById(R.id.imgUser);
-            imgPost     = itemView.findViewById(R.id.imgPost);
-            txtName     = itemView.findViewById(R.id.txtUserName);
-            txtNameCap  = itemView.findViewById(R.id.txtNamCap);
-            txtCaption  = itemView.findViewById(R.id.txtCaption);
-            btLike      = itemView.findViewById(R.id.btLike);
-            linear      = itemView.findViewById(R.id.linear);
+            imgProfile      = itemView.findViewById(R.id.imgUser);
+            imgPost         = itemView.findViewById(R.id.imgPost);
+            txtName         = itemView.findViewById(R.id.txtUserName);
+            txtNameCap      = itemView.findViewById(R.id.txtNamCap);
+            txtCaption      = itemView.findViewById(R.id.txtCaption);
+            txtUniversity   = itemView.findViewById(R.id.txtUniversity);
+            btLike          = itemView.findViewById(R.id.btLike);
+            linear          = itemView.findViewById(R.id.linear);
         }
     }
 }

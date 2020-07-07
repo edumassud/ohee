@@ -89,19 +89,30 @@ public class StatutsDistFragment extends Fragment {
                     for (DataSnapshot ds : dataSnapshot.getChildren()) {
                         User user = ds.getValue(User.class);
 
-                        switch (user.getStatus()) {
-                            case "single" :
-                                if (user.getSex().equals("male")) {dudesSingle++;}
-                                else if (user.getSex().equals("female")) {girlsSingle++;}
-                                break;
-                            case "complicated" :
-                                if (user.getSex().equals("male")) {dudesComplicated++;}
-                                else if (user.getSex().equals("female")) {girlsComplicated++;}
-                                break;
-                            case "taken" :
-                                if (user.getSex().equals("male")) {dudesTaken++;}
-                                else if (user.getSex().equals("female")) {girlsTaken++;}
-                                break;
+                        if (user.getStatus() != null) {
+                            switch (user.getStatus()) {
+                                case "single":
+                                    if (user.getSex().equals("male")) {
+                                        dudesSingle++;
+                                    } else if (user.getSex().equals("female")) {
+                                        girlsSingle++;
+                                    }
+                                    break;
+                                case "complicated":
+                                    if (user.getSex().equals("male")) {
+                                        dudesComplicated++;
+                                    } else if (user.getSex().equals("female")) {
+                                        girlsComplicated++;
+                                    }
+                                    break;
+                                case "taken":
+                                    if (user.getSex().equals("male")) {
+                                        dudesTaken++;
+                                    } else if (user.getSex().equals("female")) {
+                                        girlsTaken++;
+                                    }
+                                    break;
+                            }
                         }
 
                     }
