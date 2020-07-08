@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,6 +33,7 @@ import java.util.List;
 public class YourUniversityFeedFragment extends Fragment {
     private RecyclerView recycler;
     private AdapterFeedHome adapter;
+    private SwipeRefreshLayout swipeRefresh;
 
     private List<Post> posts = new ArrayList<>();
 
@@ -41,6 +43,7 @@ public class YourUniversityFeedFragment extends Fragment {
     DatabaseReference userRef = databaseReference.child("user").child(loggedUserId);
 
     private ValueEventListener valueEventListener;
+
 
     public YourUniversityFeedFragment() {
         // Required empty public constructor
@@ -53,7 +56,8 @@ public class YourUniversityFeedFragment extends Fragment {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_your_university_feed, container, false);
 
-        recycler = view.findViewById(R.id.recycler);
+        recycler        = view.findViewById(R.id.recycler);
+        swipeRefresh    = view.findViewById(R.id.refresh);
 
         // Set adapter
         adapter = new AdapterFeedHome(posts, getActivity());
@@ -63,6 +67,14 @@ public class YourUniversityFeedFragment extends Fragment {
         recycler.setLayoutManager(layoutManager);
         recycler.setHasFixedSize(true);
         recycler.setAdapter(adapter);
+
+
+        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getFeed();
+            }
+        });
 
         return view;
     }
@@ -86,19 +98,20 @@ public class YourUniversityFeedFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
                 DatabaseReference postsRef = databaseReference.child("posts").child(user.getUniversityDomain());
-                postsRef.addValueEventListener(new ValueEventListener() {
+                postsRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         posts.clear();
                         for (DataSnapshot ds : dataSnapshot.getChildren()) {
                             Post post = ds.getValue(Post.class);
                             if (!post.getType().equals("private")) {
-                                posts.add(post);
+                                posts.add(posts.size(), post);
                             }
 
                         }
                         Collections.reverse(posts);
                         adapter.notifyDataSetChanged();
+                        swipeRefresh.setRefreshing(false);
                     }
 
                     @Override

@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,10 +33,9 @@ import java.util.List;
  */
 public class FollowingFeedFragment extends Fragment {
     private RecyclerView recycler;
-//    private AdapterFeedFollowing adapter;
     private AdapterFeedHome adapter;
+    private SwipeRefreshLayout swipeRefresh;
 
-//    private List<FeedFollowing> posts = new ArrayList<>();
     private List<Post> posts = new ArrayList<>();
     private List<String> universities = new ArrayList<>();
 
@@ -47,8 +47,6 @@ public class FollowingFeedFragment extends Fragment {
     DatabaseReference universitiesRef = databaseReference.child("universities");
     DatabaseReference postsRef = databaseReference.child("posts");
 
-    private ValueEventListener valueEventListener;
-
     public FollowingFeedFragment() {
         // Required empty public constructor
     }
@@ -58,9 +56,10 @@ public class FollowingFeedFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_following_feed, container, false);
+        View view = inflater.inflate(R.layout.fragment_your_university_feed, container, false);
 
-        recycler = view.findViewById(R.id.recycler);
+        recycler        = view.findViewById(R.id.recycler);
+        swipeRefresh    = view.findViewById(R.id.refresh);
 
         // Set adapter
         adapter = new AdapterFeedHome(posts, getActivity());
@@ -71,57 +70,27 @@ public class FollowingFeedFragment extends Fragment {
         recycler.setHasFixedSize(true);
         recycler.setAdapter(adapter);
 
+        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getFeed();
+            }
+        });
+
         return view;
     }
 
+
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onResume() {
+        super.onResume();
         getFeed();
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-
-    }
-
-//    private void getFeed() {
-//        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                User user = dataSnapshot.getValue(User.class);
-//                valueEventListener = feedRef.addValueEventListener(new ValueEventListener() {
-//                    @Override
-//                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                        posts.clear();
-//                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
-//                            FeedFollowing post = ds.getValue(FeedFollowing.class);
-//                            boolean dontAdd = post.getType().equals("homeExclusive") && !user.getUniversityDomain().equals(post.getDomain());
-//                            if (!dontAdd) {
-//                                posts.add(ds.getValue(FeedFollowing.class));
-//                            }
-//                        }
-//                        Collections.reverse(posts);
-//                        adapter.notifyDataSetChanged();
-//                    }
-//
-//                    @Override
-//                    public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//                    }
-//                });
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        });
-//    }
-
     private void getFeed() {
-        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        universities.clear();
+        posts.clear();
+         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 User loggedUser = dataSnapshot.getValue(User.class);
@@ -132,10 +101,9 @@ public class FollowingFeedFragment extends Fragment {
                             University university = ds.getValue(University.class);
                             universities.add(university.getDomain());
                         }
-
                         for (int i = 0; i < universities.size(); i++) {
                             DatabaseReference postUniref = postsRef.child(universities.get(i));
-                            postUniref.addValueEventListener(new ValueEventListener() {
+                            postUniref.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     for (DataSnapshot ds : dataSnapshot.getChildren()) {
@@ -146,8 +114,10 @@ public class FollowingFeedFragment extends Fragment {
                                             posts.add(post);
                                         }
                                     }
+
                                     Collections.reverse(posts);
                                     adapter.notifyDataSetChanged();
+                                    swipeRefresh.setRefreshing(false);
                                 }
 
                                 @Override

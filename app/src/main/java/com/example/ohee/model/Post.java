@@ -33,39 +33,11 @@ public class Post implements Serializable {
     public void save(DataSnapshot ds) {
         DatabaseReference firebase = SetFirebase.getFirebaseDatabase();
         Map object = new HashMap<>();
-        User loggedUser = SetFirebaseUser.getUserData();
 
         firebase.child("posts").child(getUniversityDomain());
 
         String fullId = "/" + getUniversityDomain() + "/" + getId();
         object.put("/posts" + fullId, this);
-
-//        for (DataSnapshot followers : ds.getChildren()) {
-//            HashMap<String, Object> dataFollowers = new HashMap<>();
-//            dataFollowers.put("path", getPath());
-//            dataFollowers.put("caption", getCaption());
-//            dataFollowers.put("id", getId());
-//            dataFollowers.put("type", getType());
-//            dataFollowers.put("domain", getUniversityDomain());
-//            dataFollowers.put("userName", loggedUser.getName());
-//            dataFollowers.put("userPic", loggedUser.getPicturePath());
-//
-//            String id = followers.getKey() + "/" + getId();
-//            object.put("/feedFollowing/" + id, dataFollowers);
-//        }
-//
-//        if (getType().equals("public")) {
-//            HashMap<String, Object> dataPost = new HashMap<>();
-//            dataPost.put("path", getPath());
-//            dataPost.put("caption", getCaption());
-//            dataPost.put("id", getId());
-//            dataPost.put("idUser", getIdUser());
-//            dataPost.put("userDomain", getUniversityDomain());
-//            dataPost.put("userName", loggedUser.getName());
-//            dataPost.put("userPic", loggedUser.getPicturePath());
-//
-//            object.put("/feedExplore/" + getId(), dataPost);
-//        }
 
         firebase.updateChildren(object);
     }

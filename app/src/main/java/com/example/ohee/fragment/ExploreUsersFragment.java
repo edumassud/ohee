@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,9 +36,8 @@ import java.util.List;
 public class ExploreUsersFragment extends Fragment {
     private RecyclerView recycler;
     private AdapterFeedExplore adapter;
-//    private AdapterFeedHome adapter;
+    private SwipeRefreshLayout swipeRefresh;
 
-//    private List<FeedExplore> posts = new ArrayList<>();
     private List<Post> posts = new ArrayList<>();
     private List<String> universities = new ArrayList<>();
 
@@ -65,7 +65,8 @@ public class ExploreUsersFragment extends Fragment {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_your_university_feed, container, false);
 
-        recycler = view.findViewById(R.id.recycler);
+        recycler        = view.findViewById(R.id.recycler);
+        swipeRefresh    = view.findViewById(R.id.refresh);
 
 
 
@@ -78,19 +79,16 @@ public class ExploreUsersFragment extends Fragment {
         recycler.setHasFixedSize(true);
         recycler.setAdapter(adapter);
 
+        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getFeed();
+            }
+        });
+
         return view;
     }
 
-//    @Override
-//    public void onStart() {
-//        super.onStart();
-//        getFeed();
-//    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-    }
 
     @Override
     public void onResume() {
@@ -98,13 +96,9 @@ public class ExploreUsersFragment extends Fragment {
         getFeed();
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-    }
-
-
     private void getFeed() {
+        posts.clear();
+        universities.clear();
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -134,6 +128,7 @@ public class ExploreUsersFragment extends Fragment {
                                     }
                                     Collections.reverse(posts);
                                     adapter.notifyDataSetChanged();
+                                    swipeRefresh.setRefreshing(false);
                                 }
 
                                 @Override
