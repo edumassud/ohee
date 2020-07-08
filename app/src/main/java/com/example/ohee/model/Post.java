@@ -20,6 +20,7 @@ import java.util.Map;
 public class Post implements Serializable {
     private String idUser, id, caption, path, type, universityDomain;
     private List<String> likedBy = new ArrayList<>();
+    private List<Comment> comments = new ArrayList<>();
 
     public Post() {
         DatabaseReference databaseReference = SetFirebase.getFirebaseDatabase();
@@ -57,6 +58,25 @@ public class Post implements Serializable {
     public Map<String, Object> convertLikesToMap() {
         HashMap<String, Object> postMap = new HashMap<>();
         postMap.put("likedBy", getLikedBy());
+
+        return postMap;
+    }
+
+    public void upDateComments() {
+        DatabaseReference firebaseRef = SetFirebase.getFirebaseDatabase();
+        DatabaseReference postRef = firebaseRef
+                .child("posts")
+                .child(getUniversityDomain())
+                .child(getId());
+
+        Map<String, Object> postComments = convertCommentsToMap();
+
+        postRef.updateChildren(postComments);
+    }
+
+    public Map<String, Object> convertCommentsToMap() {
+        HashMap<String, Object> postMap = new HashMap<>();
+        postMap.put("comments", getComments());
 
         return postMap;
     }
@@ -115,5 +135,13 @@ public class Post implements Serializable {
 
     public void setLikedBy(List<String> likedBy) {
         this.likedBy = likedBy;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 }

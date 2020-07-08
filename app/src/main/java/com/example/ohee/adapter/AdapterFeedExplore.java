@@ -1,6 +1,7 @@
 package com.example.ohee.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,8 +15,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.ohee.R;
+import com.example.ohee.activity.CommentsActivity;
 import com.example.ohee.helpers.SetFirebase;
 import com.example.ohee.helpers.SetFirebaseUser;
+import com.example.ohee.model.Comment;
 import com.example.ohee.model.FeedExplore;
 import com.example.ohee.model.FeedFollowing;
 import com.example.ohee.model.Post;
@@ -67,7 +70,7 @@ public class AdapterFeedExplore extends RecyclerView.Adapter<AdapterFeedExplore.
             DatabaseReference databaseReference = SetFirebase.getFirebaseDatabase();
             DatabaseReference userRef = databaseReference.child("user").child(post.getIdUser());
 
-            userRef.addValueEventListener(new ValueEventListener() {
+            userRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     User user = dataSnapshot.getValue(User.class);
@@ -103,6 +106,51 @@ public class AdapterFeedExplore extends RecyclerView.Adapter<AdapterFeedExplore.
                     holder.txtLikesCount.setText(post.getLikedBy().size() + " Likes");
                 }
             });
+
+            // Set comment count
+            int commentCount = post.getComments().size();
+            if (commentCount == 0) {
+                holder.txtCommentsCount.setVisibility(View.GONE);
+            } else if (commentCount == 1) {
+                holder.txtCommentsCount.setText(commentCount + " comment");
+            } else if (commentCount > 1){
+                holder.txtCommentsCount.setText(commentCount + " comments");
+            }
+
+            // Set featured comment
+            if (post.getComments().size() == 0) {
+                holder.txtCommenter.setText("Be the first one to comment!");
+                holder.txtComment.setText("");
+            } else {
+                Comment firstComment = post.getComments().get(0);
+
+                holder.txtComment.setText(firstComment.getComment());
+
+                DatabaseReference commenterRef = databaseReference.child("user").child(firstComment.getIdUser());
+                commenterRef.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        User user = dataSnapshot.getValue(User.class);
+                        holder.txtCommenter.setText(user.getName());
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+            }
+
+
+            // Set comment event
+            holder.btComment.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i = new Intent(context, CommentsActivity.class);
+                    i.putExtra("post", post);
+                    context.startActivity(i);
+                }
+            });
         }
     }
 
@@ -114,21 +162,25 @@ public class AdapterFeedExplore extends RecyclerView.Adapter<AdapterFeedExplore.
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         private CircleImageView imgProfile;
-        private ImageView imgPost;
-        private TextView txtName, txtNameCap, txtCaption, txtUniversity, txtLikesCount;
+        private ImageView imgPost, btComment;
+        private TextView txtName, txtNameCap, txtCaption, txtUniversity, txtLikesCount, txtCommentsCount, txtCommenter, txtComment;
         private LikeButton btLike;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            imgProfile      = itemView.findViewById(R.id.imgUser);
-            imgPost         = itemView.findViewById(R.id.imgPost);
-            txtName         = itemView.findViewById(R.id.txtUserName);
-            txtNameCap      = itemView.findViewById(R.id.txtNamCap);
-            txtCaption      = itemView.findViewById(R.id.txtCaption);
-            txtUniversity   = itemView.findViewById(R.id.txtUniversity);
-            txtLikesCount   = itemView.findViewById(R.id.txtLikesCount);
-            btLike          = itemView.findViewById(R.id.btLike);
+            imgProfile       = itemView.findViewById(R.id.imgUser);
+            imgPost          = itemView.findViewById(R.id.imgPost);
+            txtName          = itemView.findViewById(R.id.txtUserName);
+            txtNameCap       = itemView.findViewById(R.id.txtNamCap);
+            txtCaption       = itemView.findViewById(R.id.txtCaption);
+            txtUniversity    = itemView.findViewById(R.id.txtUniversity);
+            txtLikesCount    = itemView.findViewById(R.id.txtLikesCount);
+            btLike           = itemView.findViewById(R.id.btLike);
+            btComment        = itemView.findViewById(R.id.btComment);
+            txtCommentsCount = itemView.findViewById(R.id.txtCommentsCount);
+            txtCommenter     = itemView.findViewById(R.id.txtCommenter);
+            txtComment       = itemView.findViewById(R.id.txtComment);
 
         }
     }
