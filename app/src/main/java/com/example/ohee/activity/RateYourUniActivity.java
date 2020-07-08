@@ -83,7 +83,7 @@ public class RateYourUniActivity extends AppCompatActivity {
                 rating.setAcademics(ratingAcademics.getRating());
                 rating.setAthletics(ratingAthletics.getRating());
                 rating.setDiversity(ratingDiversity.getRating());
-                rating.setDiversity(ratingCareer.getRating());
+                rating.setCareerCounsiling(ratingCareer.getRating());
 
                 rating.save();
                 finish();

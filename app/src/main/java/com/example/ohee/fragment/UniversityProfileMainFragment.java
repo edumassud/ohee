@@ -57,16 +57,18 @@ public class UniversityProfileMainFragment extends Fragment {
         uniRate         = view.findViewById(R.id.uniRating);
         txtRatingsCount = view.findViewById(R.id.txtReviewCount);
 
-        txtName.setText(university.getName());
-        String location = "";
-        if (university.getCity() != null) {
-            location = location + university.getCity();
+        if (university != null) {
+            txtName.setText(university.getName());
+            String location = "";
+            if (university.getCity() != null) {
+                location = location + university.getCity();
+            }
+            if (university.getState() != null) {
+                location = location + ", " + university.getState();
+            }
+            txtLocation.setText(location);
+            txtCount.setText("Number of users: " + university.getCount());
         }
-        if (university.getState() != null) {
-            location = location + ", " + university.getState();
-        }
-        txtLocation.setText(location);
-        txtCount.setText("Number of users: " + university.getCount());
 
         // Check if its the logged users university
         if (university.getStudents().contains(SetFirebaseUser.getUsersId())) {

@@ -34,8 +34,8 @@ import java.util.List;
  */
 public class ExploreUsersFragment extends Fragment {
     private RecyclerView recycler;
-//    private AdapterFeedExplore adapter;
-    private AdapterFeedHome adapter;
+    private AdapterFeedExplore adapter;
+//    private AdapterFeedHome adapter;
 
 //    private List<FeedExplore> posts = new ArrayList<>();
     private List<Post> posts = new ArrayList<>();
@@ -67,8 +67,10 @@ public class ExploreUsersFragment extends Fragment {
 
         recycler = view.findViewById(R.id.recycler);
 
+
+
         // Set adapter
-        adapter = new AdapterFeedHome(posts, getActivity());
+        adapter = new AdapterFeedExplore(posts, getActivity());
 
         // Set recycler
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
@@ -79,9 +81,20 @@ public class ExploreUsersFragment extends Fragment {
         return view;
     }
 
+//    @Override
+//    public void onStart() {
+//        super.onStart();
+//        getFeed();
+//    }
+
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         getFeed();
     }
 
@@ -90,8 +103,6 @@ public class ExploreUsersFragment extends Fragment {
         super.onStop();
     }
 
-
-//
 
     private void getFeed() {
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -108,7 +119,7 @@ public class ExploreUsersFragment extends Fragment {
 
                         for (int i = 0; i < universities.size(); i++) {
                             DatabaseReference postUniref = postsRef.child(universities.get(i));
-                            postUniref.addValueEventListener(new ValueEventListener() {
+                            postUniref.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     for (DataSnapshot ds : dataSnapshot.getChildren()) {

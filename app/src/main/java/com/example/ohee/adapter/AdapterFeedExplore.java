@@ -18,6 +18,7 @@ import com.example.ohee.helpers.SetFirebase;
 import com.example.ohee.helpers.SetFirebaseUser;
 import com.example.ohee.model.FeedExplore;
 import com.example.ohee.model.FeedFollowing;
+import com.example.ohee.model.Post;
 import com.example.ohee.model.User;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -30,10 +31,10 @@ import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class AdapterFeedExplore extends RecyclerView.Adapter<AdapterFeedExplore.MyViewHolder> {
-    private List<FeedExplore> posts;
+    private List<Post> posts;
     private Context context;
 
-    public AdapterFeedExplore(List<FeedExplore> posts, Context context) {
+    public AdapterFeedExplore(List<Post> posts, Context context) {
         this.posts = posts;
         this.context = context;
     }
@@ -47,33 +48,31 @@ public class AdapterFeedExplore extends RecyclerView.Adapter<AdapterFeedExplore.
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        FeedExplore feed = posts.get(position);
+        Post post = posts.get(position);
 
-        if (feed != null) {
+        if (post != null) {
 
-            // Set imgs info
-            if (feed.getUserPic() != null) {
-                Uri urlProfile = Uri.parse(feed.getUserPic());
-                Glide.with(context).load(urlProfile).into(holder.imgProfile);
-            }
-            if (feed.getPath() != null) {
-                Uri urlPost = Uri.parse(feed.getPath());
-                Glide.with(context).load(urlPost).into(holder.imgPost);
+            // Set post info
+            if (post.getPath() != null) {
+                Uri urlProfile = Uri.parse(post.getPath());
+                Glide.with(context).load(urlProfile).into(holder.imgPost);
             }
 
-            // Set txts
-            holder.txtCaption.setText(feed.getCaption());
-            holder.txtNameCap.setText(feed.getUserName());
-            holder.txtName.setText(feed.getUserName());
+            holder.txtCaption.setText(post.getCaption());
 
-            // Set university
-            DatabaseReference userRef = SetFirebase.getFirebaseDatabase()
-                    .child("user")
-                    .child(feed.getIdUser());
-            userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            DatabaseReference databaseReference = SetFirebase.getFirebaseDatabase();
+            DatabaseReference userRef = databaseReference.child("user").child(post.getIdUser());
+
+            userRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     User user = dataSnapshot.getValue(User.class);
+                    if (user.getPicturePath() != null) {
+                        Uri urlPost = Uri.parse(user.getPicturePath());
+                        Glide.with(context).load(urlPost).into(holder.imgProfile);
+                    }
+                    holder.txtName.setText(user.getName());
+                    holder.txtNameCap.setText(user.getName());
                     holder.txtUniversity.setVisibility(View.VISIBLE);
                     holder.txtUniversity.setText(user.getUniversityName());
                 }
@@ -83,7 +82,6 @@ public class AdapterFeedExplore extends RecyclerView.Adapter<AdapterFeedExplore.
 
                 }
             });
-
         }
     }
 

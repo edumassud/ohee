@@ -275,6 +275,7 @@ public class VisitProfileActivity extends AppCompatActivity {
                                 @Override
                                 public void onClick(View v) {
                                     unfollow(loggedUser, selectedUser);
+                                    loadPosts();
                                 }
                             });
                         } else {
@@ -283,6 +284,7 @@ public class VisitProfileActivity extends AppCompatActivity {
                                 @Override
                                 public void onClick(View v) {
                                     saveFollower(loggedUser, selectedUser);
+                                    loadPosts();
                                 }
                             });
                         }

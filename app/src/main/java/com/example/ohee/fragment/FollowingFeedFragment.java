@@ -7,17 +7,14 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.ohee.R;
-import com.example.ohee.adapter.AdapterFeedFollowing;
 import com.example.ohee.adapter.AdapterFeedHome;
 import com.example.ohee.helpers.SetFirebase;
 import com.example.ohee.helpers.SetFirebaseUser;
-import com.example.ohee.model.FeedFollowing;
 import com.example.ohee.model.Post;
 import com.example.ohee.model.University;
 import com.example.ohee.model.User;

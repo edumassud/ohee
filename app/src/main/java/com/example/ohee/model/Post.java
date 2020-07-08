@@ -12,11 +12,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Post implements Serializable {
     private String idUser, id, caption, path, type, universityDomain;
+    private List<String> likedBy = new ArrayList<>();
 
     public Post() {
         DatabaseReference databaseReference = SetFirebase.getFirebaseDatabase();
@@ -37,34 +40,53 @@ public class Post implements Serializable {
         String fullId = "/" + getUniversityDomain() + "/" + getId();
         object.put("/posts" + fullId, this);
 
-        for (DataSnapshot followers : ds.getChildren()) {
-            HashMap<String, Object> dataFollowers = new HashMap<>();
-            dataFollowers.put("path", getPath());
-            dataFollowers.put("caption", getCaption());
-            dataFollowers.put("id", getId());
-            dataFollowers.put("type", getType());
-            dataFollowers.put("domain", getUniversityDomain());
-            dataFollowers.put("userName", loggedUser.getName());
-            dataFollowers.put("userPic", loggedUser.getPicturePath());
-
-            String id = followers.getKey() + "/" + getId();
-            object.put("/feedFollowing/" + id, dataFollowers);
-        }
-
-        if (getType().equals("public")) {
-            HashMap<String, Object> dataPost = new HashMap<>();
-            dataPost.put("path", getPath());
-            dataPost.put("caption", getCaption());
-            dataPost.put("id", getId());
-            dataPost.put("idUser", getIdUser());
-            dataPost.put("userDomain", getUniversityDomain());
-            dataPost.put("userName", loggedUser.getName());
-            dataPost.put("userPic", loggedUser.getPicturePath());
-
-            object.put("/feedExplore/" + getId(), dataPost);
-        }
+//        for (DataSnapshot followers : ds.getChildren()) {
+//            HashMap<String, Object> dataFollowers = new HashMap<>();
+//            dataFollowers.put("path", getPath());
+//            dataFollowers.put("caption", getCaption());
+//            dataFollowers.put("id", getId());
+//            dataFollowers.put("type", getType());
+//            dataFollowers.put("domain", getUniversityDomain());
+//            dataFollowers.put("userName", loggedUser.getName());
+//            dataFollowers.put("userPic", loggedUser.getPicturePath());
+//
+//            String id = followers.getKey() + "/" + getId();
+//            object.put("/feedFollowing/" + id, dataFollowers);
+//        }
+//
+//        if (getType().equals("public")) {
+//            HashMap<String, Object> dataPost = new HashMap<>();
+//            dataPost.put("path", getPath());
+//            dataPost.put("caption", getCaption());
+//            dataPost.put("id", getId());
+//            dataPost.put("idUser", getIdUser());
+//            dataPost.put("userDomain", getUniversityDomain());
+//            dataPost.put("userName", loggedUser.getName());
+//            dataPost.put("userPic", loggedUser.getPicturePath());
+//
+//            object.put("/feedExplore/" + getId(), dataPost);
+//        }
 
         firebase.updateChildren(object);
+    }
+
+    public void upDateLikes() {
+        DatabaseReference firebaseRef = SetFirebase.getFirebaseDatabase();
+        DatabaseReference postRef = firebaseRef
+                .child("posts")
+                .child(getUniversityDomain())
+                .child(getId());
+
+        Map<String, Object> postLikes = convertLikesToMap();
+
+        postRef.updateChildren(postLikes);
+    }
+
+    public Map<String, Object> convertLikesToMap() {
+        HashMap<String, Object> postMap = new HashMap<>();
+        postMap.put("likedBy", getLikedBy());
+
+        return postMap;
     }
 
     public String getIdUser() {
@@ -113,5 +135,13 @@ public class Post implements Serializable {
 
     public void setUniversityDomain(String universityDomain) {
         this.universityDomain = universityDomain;
+    }
+
+    public List<String> getLikedBy() {
+        return likedBy;
+    }
+
+    public void setLikedBy(List<String> likedBy) {
+        this.likedBy = likedBy;
     }
 }
