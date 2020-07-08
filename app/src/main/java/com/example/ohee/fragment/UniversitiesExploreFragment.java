@@ -19,6 +19,7 @@ import com.example.ohee.activity.VisitProfileActivity;
 import com.example.ohee.adapter.SearchUniversityAdapter;
 import com.example.ohee.helpers.RecyclerItemClickListener;
 import com.example.ohee.helpers.SetFirebase;
+import com.example.ohee.helpers.SetFirebaseUser;
 import com.example.ohee.model.University;
 import com.example.ohee.model.User;
 import com.google.firebase.database.ChildEventListener;
@@ -111,7 +112,13 @@ public class UniversitiesExploreFragment extends Fragment {
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
 
                 University university = dataSnapshot.getValue(University.class);
-                listUniversities.add(university);
+
+                if (university.getStudents().contains(SetFirebaseUser.getUsersId())) {
+                    listUniversities.add(0, university);
+                } else {
+                    listUniversities.add(university);
+                }
+
                 adapter.notifyDataSetChanged();
                 progressBar.setVisibility(View.GONE);
                 recycler.setVisibility(View.VISIBLE);

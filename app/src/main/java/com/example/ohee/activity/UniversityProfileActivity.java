@@ -14,6 +14,7 @@ import com.example.ohee.R;
 import com.example.ohee.fragment.ContactsFragment;
 import com.example.ohee.fragment.FollowingFeedFragment;
 import com.example.ohee.fragment.HomeFragment;
+import com.example.ohee.fragment.RatingsFragment;
 import com.example.ohee.fragment.StatutsDistFragment;
 import com.example.ohee.fragment.UniversityDataFragment;
 import com.example.ohee.fragment.UniversityGridFragment;
@@ -68,14 +69,16 @@ public class UniversityProfileActivity extends AppCompatActivity {
                 return new UniversityProfileMainFragment(university);
             } else if (position == 1) {
                 return new UniversityDataFragment(university);
-            } else {
+            } else if (position == 2){
                 return new StatutsDistFragment(university);
+            } else {
+                return new RatingsFragment(university);
             }
         }
 
         @Override
         public int getCount() {
-            return 3;
+            return 4;
         }
     }
 

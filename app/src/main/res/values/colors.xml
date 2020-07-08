@@ -10,5 +10,10 @@
     <color name="colorTaken">#F51B01</color>
     <color name="colorBlack">#000000</color>
     <color name="other">#cccccc</color>
+    <color name="colorA">#60A948</color>
+    <color name="colorB">#ADBA3A</color>
+    <color name="colorC">#B08334</color>
+    <color name="colorF">#A92C2C</color>
+
 </resources>
 

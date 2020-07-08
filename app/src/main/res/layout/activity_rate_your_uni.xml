@@ -1,0 +1,582 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorBlack"
+    android:orientation="vertical"
+    tools:context=".activity.RateYourUniActivity">
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@android:color/black">
+
+        <ImageView
+            android:id="@+id/btClose"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="8dp"
+            android:src="@drawable/ic_action_navigation_close_inverted"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/txtUniversityName"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:layout_marginStart="48dp"
+            android:layout_marginEnd="48dp"
+            android:background="@android:color/black"
+            android:drawablePadding="10dp"
+            android:text="University Name"
+            android:textAlignment="center"
+            android:textColor="@color/colorPrimary"
+            android:textSize="20sp"
+            android:textStyle="italic|bold"
+            android:gravity="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:background="@color/colorBg"
+        app:cardBackgroundColor="@color/colorBg"
+        app:cardCornerRadius="15dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView14"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="How lit are the parties?"
+                android:textColor="@android:color/white" />
+
+            <com.willy.ratingbar.ScaleRatingBar xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/ratingParty"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srb_clearRatingEnabled="true"
+                app:srb_clickable="true"
+                app:srb_drawableEmpty="@drawable/ic_star_empty"
+                app:srb_drawableFilled="@drawable/ic_star_full"
+                app:srb_isIndicator="false"
+                app:srb_minimumStars="1"
+                app:srb_numStars="5"
+                app:srb_rating="1"
+                app:srb_scrollable="false"
+                app:srb_starHeight="30dp"
+                app:srb_starPadding="15dp"
+                app:srb_starWidth="30dp"
+                app:srb_stepSize="1"></com.willy.ratingbar.ScaleRatingBar>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:background="@color/colorBg"
+        app:cardBackgroundColor="@color/colorBg"
+        app:cardCornerRadius="15dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView111"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="How diverse?"
+                android:textColor="@android:color/white" />
+
+            <com.willy.ratingbar.ScaleRatingBar xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/ratingDiversity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srb_clearRatingEnabled="true"
+                app:srb_clickable="true"
+                app:srb_drawableEmpty="@drawable/ic_star_empty"
+                app:srb_drawableFilled="@drawable/ic_star_full"
+                app:srb_isIndicator="false"
+                app:srb_minimumStars="1"
+                app:srb_numStars="5"
+                app:srb_rating="1"
+                app:srb_scrollable="false"
+                app:srb_starHeight="30dp"
+                app:srb_starPadding="15dp"
+                app:srb_starWidth="30dp"
+                app:srb_stepSize="1"></com.willy.ratingbar.ScaleRatingBar>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:background="@color/colorBg"
+        app:cardBackgroundColor="@color/colorBg"
+        app:cardCornerRadius="15dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="How good is student life?"
+                android:textColor="@android:color/white" />
+
+            <com.willy.ratingbar.ScaleRatingBar xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/ratingStudentLife"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srb_clearRatingEnabled="true"
+                app:srb_clickable="true"
+                app:srb_drawableEmpty="@drawable/ic_star_empty"
+                app:srb_drawableFilled="@drawable/ic_star_full"
+                app:srb_isIndicator="false"
+                app:srb_minimumStars="1"
+                app:srb_numStars="5"
+                app:srb_scrollable="false"
+                app:srb_starHeight="30dp"
+                app:srb_starPadding="15dp"
+                app:srb_starWidth="30dp"
+                app:srb_stepSize="1"></com.willy.ratingbar.ScaleRatingBar>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:background="@color/colorBg"
+        app:cardBackgroundColor="@color/colorBg"
+        app:cardCornerRadius="15dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Rate ur campus"
+                android:textColor="@android:color/white" />
+
+            <com.willy.ratingbar.ScaleRatingBar
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/ratingCampus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srb_numStars="5"
+                app:srb_minimumStars="1"
+                app:srb_starWidth="30dp"
+                app:srb_starHeight="30dp"
+                app:srb_starPadding="15dp"
+                app:srb_stepSize="1"
+                app:srb_isIndicator="false"
+                app:srb_clickable="true"
+                app:srb_scrollable="false"
+                app:srb_clearRatingEnabled="true"
+                app:srb_drawableEmpty="@drawable/ic_star_empty"
+                app:srb_drawableFilled="@drawable/ic_star_full">
+            </com.willy.ratingbar.ScaleRatingBar>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:background="@color/colorBg"
+        app:cardBackgroundColor="@color/colorBg"
+        app:cardCornerRadius="15dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="How good are the dorms"
+                android:textColor="@android:color/white" />
+
+            <com.willy.ratingbar.ScaleRatingBar
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/ratingDorms"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srb_numStars="5"
+                app:srb_minimumStars="1"
+                app:srb_starWidth="30dp"
+                app:srb_starHeight="30dp"
+                app:srb_starPadding="15dp"
+                app:srb_stepSize="1"
+                app:srb_isIndicator="false"
+                app:srb_clickable="true"
+                app:srb_scrollable="false"
+                app:srb_clearRatingEnabled="true"
+                app:srb_drawableEmpty="@drawable/ic_star_empty"
+                app:srb_drawableFilled="@drawable/ic_star_full">
+            </com.willy.ratingbar.ScaleRatingBar>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:background="@color/colorBg"
+        app:cardBackgroundColor="@color/colorBg"
+        app:cardCornerRadius="15dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="How good is campus food?"
+                android:textColor="@android:color/white" />
+
+            <com.willy.ratingbar.ScaleRatingBar
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/ratingCampusFood"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srb_numStars="5"
+                app:srb_minimumStars="1"
+                app:srb_starWidth="30dp"
+                app:srb_starHeight="30dp"
+                app:srb_starPadding="15dp"
+                app:srb_stepSize="1"
+                app:srb_isIndicator="false"
+                app:srb_clickable="true"
+                app:srb_scrollable="false"
+                app:srb_clearRatingEnabled="true"
+                app:srb_drawableEmpty="@drawable/ic_star_empty"
+                app:srb_drawableFilled="@drawable/ic_star_full">
+            </com.willy.ratingbar.ScaleRatingBar>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:background="@color/colorBg"
+        app:cardBackgroundColor="@color/colorBg"
+        app:cardCornerRadius="15dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="How safe is campus?"
+                android:textColor="@android:color/white" />
+
+            <com.willy.ratingbar.ScaleRatingBar
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/ratingSafety"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srb_numStars="5"
+                app:srb_minimumStars="1"
+                app:srb_starWidth="30dp"
+                app:srb_starHeight="30dp"
+                app:srb_starPadding="15dp"
+                app:srb_stepSize="1"
+                app:srb_isIndicator="false"
+                app:srb_clickable="true"
+                app:srb_scrollable="false"
+                app:srb_clearRatingEnabled="true"
+                app:srb_drawableEmpty="@drawable/ic_star_empty"
+                app:srb_drawableFilled="@drawable/ic_star_full">
+            </com.willy.ratingbar.ScaleRatingBar>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:background="@color/colorBg"
+        app:cardBackgroundColor="@color/colorBg"
+        app:cardCornerRadius="15dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="How chill are the professors?"
+                android:textColor="@android:color/white" />
+
+            <com.willy.ratingbar.ScaleRatingBar
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/ratingProfessors"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srb_numStars="5"
+                app:srb_minimumStars="1"
+                app:srb_starWidth="30dp"
+                app:srb_starHeight="30dp"
+                app:srb_starPadding="15dp"
+                app:srb_stepSize="1"
+                app:srb_isIndicator="false"
+                app:srb_clickable="true"
+                app:srb_scrollable="false"
+                app:srb_clearRatingEnabled="true"
+                app:srb_drawableEmpty="@drawable/ic_star_empty"
+                app:srb_drawableFilled="@drawable/ic_star_full">
+            </com.willy.ratingbar.ScaleRatingBar>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:background="@color/colorBg"
+        app:cardBackgroundColor="@color/colorBg"
+        app:cardCornerRadius="15dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="How good is the location?"
+                android:textColor="@android:color/white" />
+
+            <com.willy.ratingbar.ScaleRatingBar
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/ratingLocation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srb_numStars="5"
+                app:srb_minimumStars="1"
+                app:srb_starWidth="30dp"
+                app:srb_starHeight="30dp"
+                app:srb_starPadding="15dp"
+                app:srb_stepSize="1"
+                app:srb_isIndicator="false"
+                app:srb_clickable="true"
+                app:srb_scrollable="false"
+                app:srb_clearRatingEnabled="true"
+                app:srb_drawableEmpty="@drawable/ic_star_empty"
+                app:srb_drawableFilled="@drawable/ic_star_full">
+            </com.willy.ratingbar.ScaleRatingBar>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:background="@color/colorBg"
+        app:cardBackgroundColor="@color/colorBg"
+        app:cardCornerRadius="15dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="How athletic"
+                android:textColor="@android:color/white" />
+
+            <com.willy.ratingbar.ScaleRatingBar
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/ratingAthletics"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srb_numStars="5"
+                app:srb_minimumStars="1"
+                app:srb_starWidth="30dp"
+                app:srb_starHeight="30dp"
+                app:srb_starPadding="15dp"
+                app:srb_stepSize="1"
+                app:srb_isIndicator="false"
+                app:srb_clickable="true"
+                app:srb_scrollable="false"
+                app:srb_clearRatingEnabled="true"
+                app:srb_drawableEmpty="@drawable/ic_star_empty"
+                app:srb_drawableFilled="@drawable/ic_star_full">
+            </com.willy.ratingbar.ScaleRatingBar>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:background="@color/colorBg"
+        app:cardBackgroundColor="@color/colorBg"
+        app:cardCornerRadius="15dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="How good are academics"
+                android:textColor="@android:color/white" />
+
+            <com.willy.ratingbar.ScaleRatingBar xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/ratingAcademics"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srb_clearRatingEnabled="true"
+                app:srb_clickable="true"
+                app:srb_drawableEmpty="@drawable/ic_star_empty"
+                app:srb_drawableFilled="@drawable/ic_star_full"
+                app:srb_isIndicator="false"
+                app:srb_minimumStars="1"
+                app:srb_numStars="5"
+                app:srb_scrollable="false"
+                app:srb_starHeight="30dp"
+                app:srb_starPadding="15dp"
+                app:srb_starWidth="30dp"
+                app:srb_stepSize="1"></com.willy.ratingbar.ScaleRatingBar>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:background="@color/colorBg"
+        app:cardBackgroundColor="@color/colorBg"
+        app:cardCornerRadius="15dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="How good is career counseling"
+                android:textColor="@android:color/white" />
+
+            <com.willy.ratingbar.ScaleRatingBar xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/ratingCareer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srb_clearRatingEnabled="true"
+                app:srb_clickable="true"
+                app:srb_drawableEmpty="@drawable/ic_star_empty"
+                app:srb_drawableFilled="@drawable/ic_star_full"
+                app:srb_isIndicator="false"
+                app:srb_minimumStars="1"
+                app:srb_numStars="5"
+                app:srb_scrollable="false"
+                app:srb_starHeight="30dp"
+                app:srb_starPadding="15dp"
+                app:srb_starWidth="30dp"
+                app:srb_stepSize="1"></com.willy.ratingbar.ScaleRatingBar>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <Button
+        android:id="@+id/btSave"
+        android:layout_margin="4dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorPrimary"
+        android:background="@drawable/button_background"
+        android:text="submit" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+
+</LinearLayout>
+</ScrollView>

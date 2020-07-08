@@ -32,4 +32,43 @@
         android:text="Count"
         android:textColor="#ffffff" />
 
+    <com.willy.ratingbar.ScaleRatingBar
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/uniRating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srb_numStars="5"
+        app:srb_minimumStars="1"
+        app:srb_starWidth="30dp"
+        app:srb_starHeight="30dp"
+        app:srb_starPadding="5dp"
+        app:srb_stepSize="1"
+        app:srb_isIndicator="false"
+        app:srb_clickable="false"
+        app:srb_scrollable="false"
+        app:srb_clearRatingEnabled="false"
+        app:srb_drawableEmpty="@drawable/ic_star_empty"
+        app:srb_drawableFilled="@drawable/ic_star_full"
+        android:layout_gravity="center">
+    </com.willy.ratingbar.ScaleRatingBar>
+
+    <TextView
+        android:id="@+id/txtReviewCount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Num of reviews"
+        android:textAlignment="center"
+        android:textColor="#ffffff" />
+
+    <Button
+        android:id="@+id/brRate"
+        android:layout_width="match_parent"
+        android:layout_height="21dp"
+        android:background="@drawable/button_edit_bg"
+        android:text="Rate"
+        android:layout_marginTop="10dp"
+        android:textColor="@android:color/white"
+        android:textSize="12sp"
+        android:visibility="gone"/>
+
 </LinearLayout>

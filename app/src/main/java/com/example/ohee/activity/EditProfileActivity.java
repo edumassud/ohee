@@ -102,7 +102,6 @@ public class EditProfileActivity extends AppCompatActivity {
             editProfileImg.setImageResource(R.drawable.avatar);
         }
 
-
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
