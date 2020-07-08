@@ -7,15 +7,19 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.ohee.R;
 import com.example.ohee.adapter.AdapterFeedFollowing;
+import com.example.ohee.adapter.AdapterFeedHome;
 import com.example.ohee.helpers.SetFirebase;
 import com.example.ohee.helpers.SetFirebaseUser;
 import com.example.ohee.model.FeedFollowing;
+import com.example.ohee.model.Post;
+import com.example.ohee.model.University;
 import com.example.ohee.model.User;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -31,15 +35,20 @@ import java.util.List;
  */
 public class FollowingFeedFragment extends Fragment {
     private RecyclerView recycler;
-    private AdapterFeedFollowing adapter;
+//    private AdapterFeedFollowing adapter;
+    private AdapterFeedHome adapter;
 
-    private List<FeedFollowing> posts = new ArrayList<>();
+//    private List<FeedFollowing> posts = new ArrayList<>();
+    private List<Post> posts = new ArrayList<>();
+    private List<String> universities = new ArrayList<>();
 
     private String loggedUserId = SetFirebaseUser.getUsersId();
 
     DatabaseReference databaseReference = SetFirebase.getFirebaseDatabase();
     DatabaseReference feedRef = databaseReference.child("feedFollowing").child(loggedUserId);
     DatabaseReference userRef = databaseReference.child("user").child(loggedUserId);
+    DatabaseReference universitiesRef = databaseReference.child("universities");
+    DatabaseReference postsRef = databaseReference.child("posts");
 
     private ValueEventListener valueEventListener;
 
@@ -57,7 +66,7 @@ public class FollowingFeedFragment extends Fragment {
         recycler = view.findViewById(R.id.recycler);
 
         // Set adapter
-        adapter = new AdapterFeedFollowing(posts, getActivity());
+        adapter = new AdapterFeedHome(posts, getActivity());
 
         // Set recycler
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
@@ -77,30 +86,79 @@ public class FollowingFeedFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
-        if (valueEventListener != null) {
-            feedRef.removeEventListener(valueEventListener);
-        }
 
     }
+
+//    private void getFeed() {
+//        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                User user = dataSnapshot.getValue(User.class);
+//                valueEventListener = feedRef.addValueEventListener(new ValueEventListener() {
+//                    @Override
+//                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                        posts.clear();
+//                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
+//                            FeedFollowing post = ds.getValue(FeedFollowing.class);
+//                            boolean dontAdd = post.getType().equals("homeExclusive") && !user.getUniversityDomain().equals(post.getDomain());
+//                            if (!dontAdd) {
+//                                posts.add(ds.getValue(FeedFollowing.class));
+//                            }
+//                        }
+//                        Collections.reverse(posts);
+//                        adapter.notifyDataSetChanged();
+//                    }
+//
+//                    @Override
+//                    public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                    }
+//                });
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
+//    }
 
     private void getFeed() {
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                User user = dataSnapshot.getValue(User.class);
-                valueEventListener = feedRef.addValueEventListener(new ValueEventListener() {
+                User loggedUser = dataSnapshot.getValue(User.class);
+                universitiesRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        posts.clear();
                         for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                            FeedFollowing post = ds.getValue(FeedFollowing.class);
-                            boolean dontAdd = post.getType().equals("homeExclusive") && !user.getUniversityDomain().equals(post.getDomain());
-                            if (!dontAdd) {
-                                posts.add(ds.getValue(FeedFollowing.class));
-                            }
+                            University university = ds.getValue(University.class);
+                            universities.add(university.getDomain());
                         }
-                        Collections.reverse(posts);
-                        adapter.notifyDataSetChanged();
+
+                        for (int i = 0; i < universities.size(); i++) {
+                            DatabaseReference postUniref = postsRef.child(universities.get(i));
+                            postUniref.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                                        Post post = ds.getValue(Post.class);
+                                        boolean isFollowing = loggedUser.getFollowing().contains(post.getIdUser());
+                                        boolean exclusive = post.getType().equals("homeExclusive") && !loggedUser.getUniversityDomain().equals(post.getUniversityDomain());
+                                        if (isFollowing && !exclusive) {
+                                            posts.add(post);
+                                        }
+                                    }
+                                    Collections.reverse(posts);
+                                    adapter.notifyDataSetChanged();
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
+                        }
                     }
 
                     @Override
@@ -115,5 +173,6 @@ public class FollowingFeedFragment extends Fragment {
 
             }
         });
+
     }
 }

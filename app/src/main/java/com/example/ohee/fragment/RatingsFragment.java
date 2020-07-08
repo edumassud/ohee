@@ -238,7 +238,7 @@ public class RatingsFragment extends Fragment {
                     imgDiversity.setImageResource(R.drawable.circlec);
                 } else if (diversity/total >= 2.0) {
                     txtGradeDiversity.setText("C-");
-                    imgDiversity.setImageResource(R.drawable.circlef);
+                    imgDiversity.setImageResource(R.drawable.circlec);
                 } else if (diversity/total >= 1.6) {
                     txtGradeDiversity.setText("F+");
                     imgDiversity.setImageResource(R.drawable.circlef);
@@ -247,6 +247,7 @@ public class RatingsFragment extends Fragment {
                     imgDiversity.setImageResource(R.drawable.circlef);
                 } else {
                     txtGradeDiversity.setText("F-");
+                    imgDiversity.setImageResource(R.drawable.circlef);
                 }
 
                 if (campus/total >= 4.6) {
