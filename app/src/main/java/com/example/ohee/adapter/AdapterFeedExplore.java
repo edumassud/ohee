@@ -103,12 +103,16 @@ public class AdapterFeedExplore extends RecyclerView.Adapter<AdapterFeedExplore.
                     post.upDateLikes();
                     holder.txtLikesCount.setText(post.getLikedBy().size() + " Likes");
 
-                    Notification notification = new Notification();
-                    notification.setIdReceiver(post.getIdUser());
-                    notification.setIdSender(SetFirebaseUser.getUsersId());
-                    notification.setAction("postLiked");
-                    notification.setIdPost(post.getId());
-                    notification.save();
+                    if (!SetFirebaseUser.getUsersId().equals(post.getIdUser())) {
+                        Notification notification = new Notification();
+                        notification.setIdReceiver(post.getIdUser());
+                        notification.setIdSender(SetFirebaseUser.getUsersId());
+                        notification.setAction("postLiked");
+                        notification.setIdPost(post.getId());
+                        notification.save();
+                    }
+
+
                 }
 
                 @Override
@@ -117,12 +121,14 @@ public class AdapterFeedExplore extends RecyclerView.Adapter<AdapterFeedExplore.
                     post.upDateLikes();
                     holder.txtLikesCount.setText(post.getLikedBy().size() + " Likes");
 
-                    Notification notification = new Notification();
-                    notification.setIdReceiver(post.getIdUser());
-                    notification.setIdSender(SetFirebaseUser.getUsersId());
-                    notification.setAction("postLiked");
-                    notification.setIdPost(post.getId());
-                    notification.deleteNotification();
+                    if (!SetFirebaseUser.getUsersId().equals(post.getIdUser())) {
+                        Notification notification = new Notification();
+                        notification.setIdReceiver(post.getIdUser());
+                        notification.setIdSender(SetFirebaseUser.getUsersId());
+                        notification.setAction("postLiked");
+                        notification.setIdPost(post.getId());
+                        notification.deleteNotification();
+                    }
                 }
             });
 

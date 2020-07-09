@@ -81,7 +81,7 @@ public class NotificationsFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     Notification notification = ds.getValue(Notification.class);
-                    notifications.add(notification);
+                    notifications.add(0, notification);
                 }
                 adapter.notifyDataSetChanged();
             }

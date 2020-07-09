@@ -110,12 +110,14 @@ public class AdapterFeedHome extends RecyclerView.Adapter<AdapterFeedHome.MyView
                         holder.btLike.setLiked(false);
                     }
 
-                    Notification notification = new Notification();
-                    notification.setIdReceiver(post.getIdUser());
-                    notification.setIdSender(SetFirebaseUser.getUsersId());
-                    notification.setAction("postLiked");
-                    notification.setIdPost(post.getId());
-                    notification.save();
+                    if (!SetFirebaseUser.getUsersId().equals(post.getIdUser())) {
+                        Notification notification = new Notification();
+                        notification.setIdReceiver(post.getIdUser());
+                        notification.setIdSender(SetFirebaseUser.getUsersId());
+                        notification.setAction("postLiked");
+                        notification.setIdPost(post.getId());
+                        notification.save();
+                    }
                 }
 
                 @Override
@@ -129,12 +131,14 @@ public class AdapterFeedHome extends RecyclerView.Adapter<AdapterFeedHome.MyView
                         holder.btLike.setLiked(false);
                     }
 
-                    Notification notification = new Notification();
-                    notification.setIdReceiver(post.getIdUser());
-                    notification.setIdSender(SetFirebaseUser.getUsersId());
-                    notification.setAction("postLiked");
-                    notification.setIdPost(post.getId());
-                    notification.deleteNotification();
+                    if (!SetFirebaseUser.getUsersId().equals(post.getIdUser())) {
+                        Notification notification = new Notification();
+                        notification.setIdReceiver(post.getIdUser());
+                        notification.setIdSender(SetFirebaseUser.getUsersId());
+                        notification.setAction("postLiked");
+                        notification.setIdPost(post.getId());
+                        notification.deleteNotification();
+                    }
                 }
             });
 

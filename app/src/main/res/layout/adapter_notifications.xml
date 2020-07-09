@@ -18,18 +18,21 @@
             android:id="@+id/imgProfile"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:src="@drawable/avatar" />
+            android:src="@drawable/avatar"
+            android:layout_marginRight="4dp"/>
 
 
             <TextView
                 android:id="@+id/txtName"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#ffffff" />
+                android:layout_weight="1"
+                android:textColor="#ffffff"
+                android:layout_gravity="center_vertical"/>
 
             <com.example.ohee.helpers.SquareImgView
                 android:id="@+id/imgPost"
-                android:layout_width="0dp"
+                android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginLeft="1dp"
                 android:layout_marginTop="1dp"
