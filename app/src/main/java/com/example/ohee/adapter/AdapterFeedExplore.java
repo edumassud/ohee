@@ -16,12 +16,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.ohee.R;
 import com.example.ohee.activity.CommentsActivity;
+import com.example.ohee.activity.LikesListActivity;
+import com.example.ohee.activity.UniversityProfileActivity;
+import com.example.ohee.activity.VisitProfileActivity;
 import com.example.ohee.helpers.SetFirebase;
 import com.example.ohee.helpers.SetFirebaseUser;
 import com.example.ohee.model.Comment;
 import com.example.ohee.model.FeedExplore;
 import com.example.ohee.model.FeedFollowing;
+import com.example.ohee.model.Notification;
 import com.example.ohee.model.Post;
+import com.example.ohee.model.University;
 import com.example.ohee.model.User;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -97,6 +102,13 @@ public class AdapterFeedExplore extends RecyclerView.Adapter<AdapterFeedExplore.
                     post.getLikedBy().add(SetFirebaseUser.getUsersId());
                     post.upDateLikes();
                     holder.txtLikesCount.setText(post.getLikedBy().size() + " Likes");
+
+                    Notification notification = new Notification();
+                    notification.setIdReceiver(post.getIdUser());
+                    notification.setIdSender(SetFirebaseUser.getUsersId());
+                    notification.setAction("postLiked");
+                    notification.setIdPost(post.getId());
+                    notification.save();
                 }
 
                 @Override
@@ -104,6 +116,13 @@ public class AdapterFeedExplore extends RecyclerView.Adapter<AdapterFeedExplore.
                     post.getLikedBy().remove(SetFirebaseUser.getUsersId());
                     post.upDateLikes();
                     holder.txtLikesCount.setText(post.getLikedBy().size() + " Likes");
+
+                    Notification notification = new Notification();
+                    notification.setIdReceiver(post.getIdUser());
+                    notification.setIdSender(SetFirebaseUser.getUsersId());
+                    notification.setAction("postLiked");
+                    notification.setIdPost(post.getId());
+                    notification.deleteNotification();
                 }
             });
 
@@ -149,6 +168,152 @@ public class AdapterFeedExplore extends RecyclerView.Adapter<AdapterFeedExplore.
                     Intent i = new Intent(context, CommentsActivity.class);
                     i.putExtra("post", post);
                     context.startActivity(i);
+                }
+            });
+
+            // Set imgProfile click
+            holder.imgProfile.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    DatabaseReference usersRef = databaseReference.child("user").child(post.getIdUser());
+                    usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            User user = dataSnapshot.getValue(User.class);
+
+                            if (user.getIdUser().equals(SetFirebaseUser.getUsersId())) {
+                                holder.imgProfile.setClickable(false);
+                            } else {
+                                Intent i = new Intent(context, VisitProfileActivity.class);
+                                i.putExtra("selectedUser", user);
+                                context.startActivity(i);
+                            }
+                        }
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
+                }
+            });
+
+            // Set name click
+            holder.txtName.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    DatabaseReference usersRef = databaseReference.child("user").child(post.getIdUser());
+                    usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            User user = dataSnapshot.getValue(User.class);
+
+                            if (user.getIdUser().equals(SetFirebaseUser.getUsersId())) {
+                                holder.txtName.setClickable(false);
+                            } else {
+                                Intent i = new Intent(context, VisitProfileActivity.class);
+                                i.putExtra("selectedUser", user);
+                                context.startActivity(i);
+                            }
+                        }
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
+                }
+            });
+
+            // Set name click
+            holder.txtNameCap.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    DatabaseReference usersRef = databaseReference.child("user").child(post.getIdUser());
+                    usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            User user = dataSnapshot.getValue(User.class);
+
+                            if (user.getIdUser().equals(SetFirebaseUser.getUsersId())) {
+                                holder.txtNameCap.setClickable(false);
+                            } else {
+                                Intent i = new Intent(context, VisitProfileActivity.class);
+                                i.putExtra("selectedUser", user);
+                                context.startActivity(i);
+                            }
+                        }
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
+                }
+            });
+
+            // Set comment click
+            holder.txtCommenter.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (post.getComments().size() == 0) {
+                        holder.txtCommenter.setClickable(false);
+                    } else {
+                        Comment comment = post.getComments().get(0);
+                        DatabaseReference usersRef = databaseReference.child("user").child(comment.getIdUser());
+                        usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                User user = dataSnapshot.getValue(User.class);
+
+                                if (user.getIdUser().equals(SetFirebaseUser.getUsersId())) {
+                                    holder.txtCommenter.setClickable(false);
+                                } else {
+                                    Intent i = new Intent(context, VisitProfileActivity.class);
+                                    i.putExtra("selectedUser", user);
+                                    context.startActivity(i);
+                                }
+                            }
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+                    }
+                }
+            });
+
+            // Set like click
+            holder.txtLikesCount.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i = new Intent(context, LikesListActivity.class);
+                    i.putExtra("post", post);
+                    context.startActivity(i);
+                }
+            });
+
+            // Set university click
+            holder.txtUniversity.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    DatabaseReference universityRef = databaseReference.child("universities").child(post.getUniversityDomain());
+
+                    universityRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            University university = dataSnapshot.getValue(University.class);
+
+                            Intent i = new Intent(context, UniversityProfileActivity.class);
+                            i.putExtra("selectedUniversity", university);
+                            context.startActivity(i);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
                 }
             });
         }

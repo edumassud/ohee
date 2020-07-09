@@ -12,13 +12,17 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class Post implements Serializable {
-    private String idUser, id, caption, path, type, universityDomain;
+    private String idUser, id, caption, path, type, universityDomain, datePosted;
     private List<String> likedBy = new ArrayList<>();
     private List<Comment> comments = new ArrayList<>();
 
@@ -29,6 +33,12 @@ public class Post implements Serializable {
         String idPost = postRef.push().getKey();
 
         setId(idPost);
+
+        Date currentTime = Calendar.getInstance().getTime();
+        DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy hh:mm:ss");
+        String strDate = dateFormat.format(currentTime);
+        setDatePosted(strDate);
+
     }
 
     public void save(DataSnapshot ds) {
@@ -143,5 +153,13 @@ public class Post implements Serializable {
 
     public void setComments(List<Comment> comments) {
         this.comments = comments;
+    }
+
+    public String getDatePosted() {
+        return datePosted;
+    }
+
+    public void setDatePosted(String datePosted) {
+        this.datePosted = datePosted;
     }
 }

@@ -2,6 +2,7 @@ package com.example.ohee.adapter;
 
 import android.content.Context;
 import android.net.Uri;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,7 +47,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.MyView
         Comment comment = comments.get(position);
 
         // Set comment
-        holder.txtComment.setText(comment.getComment());
+        //holder.txtComment.setText(comment.getComment());
 
         // Get user's info
         DatabaseReference databaseReference = SetFirebase.getFirebaseDatabase();
@@ -57,7 +58,9 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.MyView
                 User user = dataSnapshot.getValue(User.class);
 
                 // Set user's info
-                holder.txtName.setText(user.getName());
+                String fullComment = "<b>" + user.getName() + "</b>" + "  " + comment.getComment();
+                holder.txtName.setText(Html.fromHtml(fullComment));
+//                holder.txtName.setText(user.getName());
                 String picPath = user.getPicturePath();
                 if (picPath != null) {
                     Uri url = Uri.parse(picPath);

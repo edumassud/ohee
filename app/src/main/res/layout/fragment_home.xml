@@ -12,8 +12,6 @@
         android:layout_height="50dp"
         android:background="@android:color/black">
 
-
-
         <TextView
             android:layout_width="match_parent"
             android:layout_height="50dp"
@@ -34,13 +32,15 @@
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabsHome"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#000000"
-        app:tabTextColor="@color/colorPrimary"
-        app:tabIndicatorColor="@color/colorPrimary">
+        android:scrollbarAlwaysDrawVerticalTrack="false"
+        app:tabIndicatorColor="@color/colorPrimary"
+        app:tabTextColor="@color/colorPrimary">
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"

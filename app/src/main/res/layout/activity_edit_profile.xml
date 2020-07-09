@@ -53,7 +53,7 @@
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="4dp"
+            android:layout_marginBottom="32dp"
             android:background="@drawable/text_field_background"
             android:textColorHint="@android:color/white">
 
@@ -66,21 +66,7 @@
                 android:textColor="@android:color/white" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="32dp"
-            android:background="@drawable/text_field_background"
-            android:hint="Phone number"
 
-            android:textColorHint="@android:color/white">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="phone"
-                android:textColor="@android:color/white"/>
-        </com.google.android.material.textfield.TextInputLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -155,6 +141,15 @@
                 android:text="oThEr"
                 android:textColor="@android:color/white" />
         </LinearLayout>
+
+        <Switch
+            android:id="@+id/swithPrivacy"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Private Account"
+            android:theme="@style/AppTheme"
+            android:textColor="@android:color/white"
+            android:textSize="18sp" />
 
         <LinearLayout
             android:layout_width="match_parent"

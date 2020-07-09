@@ -24,7 +24,6 @@
                 android:layout_height="wrap_content"
                 android:text="Nome"
                 android:textColor="#ffffff"
-                android:textStyle="bold"
                 android:layout_marginRight="4dp"/>
 
             <TextView
@@ -33,7 +32,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="#ffffff"
-                android:text="Comment" />
+                android:text="" />
 
     <include layout="@layout/divisor" />
 

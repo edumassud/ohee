@@ -24,6 +24,7 @@ public class User implements Serializable {
     private int followingCount = 0;
     private List<String> following = new ArrayList<>();
     private List<String> followers = new ArrayList<>();
+    private String isPrivate;
 
     public User(String name, String email, String password, String universityName, String universityDomain) {
 
@@ -43,6 +44,7 @@ public class User implements Serializable {
     }
 
     public void save() {
+        setIsPrivate("false");
         DatabaseReference firebase = SetFirebase.getFirebaseDatabase();
         firebase.child("user")
                 .child(this.idUser)
@@ -139,6 +141,7 @@ public class User implements Serializable {
         usersMap.put("searchName", getName().toUpperCase());
         usersMap.put("status", getStatus());
         usersMap.put("sex", getSex());
+        usersMap.put("isPrivate", getIsPrivate());
 
         return usersMap;
     }
@@ -277,5 +280,13 @@ public class User implements Serializable {
 
     public void setFollowers(List<String> followers) {
         this.followers = followers;
+    }
+
+    public String getIsPrivate() {
+        return isPrivate;
+    }
+
+    public void setIsPrivate(String isPrivate) {
+        this.isPrivate = isPrivate;
     }
 }

@@ -13,6 +13,8 @@ import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,9 +47,11 @@ public class EditProfileActivity extends AppCompatActivity {
     private TextView txtChangePic;
     private TextInputEditText editName, editBio, emailField, universityField;
     private Button btLogOut, btSave, btTaken, btComplicated, btSingle, btDude, btChick, btOther;
+    private Switch switchPrivacy;
 
     private String status;
     private String sex;
+    private String isPrivate;
 
     private String[] permissionsRequired = new String[] {
             Manifest.permission.READ_EXTERNAL_STORAGE
@@ -85,6 +89,7 @@ public class EditProfileActivity extends AppCompatActivity {
         btDude              = findViewById(R.id.btMale);
         btChick             = findViewById(R.id.btFemale);
         btOther             = findViewById(R.id.btOther);
+        switchPrivacy       = findViewById(R.id.swithPrivacy);
 
         emailField.setFocusable(false);
         universityField.setFocusable(false);
@@ -109,6 +114,9 @@ public class EditProfileActivity extends AppCompatActivity {
                 String bio = user.getBio();
                 String university = user.getUniversityName();
 
+                if (user.getIsPrivate().equals("true")) {
+                    switchPrivacy.setChecked(true);
+                }
 
                 if (user.getStatus() != null && !user.getStatus().isEmpty()) {
                     if (user.getStatus().equals("taken")) {
@@ -149,6 +157,17 @@ public class EditProfileActivity extends AppCompatActivity {
         chooseStatus();
         pickSex();
 
+        switchPrivacy.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    isPrivate = "true";
+                } else {
+                    isPrivate = "false";
+                }
+            }
+        });
+
         btLogOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -169,6 +188,7 @@ public class EditProfileActivity extends AppCompatActivity {
                 loggedUser.setBio(newBio);
                 loggedUser.setStatus(status);
                 loggedUser.setSex(sex);
+                loggedUser.setIsPrivate(isPrivate);
                 loggedUser.updatePersonalInfo();
                 finish();
             }

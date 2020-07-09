@@ -15,6 +15,7 @@ import com.example.ohee.R;
 import com.example.ohee.adapter.CommentsAdapter;
 import com.example.ohee.helpers.SetFirebaseUser;
 import com.example.ohee.model.Comment;
+import com.example.ohee.model.Notification;
 import com.example.ohee.model.Post;
 import com.example.ohee.model.User;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -75,6 +76,14 @@ public class CommentsActivity extends AppCompatActivity {
                     selectedPost.upDateComments();
                     adapter.notifyDataSetChanged();
                     editComment.setText("");
+
+                    Notification notification = new Notification();
+                    notification.setIdReceiver(selectedPost.getIdUser());
+                    notification.setIdSender(SetFirebaseUser.getUsersId());
+                    notification.setAction("comment");
+                    notification.setIdPost(selectedPost.getId());
+                    notification.setComment(comment.getComment());
+                    notification.save();
                 }
             }
         });
