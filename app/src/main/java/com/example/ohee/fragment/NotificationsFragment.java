@@ -16,11 +16,10 @@ import android.widget.ImageView;
 
 import com.example.ohee.R;
 import com.example.ohee.activity.MessengerActivity;
-import com.example.ohee.adapter.NotificatioinsAdapter;
+import com.example.ohee.adapter.NotificationsAdapter;
 import com.example.ohee.helpers.SetFirebase;
 import com.example.ohee.helpers.SetFirebaseUser;
 import com.example.ohee.model.Notification;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -39,7 +38,7 @@ public class NotificationsFragment extends Fragment {
     private SwipeRefreshLayout swipeRefresh;
 
     private List<Notification> notifications = new ArrayList<>();
-    private NotificatioinsAdapter adapter;
+    private NotificationsAdapter adapter;
 
     DatabaseReference databaseReference = SetFirebase.getFirebaseDatabase();
 
@@ -68,7 +67,7 @@ public class NotificationsFragment extends Fragment {
         });
 
         // Set adapter
-        adapter = new NotificatioinsAdapter(notifications, getActivity());
+        adapter = new NotificationsAdapter(notifications, getActivity());
 
         // Set recycler
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());

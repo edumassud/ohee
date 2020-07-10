@@ -286,6 +286,7 @@ public class VisitProfileActivity extends AppCompatActivity {
                                 public void onClick(View v) {
                                     if (selectedUser.getIsPrivate().equals("false")) {
                                         saveFollower(loggedUser, selectedUser);
+                                        loadPosts();
                                     } else {
                                         Notification notification = new Notification();
                                         notification.setIdReceiver(selectedUser.getIdUser());
@@ -293,7 +294,7 @@ public class VisitProfileActivity extends AppCompatActivity {
                                         notification.setAction("followReq");
                                         notification.save();
                                     }
-                                    loadPosts();
+
                                 }
                             });
                         }

@@ -20,25 +20,23 @@ import com.example.ohee.helpers.SetFirebase;
 import com.example.ohee.helpers.SetFirebaseUser;
 import com.example.ohee.model.Notification;
 import com.example.ohee.model.Post;
-import com.example.ohee.model.University;
 import com.example.ohee.model.User;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.Collections;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class NotificatioinsAdapter extends RecyclerView.Adapter<NotificatioinsAdapter.MyViewHolder> {
+public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdapter.MyViewHolder> {
     private List<Notification> notifications;
     private Context context;
 
     private String idLoggedUser = SetFirebaseUser.getUsersId();
 
-    public NotificatioinsAdapter(List<Notification> notifications, Context context) {
+    public NotificationsAdapter(List<Notification> notifications, Context context) {
         this.notifications = notifications;
         this.context = context;
     }
@@ -47,7 +45,7 @@ public class NotificatioinsAdapter extends RecyclerView.Adapter<NotificatioinsAd
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View notification = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_notifications, parent, false);
-        return new NotificatioinsAdapter.MyViewHolder(notification);
+        return new NotificationsAdapter.MyViewHolder(notification);
     }
 
     @Override
@@ -64,23 +62,25 @@ public class NotificatioinsAdapter extends RecyclerView.Adapter<NotificatioinsAd
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 User loggedUser = dataSnapshot.getValue(User.class);
 
-                // Get post
-                DatabaseReference postRef = postsRef.child(loggedUser.getUniversityDomain()).child(notification.getIdPost());
-                postRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        Post post = dataSnapshot.getValue(Post.class);
-                        Uri url = Uri.parse(post.getPath());
-                        Glide.with(context)
-                                .load(url)
-                                .into(holder.imgPost);
-                    }
+                if (notification.getAction().equals("postLiked") || notification.getAction().equals("comment")) {
+                    // Get post
+                    DatabaseReference postRef = postsRef.child(loggedUser.getUniversityDomain()).child(notification.getIdPost());
+                    postRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            Post post = dataSnapshot.getValue(Post.class);
+                            Uri url = Uri.parse(post.getPath());
+                            Glide.with(context)
+                                    .load(url)
+                                    .into(holder.imgPost);
+                        }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                    }
-                });
+                        }
+                    });
+                }
 
                 // Set sender info
                 DatabaseReference senderRef = usersRef.child(notification.getIdSender());

@@ -77,7 +77,7 @@ public class CommentsActivity extends AppCompatActivity {
                     adapter.notifyDataSetChanged();
                     editComment.setText("");
 
-                    if (!comment.getIdUser().equals(SetFirebaseUser.getUsersId())) {
+                    if (!selectedPost.getIdUser().equals(SetFirebaseUser.getUsersId())) {
                         Notification notification = new Notification();
                         notification.setIdReceiver(selectedPost.getIdUser());
                         notification.setIdSender(SetFirebaseUser.getUsersId());
