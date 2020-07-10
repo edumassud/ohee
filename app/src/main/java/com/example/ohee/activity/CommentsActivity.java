@@ -77,13 +77,15 @@ public class CommentsActivity extends AppCompatActivity {
                     adapter.notifyDataSetChanged();
                     editComment.setText("");
 
-                    Notification notification = new Notification();
-                    notification.setIdReceiver(selectedPost.getIdUser());
-                    notification.setIdSender(SetFirebaseUser.getUsersId());
-                    notification.setAction("comment");
-                    notification.setIdPost(selectedPost.getId());
-                    notification.setComment(comment.getComment());
-                    notification.save();
+                    if (!comment.getIdUser().equals(SetFirebaseUser.getUsersId())) {
+                        Notification notification = new Notification();
+                        notification.setIdReceiver(selectedPost.getIdUser());
+                        notification.setIdSender(SetFirebaseUser.getUsersId());
+                        notification.setAction("comment");
+                        notification.setIdPost(selectedPost.getId());
+                        notification.setComment(comment.getComment());
+                        notification.save();
+                    }
                 }
             }
         });

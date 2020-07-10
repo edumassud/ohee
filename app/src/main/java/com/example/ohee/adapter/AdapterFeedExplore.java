@@ -3,6 +3,7 @@ package com.example.ohee.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,7 +67,7 @@ public class AdapterFeedExplore extends RecyclerView.Adapter<AdapterFeedExplore.
                 Uri urlProfile = Uri.parse(post.getPath());
                 Glide.with(context).load(urlProfile).into(holder.imgPost);
             }
-            holder.txtCaption.setText(post.getCaption());
+//            holder.txtCaption.setText(post.getCaption());
             holder.txtLikesCount.setText(post.getLikedBy().size() + " Likes");
             if (post.getLikedBy().contains(SetFirebaseUser.getUsersId())) {
                 holder.btLike.setLiked(true);
@@ -84,7 +85,9 @@ public class AdapterFeedExplore extends RecyclerView.Adapter<AdapterFeedExplore.
                         Glide.with(context).load(urlPost).into(holder.imgProfile);
                     }
                     holder.txtName.setText(user.getName());
-                    holder.txtNameCap.setText(user.getName());
+//                    holder.txtNameCap.setText(user.getName());
+                    String fullComment = "<b>" + user.getName() + "</b>" + "  "  + post.getCaption();
+                    holder.txtNameCap.setText(Html.fromHtml(fullComment));
                     holder.txtUniversity.setVisibility(View.VISIBLE);
                     holder.txtUniversity.setText(user.getUniversityName());
                 }

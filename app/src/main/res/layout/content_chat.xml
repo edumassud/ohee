@@ -42,7 +42,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@android:color/black"
+                android:background="@drawable/message_field_bg"
                 android:ems="10"
                 android:textColor="#ffffff"
                 android:inputType="textPersonName" />

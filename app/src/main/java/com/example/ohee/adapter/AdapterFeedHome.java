@@ -58,15 +58,15 @@ public class AdapterFeedHome extends RecyclerView.Adapter<AdapterFeedHome.MyView
         Post post = posts.get(position);
 
         if (post != null) {
-            int likes = post.getLikedBy().size();
+
 
             // Set post info
             if (post.getPath() != null) {
                 Uri urlProfile = Uri.parse(post.getPath());
                 Glide.with(context).load(urlProfile).into(holder.imgPost);
             }
-            holder.txtCaption.setText(post.getCaption());
-            holder.txtLikesCount.setText(likes + " Likes");
+//            holder.txtCaption.setText(post.getCaption());
+
 
 
 
@@ -81,7 +81,9 @@ public class AdapterFeedHome extends RecyclerView.Adapter<AdapterFeedHome.MyView
                         Glide.with(context).load(urlPost).into(holder.imgProfile);
                      }
                     holder.txtName.setText(user.getName());
-                    holder.txtNameCap.setText(user.getName());
+                    String fullComment = "<b>" + user.getName() + "</b>" + "  " + post.getCaption();
+//                    holder.txtName.setText(Html.fromHtml(fullComment));
+                    holder.txtNameCap.setText(Html.fromHtml(fullComment));
                 }
 
                 @Override
@@ -90,7 +92,7 @@ public class AdapterFeedHome extends RecyclerView.Adapter<AdapterFeedHome.MyView
                 }
             });
 
-
+            holder.txtLikesCount.setText(post.getLikedBy().size() + " Likes");
             if (post.getLikedBy().contains(SetFirebaseUser.getUsersId())) {
                 holder.btLike.setLiked(true);
             } else {
@@ -125,11 +127,6 @@ public class AdapterFeedHome extends RecyclerView.Adapter<AdapterFeedHome.MyView
                     post.getLikedBy().remove(SetFirebaseUser.getUsersId());
                     post.upDateLikes();
                     holder.txtLikesCount.setText(post.getLikedBy().size() + " Likes");
-                    if (post.getLikedBy().contains(SetFirebaseUser.getUsersId())) {
-                        holder.btLike.setLiked(true);
-                    } else {
-                        holder.btLike.setLiked(false);
-                    }
 
                     if (!SetFirebaseUser.getUsersId().equals(post.getIdUser())) {
                         Notification notification = new Notification();
@@ -141,6 +138,7 @@ public class AdapterFeedHome extends RecyclerView.Adapter<AdapterFeedHome.MyView
                     }
                 }
             });
+
 
             // Set comment count
             int commentCount = post.getComments().size();

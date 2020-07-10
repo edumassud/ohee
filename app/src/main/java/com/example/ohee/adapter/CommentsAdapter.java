@@ -1,6 +1,7 @@
 package com.example.ohee.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -15,6 +16,7 @@ import com.bumptech.glide.Glide;
 import com.example.ohee.R;
 import com.example.ohee.activity.VisitProfileActivity;
 import com.example.ohee.helpers.SetFirebase;
+import com.example.ohee.helpers.SetFirebaseUser;
 import com.example.ohee.model.Comment;
 import com.example.ohee.model.User;
 import com.google.firebase.database.DataSnapshot;
@@ -74,6 +76,60 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.MyView
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        // Set imgProfile click
+        holder.imgProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DatabaseReference usersRef = databaseReference.child("user").child(comment.getIdUser());
+                usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        User user = dataSnapshot.getValue(User.class);
+
+                        if (user.getIdUser().equals(SetFirebaseUser.getUsersId())) {
+                            holder.imgProfile.setClickable(false);
+                        } else {
+                            Intent i = new Intent(context, VisitProfileActivity.class);
+                            i.putExtra("selectedUser", user);
+                            context.startActivity(i);
+                        }
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+            }
+        });
+
+        // Set name click
+        holder.txtName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DatabaseReference usersRef = databaseReference.child("user").child(comment.getIdUser());
+                usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        User user = dataSnapshot.getValue(User.class);
+
+                        if (user.getIdUser().equals(SetFirebaseUser.getUsersId())) {
+                            holder.txtName.setClickable(false);
+                        } else {
+                            Intent i = new Intent(context, VisitProfileActivity.class);
+                            i.putExtra("selectedUser", user);
+                            context.startActivity(i);
+                        }
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
 
             }
         });

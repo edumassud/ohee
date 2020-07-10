@@ -18,6 +18,7 @@ import com.example.ohee.R;
 import com.example.ohee.adapter.AdapterGrid;
 import com.example.ohee.helpers.SetFirebase;
 import com.example.ohee.helpers.SetFirebaseUser;
+import com.example.ohee.model.Notification;
 import com.example.ohee.model.Post;
 import com.example.ohee.model.User;
 import com.google.firebase.database.DataSnapshot;
@@ -283,7 +284,15 @@ public class VisitProfileActivity extends AppCompatActivity {
                             btFollow.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    saveFollower(loggedUser, selectedUser);
+                                    if (selectedUser.getIsPrivate().equals("false")) {
+                                        saveFollower(loggedUser, selectedUser);
+                                    } else {
+                                        Notification notification = new Notification();
+                                        notification.setIdReceiver(selectedUser.getIdUser());
+                                        notification.setIdSender(loggedUser.getIdUser());
+                                        notification.setAction("followReq");
+                                        notification.save();
+                                    }
                                     loadPosts();
                                 }
                             });

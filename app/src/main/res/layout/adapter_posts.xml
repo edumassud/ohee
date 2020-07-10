@@ -113,18 +113,16 @@
                 android:layout_marginStart="8dp"
                 android:text="name"
                 android:textColor="@android:color/white"
-                android:textSize="18sp"
+                android:textSize="18sp" />
 
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/txtCaption"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_weight="1"
-                android:text="caption"
-                android:textColor="@android:color/white" />
+<!--            <TextView-->
+<!--                android:id="@+id/txtCaption"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginStart="8dp"-->
+<!--                android:layout_weight="1"-->
+<!--                android:text="caption"-->
+<!--                android:textColor="@android:color/white" />-->
 
         </LinearLayout>
 

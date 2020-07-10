@@ -1,5 +1,6 @@
 package com.example.ohee.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -8,9 +9,11 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.GridView;
 
 import com.example.ohee.R;
+import com.example.ohee.activity.PostActivity;
 import com.example.ohee.adapter.AdapterGrid;
 import com.example.ohee.helpers.SetFirebase;
 import com.example.ohee.helpers.SetFirebaseUser;
@@ -42,6 +45,7 @@ public class UniversityGridFragment extends Fragment {
     DatabaseReference postsRef = databaseReference.child("posts");
     DatabaseReference userRef = databaseReference.child("user").child(SetFirebaseUser.getUsersId());
 
+    private List<Post> posts = new ArrayList<>();
 
     public UniversityGridFragment() {
         // Required empty public constructor
@@ -61,6 +65,7 @@ public class UniversityGridFragment extends Fragment {
 
         initImgLoader();
         loadPosts();
+        setClick();
 
         return view;
     }
@@ -104,6 +109,7 @@ public class UniversityGridFragment extends Fragment {
 
                             if (isPublic || sameSchoolFriend || sameSchool || isFriend) {
                                 urls.add(post.getPath());
+                                posts.add(post);
                             }
 
                         }
@@ -132,8 +138,34 @@ public class UniversityGridFragment extends Fragment {
 
     }
 
-    private void getPosts(String id) {
-        DatabaseReference thisUniversitysPosts = postsRef.child(university.getDomain()).child(id);
+    private void setClick() {
+        // Set click
+        grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Post post = posts.get(position);
+
+                DatabaseReference selectedUserRef = databaseReference.child("user").child(post.getIdUser());
+                selectedUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        User user = dataSnapshot.getValue(User.class);
+                        Intent i = new Intent(getContext(), PostActivity.class);
+                        i.putExtra("selectedPost", post);
+                        i.putExtra("selectedUser", user);
+
+                        startActivity(i);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+
+            }
+        });
 
 
     }

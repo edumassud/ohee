@@ -26,6 +26,7 @@ import com.example.ohee.helpers.SetFirebaseUser;
 import com.example.ohee.model.Chat;
 import com.example.ohee.model.Group;
 import com.example.ohee.model.Message;
+import com.example.ohee.model.Notification;
 import com.example.ohee.model.User;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -263,6 +264,14 @@ public class ChatActivity extends AppCompatActivity {
 
                 //salvar conversa p destinatario
                 salvarConversa(idUsuarioDestinatario, idUsuarioRemetente, usuarioemetente, mensagem, false);
+
+                // Save notification
+                Notification notification = new Notification();
+                notification.setIdReceiver(idUsuarioDestinatario);
+                notification.setIdSender(SetFirebaseUser.getUsersId());
+                notification.setAction("message");
+                notification.save();
+
             } else {
                 for (User membro : grupo.getMembros()) {
                     String idRemetenteGrupo = membro.getIdUser();

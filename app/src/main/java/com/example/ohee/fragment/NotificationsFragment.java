@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,6 +36,7 @@ import java.util.List;
 public class NotificationsFragment extends Fragment {
     private ImageView btMessanger;
     private RecyclerView recycler;
+    private SwipeRefreshLayout swipeRefresh;
 
     private List<Notification> notifications = new ArrayList<>();
     private NotificatioinsAdapter adapter;
@@ -54,8 +56,9 @@ public class NotificationsFragment extends Fragment {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_notifications, container, false);
 
-        btMessanger = view.findViewById(R.id.btMessanger);
-        recycler    = view.findViewById(R.id.recycler);
+        btMessanger  = view.findViewById(R.id.btMessanger);
+        recycler     = view.findViewById(R.id.recycler);
+        swipeRefresh = view.findViewById(R.id.refresh);
 
         btMessanger.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,8 +76,20 @@ public class NotificationsFragment extends Fragment {
         recycler.setHasFixedSize(true);
         recycler.setAdapter(adapter);
 
-        // Getting list of notifications
+        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getNotifications();
+            }
+        });
 
+        getNotifications();
+
+        return view;
+    }
+
+    private void getNotifications() {
+        notifications.clear();
         DatabaseReference notificationsRef = databaseReference.child("notifications").child(idLoggedUser);
         notificationsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -84,6 +99,7 @@ public class NotificationsFragment extends Fragment {
                     notifications.add(0, notification);
                 }
                 adapter.notifyDataSetChanged();
+                swipeRefresh.setRefreshing(false);
             }
 
             @Override
@@ -91,8 +107,6 @@ public class NotificationsFragment extends Fragment {
 
             }
         });
-
-        return view;
     }
 
 

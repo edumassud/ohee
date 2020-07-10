@@ -1,6 +1,7 @@
 package com.example.ohee.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -115,6 +116,35 @@ public class NotificatioinsAdapter extends RecyclerView.Adapter<NotificatioinsAd
 
             }
         });
+
+        // Set imgProfile click
+        holder.imgProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DatabaseReference usersRef = databaseReference.child("user").child(notification.getIdSender());
+                usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        User user = dataSnapshot.getValue(User.class);
+
+                        if (user.getIdUser().equals(SetFirebaseUser.getUsersId())) {
+                            holder.imgProfile.setClickable(false);
+                        } else {
+                            Intent i = new Intent(context, VisitProfileActivity.class);
+                            i.putExtra("selectedUser", user);
+                            context.startActivity(i);
+                        }
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+            }
+        });
+
+
 
 
     }
