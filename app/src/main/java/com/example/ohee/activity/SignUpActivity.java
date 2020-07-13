@@ -2,10 +2,12 @@ package com.example.ohee.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.service.autofill.RegexValidator;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -28,6 +30,7 @@ import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import org.json.JSONException;
@@ -37,6 +40,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -55,12 +60,13 @@ public class SignUpActivity extends AppCompatActivity {
 
     private final static String WHO_IS_API_KEY = "at_Ug8nDYbZKxPmyPI2Nfx7TWL0xbk9g";
 
-    private TextInputEditText nameField, emailField, passwordField, confirmPasswordField;
+    private TextInputEditText nameField, emailField, passwordField, confirmPasswordField, userNameField;
     private Button btSignUp;
     private ProgressBar progressBar;
 
     private FirebaseAuth auth = SetFirebase.getFirebaseAuth();
     private User user;
+    private DatabaseReference usersRef = SetFirebase.getFirebaseDatabase().child("user");
 
     private Retrofit retrofit;
 
@@ -69,6 +75,7 @@ public class SignUpActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
 
+        userNameField = findViewById(R.id.editUserName);
         nameField = findViewById(R.id.editName);
         emailField = findViewById(R.id.editEmail);
         passwordField = findViewById(R.id.editPassword);
@@ -86,6 +93,7 @@ public class SignUpActivity extends AppCompatActivity {
         btSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String txtUserName = userNameField.getText().toString();
                 String txtName = nameField.getText().toString();
                 String txtEmail = emailField.getText().toString();
                 String txtPassword = passwordField.getText().toString();
@@ -93,7 +101,13 @@ public class SignUpActivity extends AppCompatActivity {
 
                 if (txtName.isEmpty() || txtEmail.isEmpty() || txtPassword.isEmpty() || txtConfirmPassword.isEmpty()) {
                     Toast.makeText(SignUpActivity.this, "Complete all fields", Toast.LENGTH_SHORT).show();
-                } else if(txtEmail.length() <= 5) {
+                } else if(txtUserName.length() < 3) {
+                    Toast.makeText(SignUpActivity.this, "Username must have more than 2 characters", Toast.LENGTH_SHORT).show();
+                } else if(!isValidUsername(txtUserName)) {
+                    Toast.makeText(SignUpActivity.this, "Username invalid", Toast.LENGTH_SHORT).show();
+                } else if(!checkUserName(txtUserName)){
+                    Toast.makeText(SignUpActivity.this, "Username already exists", Toast.LENGTH_SHORT).show();
+                }  else if(txtEmail.length() <= 5) {
                     Toast.makeText(SignUpActivity.this, "Email is invalid", Toast.LENGTH_SHORT).show();
                 } else if (!txtEmail.substring(txtEmail.length() - 4).equals(".edu")) {
                     Toast.makeText(SignUpActivity.this, "Email is not a college email", Toast.LENGTH_SHORT).show();
@@ -102,79 +116,126 @@ public class SignUpActivity extends AppCompatActivity {
                     Toast.makeText(SignUpActivity.this, "Passwords don't match", Toast.LENGTH_SHORT).show();
                     confirmPasswordField.setText("");
                 } else {
-                    progressBar.setVisibility(View.VISIBLE);
-                    String domain = txtEmail.substring(txtEmail.lastIndexOf("@") + 1).replace(".", "");
-                    DatabaseReference databaseReference = SetFirebase.getFirebaseDatabase();
-                    DatabaseReference universityRef = databaseReference
-                            .child("universities")
-                            .child(domain);
+                    Query searchUsername = usersRef.orderByChild("userName").equalTo(txtUserName);
 
-                    universityRef.addListenerForSingleValueEvent(
-                            new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    if (dataSnapshot.exists()) {
-                                        University university = dataSnapshot.getValue(University.class);
-                                        user = new User(txtName, txtEmail, txtPassword, university.getName(), university.getDomain());
-                                        user.setSearchName(txtName.toUpperCase());
+                    searchUsername.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.exists()) {
+                                Toast.makeText(SignUpActivity.this, "Username already exists", Toast.LENGTH_SHORT).show();
+                            } else {
+                                progressBar.setVisibility(View.VISIBLE);
+                                String domain = txtEmail.substring(txtEmail.lastIndexOf("@") + 1).replace(".", "");
+                                DatabaseReference databaseReference = SetFirebase.getFirebaseDatabase();
+                                DatabaseReference universityRef = databaseReference
+                                        .child("universities")
+                                        .child(domain);
 
-                                        signUpUser(university);
-
-                                        // Increment university count
-                                        university.setCount(university.getCount() + 1);
-                                        university.update();
-                                    } else {
-                                        Map<String, String> params = new HashMap<String, String>();
-                                        params.put("apiKey", WHO_IS_API_KEY);
-                                        params.put("domainName", txtEmail);
-                                        params.put("outputFormat", "JSON");
-
-                                        GetDataService service = retrofit.create(GetDataService.class);
-                                        Call<String> call = service.getUniversity(params);
-                                        call.enqueue(new Callback<String>() {
+                                universityRef.addListenerForSingleValueEvent(
+                                        new ValueEventListener() {
                                             @Override
-                                            public void onResponse(Call<String> call, Response<String> response) {
-
-                                                try {
-                                                    JSONObject responseObject = new JSONObject(response.body());
-                                                    University university = new University(responseObject);
-                                                    university.setDomain(domain);
-                                                    university.save();
-
-                                                    // Increment university count
-                                                    university.setCount(university.getCount() + 1);
-                                                    university.update();
-
-                                                    user = new User(txtName, txtEmail, txtPassword, university.getName(), university.getDomain());
+                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                if (dataSnapshot.exists()) {
+                                                    University university = dataSnapshot.getValue(University.class);
+                                                    user = new User(txtUserName, txtName, txtEmail, txtPassword, university.getName(), university.getDomain());
                                                     user.setSearchName(txtName.toUpperCase());
 
                                                     signUpUser(university);
 
-                                                }catch (JSONException e) {
-                                                    Log.e("ERROR", e.getLocalizedMessage());
-                                                }
+                                                    // Increment university count
+                                                    university.setCount(university.getCount() + 1);
+                                                    university.update();
+                                                } else {
+                                                    Map<String, String> params = new HashMap<String, String>();
+                                                    params.put("apiKey", WHO_IS_API_KEY);
+                                                    params.put("domainName", txtEmail);
+                                                    params.put("outputFormat", "JSON");
 
+                                                    GetDataService service = retrofit.create(GetDataService.class);
+                                                    Call<String> call = service.getUniversity(params);
+                                                    call.enqueue(new Callback<String>() {
+                                                        @Override
+                                                        public void onResponse(Call<String> call, Response<String> response) {
+
+                                                            try {
+                                                                JSONObject responseObject = new JSONObject(response.body());
+                                                                University university = new University(responseObject);
+                                                                university.setDomain(domain);
+                                                                university.save();
+
+                                                                // Increment university count
+                                                                university.setCount(university.getCount() + 1);
+                                                                university.update();
+
+                                                                user = new User(txtUserName, txtName, txtEmail, txtPassword, university.getName(), university.getDomain());
+                                                                user.setSearchName(txtName.toUpperCase());
+
+                                                                signUpUser(university);
+
+                                                            }catch (JSONException e) {
+                                                                Log.e("ERROR", e.getLocalizedMessage());
+                                                            }
+
+                                                        }
+
+                                                        @Override
+                                                        public void onFailure(Call<String> call, Throwable t) {
+                                                            Log.e("PASSEI", "FALHOU");
+                                                        }
+                                                    });
+                                                }
                                             }
 
                                             @Override
-                                            public void onFailure(Call<String> call, Throwable t) {
-                                                Log.e("PASSEI", "FALHOU");
+                                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
                                             }
-                                        });
-                                    }
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                }
+                                        }
+                                );
                             }
-                    );
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
+
                 }
             }
         });
     }
 
+    private boolean isValidUsername(String name) {
+        String regex = "^[aA-zZ]\\w{5,29}$";
+        Pattern p = Pattern.compile(regex);
+        Matcher m = p.matcher(name);
+
+        // Return if the username
+        // matched the ReGex
+        return m.matches();
+    }
+
+    private boolean checkUserName(String txtUserName) {
+        Query searchUsername = usersRef.orderByChild("username").equalTo(txtUserName);
+
+        searchUsername.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    Toast.makeText(SignUpActivity.this, "Username already exists", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        return true;
+    }
 
     public void signUpUser(University university) {
         progressBar.setVisibility(View.VISIBLE);

@@ -44,7 +44,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class ProfileFragment extends Fragment {
     private CircleImageView profileImg;
     private TextView profileNameAndUniversity;
-    private TextView postsCount, followingCount, followersCount;
+    private TextView profileUsername, postsCount, followingCount, followersCount;
     private TextView profileBio;
     private Button btEditProfile;
     private GridView gridView;
@@ -74,6 +74,7 @@ public class ProfileFragment extends Fragment {
 
         // Screen components
         profileImg                  = view.findViewById(R.id.profileImg);
+        profileUsername             = view.findViewById(R.id.txtUsername);
         profileNameAndUniversity    = view.findViewById(R.id.profileNameAndUniversity);
         postsCount                  = view.findViewById(R.id.postsCount);
         followersCount              = view.findViewById(R.id.followersCount);
@@ -94,6 +95,7 @@ public class ProfileFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
                 String txtNameAndUniversity     = user.getName() + " • " + user.getUniversityName();
+                String username                 = String.valueOf(user.getUserName());
                 String posts                    = String.valueOf(user.getPostCount());
                 String following                = String.valueOf(user.getFollowingCount());
                 String followers                = String.valueOf(user.getFollowerCount());
@@ -104,6 +106,7 @@ public class ProfileFragment extends Fragment {
 
                 // Setting data on screen
                 postsCount.setText(posts);
+                profileUsername.setText(username);
                 followingCount.setText(following);
                 followersCount.setText(followers);
                 profileBio.setText(bio);

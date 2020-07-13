@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 public class User implements Serializable {
-    private String name, email, password, idUser, picturePath, searchName, universityName, universityDomain, status, sex;
+    private String userName, name, email, password, idUser, picturePath, searchName, universityName, universityDomain, status, sex;
     private String bio = "Im new to OhEE!";
     private int postCount = 0;
     private int followerCount = 0;
@@ -26,8 +26,8 @@ public class User implements Serializable {
     private List<String> followers = new ArrayList<>();
     private String isPrivate;
 
-    public User(String name, String email, String password, String universityName, String universityDomain) {
-
+    public User(String userName, String name, String email, String password, String universityName, String universityDomain) {
+        this.userName = userName;
         this.name = name;
         this.email = email;
         this.password = password;
@@ -151,6 +151,14 @@ public class User implements Serializable {
         usersMap.put("picturePath", getPicturePath());
 
         return usersMap;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public int getPostCount() {

@@ -98,7 +98,7 @@ public class LoginActivity extends AppCompatActivity {
                     try {
                         throw task.getException();
                     } catch (FirebaseAuthInvalidUserException e) {
-                        exception = "Ivalid user";
+                        exception = "Invalid user";
                     } catch (FirebaseAuthInvalidCredentialsException e) {
                         exception = "Email and password do not match";
                     } catch (Exception e) {
@@ -113,7 +113,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void checkLogged () {
-        //auth.signOut();
+//        auth.signOut();
         if (auth.getCurrentUser() != null){ //&& auth.getCurrentUser().isEmailVerified()) {
             goToMain();
         }
