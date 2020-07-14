@@ -20,6 +20,7 @@ public class Notification {
     private String action;
     private String idPost;
     private String comment;
+    private String status;
 
     public Notification() {
 
@@ -49,12 +50,14 @@ public class Notification {
         DatabaseReference notificationsRef = databaseReference
                 .child("notifications").child(getIdReceiver());
 
+
+
         notificationsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     Notification notification = ds.getValue(Notification.class);
-                    if (notification.getIdPost().equals(getIdPost()) && notification.getIdSender().equals(getIdSender())) {
+                    if (notification.getIdNotification().equals(getIdNotification())) {
                         DatabaseReference notificationRef = notificationsRef.child(notification.getIdNotification());
                         notificationRef.removeValue();
                         break;
@@ -67,11 +70,28 @@ public class Notification {
 
             }
         });
-
-
     }
 
-    @Exclude
+    public void updateStatus() {
+        DatabaseReference firebaseRef = SetFirebase.getFirebaseDatabase();
+        DatabaseReference notificationRef = firebaseRef
+                .child("notifications")
+                .child(getIdReceiver())
+                .child(getIdNotification());
+
+        Map<String, Object> status = convertStatus();
+
+        notificationRef.updateChildren(status);
+    }
+
+    public Map<String, Object> convertStatus() {
+        HashMap<String, Object> status = new HashMap<>();
+        status.put("status", getStatus());
+
+
+        return status;
+    }
+
     public String getIdReceiver() {
         return idReceiver;
     }
@@ -119,5 +139,13 @@ public class Notification {
 
     public void setComment(String comment) {
         this.comment = comment;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

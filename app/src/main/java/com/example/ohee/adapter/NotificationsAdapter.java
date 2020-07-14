@@ -7,7 +7,9 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -15,6 +17,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.ohee.R;
+import com.example.ohee.activity.ChatActivity;
+import com.example.ohee.activity.PostActivity;
 import com.example.ohee.activity.VisitProfileActivity;
 import com.example.ohee.helpers.SetFirebase;
 import com.example.ohee.helpers.SetFirebaseUser;
@@ -35,6 +39,9 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
     private Context context;
 
     private String idLoggedUser = SetFirebaseUser.getUsersId();
+    private DatabaseReference databaseReference = SetFirebase.getFirebaseDatabase();
+    private DatabaseReference usersRef          = databaseReference.child("user");
+    private DatabaseReference postsRef          = databaseReference.child("posts");
 
     public NotificationsAdapter(List<Notification> notifications, Context context) {
         this.notifications = notifications;
@@ -51,9 +58,6 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         Notification notification = notifications.get(position);
-        DatabaseReference databaseReference = SetFirebase.getFirebaseDatabase();
-        DatabaseReference usersRef = databaseReference.child("user");
-        DatabaseReference postsRef = databaseReference.child("posts");
 
         // Get logged user
         DatabaseReference loggedUserRef = usersRef.child(idLoggedUser);
@@ -61,6 +65,7 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 User loggedUser = dataSnapshot.getValue(User.class);
+
 
                 if (notification.getAction().equals("postLiked") || notification.getAction().equals("comment")) {
                     // Get post
@@ -73,6 +78,28 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
                             Glide.with(context)
                                     .load(url)
                                     .into(holder.imgPost);
+
+                            holder.imgPost.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Intent i = new Intent(context, PostActivity.class);
+                                    i.putExtra("selectedPost", post);
+                                    usersRef.child(post.getIdUser()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                            User selectedUser = dataSnapshot.getValue(User.class);
+                                            i.putExtra("selectedUser", selectedUser);
+                                            context.startActivity(i);
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                        }
+                                    });
+
+                                }
+                            });
                         }
 
                         @Override
@@ -80,7 +107,81 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
 
                         }
                     });
+                } else if (notification.getAction().equals("followReq")) {
+                    if (notification.getStatus().equals("answered")) {
+                        holder.imgPost.setVisibility(View.GONE);
+                        holder.buttons.setVisibility(View.GONE);
+                    } else {
+                        holder.imgPost.setVisibility(View.GONE);
+                        holder.buttons.setVisibility(View.VISIBLE);
+                        DatabaseReference senderRef = usersRef.child(notification.getIdSender());
+
+                        holder.btAccept.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+
+                                senderRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                        User friendsUser = dataSnapshot.getValue(User.class);
+
+                                        friendsUser.setFollowingCount(friendsUser.getFollowingCount() + 1);
+                                        loggedUser.setFollowerCount(loggedUser.getFollowerCount() + 1);
+
+                                        friendsUser.changeFollowing(loggedUser.getIdUser(), "add");
+                                        loggedUser.changeFollower(friendsUser.getIdUser(), "add");
+
+                                        notification.setStatus("answered");
+                                        notification.updateStatus();
+
+                                        String fullNotification = "<b>" + friendsUser.getName() + "</b>" + "  started Following you.";
+                                        holder.txtName.setText(Html.fromHtml(fullNotification));
+                                        holder.buttons.setVisibility(View.GONE);
+
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                    }
+                                });
+                            }
+                        });
+                    }
+
+                    holder.btDeny.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            notification.deleteNotification();
+                            holder.layout.setVisibility(View.GONE);
+
+                        }
+                    });
+                } else if (notification.getAction().equals("message")) {
+                    holder.imgPost.setVisibility(View.GONE);
+                    holder.txtName.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent i = new Intent(context, ChatActivity.class);
+                            usersRef.child(notification.getIdSender()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    User selectedUser = dataSnapshot.getValue(User.class);
+                                    i.putExtra("chatContato", selectedUser);
+                                    context.startActivity(i);
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
+
+                        }
+                    });
                 }
+
+
 
                 // Set sender info
                 DatabaseReference senderRef = usersRef.child(notification.getIdSender());
@@ -94,6 +195,12 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
                             fullNotification = "<b>" + sender.getName() + "</b>" + " commented: " + notification.getComment();
                         } else if (notification.getAction().equals("postLiked")) {
                             fullNotification = "<b>" + sender.getName() + "</b>" + "  liked your post." ;
+                        } else if (notification.getAction().equals("followReq") && notification.getStatus().equals("sent")) {
+                            fullNotification = "<b>" + sender.getName() + "</b>" + "  wants to follow you." ;
+                        } else if (notification.getAction().equals("followReq") && notification.getStatus().equals("answered")) {
+                            fullNotification = "<b>" + sender.getName() + "</b>" + "  started following you." ;
+                        } else if (notification.getAction().equals("message")) {
+                            fullNotification = "<b>" + sender.getName() + "</b>" + "  sent you a message" ;
                         }
                         holder.txtName.setText(Html.fromHtml(fullNotification));
 
@@ -145,8 +252,6 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
         });
 
 
-
-
     }
 
     @Override
@@ -158,6 +263,8 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
         private CircleImageView imgProfile;
         private TextView txtName;
         private ImageView imgPost;
+        private Button btAccept, btDeny;
+        private LinearLayout buttons, layout;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -165,6 +272,10 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
             imgProfile = itemView.findViewById(R.id.imgProfile);
             txtName    = itemView.findViewById(R.id.txtName);
             imgPost    = itemView.findViewById(R.id.imgPost);
+            btAccept   = itemView.findViewById(R.id.btAccept);
+            btDeny     = itemView.findViewById(R.id.btDeny);
+            buttons    = itemView.findViewById(R.id.buttons);
+            layout     = itemView.findViewById(R.id.layout);
         }
     }
 }

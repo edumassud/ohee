@@ -82,9 +82,15 @@ public class NotificationsFragment extends Fragment {
             }
         });
 
-        getNotifications();
+
 
         return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        getNotifications();
     }
 
     private void getNotifications() {
@@ -96,6 +102,7 @@ public class NotificationsFragment extends Fragment {
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     Notification notification = ds.getValue(Notification.class);
                     notifications.add(0, notification);
+
                 }
                 adapter.notifyDataSetChanged();
                 swipeRefresh.setRefreshing(false);

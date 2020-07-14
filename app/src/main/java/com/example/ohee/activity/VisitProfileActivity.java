@@ -47,8 +47,6 @@ public class VisitProfileActivity extends AppCompatActivity {
 
     private DatabaseReference databaseReference = SetFirebase.getFirebaseDatabase();
     private DatabaseReference usersRef          = databaseReference.child("user");
-    private DatabaseReference followingRef      = databaseReference.child("following");
-    private DatabaseReference followerRef       = databaseReference.child("followers");
     private DatabaseReference postsRef          = databaseReference.child("posts");
     private DatabaseReference usersUniversitysPosts;
     private DatabaseReference userHostRef;
@@ -245,7 +243,7 @@ public class VisitProfileActivity extends AppCompatActivity {
 
     private void getLoggedUserData() {
         loggedUserRef = usersRef.child(idLoggedUSer);
-        loggedUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        loggedUserRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 loggedUser = dataSnapshot.getValue(User.class);
@@ -260,67 +258,69 @@ public class VisitProfileActivity extends AppCompatActivity {
         });
     }
 
+
     private void checkFollowing() {
+//        DatabaseReference followerRef = followingRef
+//                .child(idLoggedUSer)
+//                .child(selectedUser.getIdUser());
 
-        DatabaseReference followerRef = followingRef
-                .child(idLoggedUSer)
-                .child(selectedUser.getIdUser());
-
-        followerRef.addValueEventListener(
-                new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.exists()) {
-                            btFollow.setText("Following");
-                            btFollow.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    unfollow(loggedUser, selectedUser);
-                                    loadPosts();
-                                }
-                            });
-                        } else {
-                            btFollow.setText("Follow");
-                            btFollow.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    if (selectedUser.getIsPrivate().equals("false")) {
-                                        saveFollower(loggedUser, selectedUser);
-                                        loadPosts();
-                                    } else {
-                                        Notification notification = new Notification();
-                                        notification.setIdReceiver(selectedUser.getIdUser());
-                                        notification.setIdSender(loggedUser.getIdUser());
-                                        notification.setAction("followReq");
-                                        notification.save();
-                                    }
-
-                                }
-                            });
+        if (selectedUser.getFollowers().contains(loggedUser.getIdUser())) {
+            btFollow.setText("Following");
+            btFollow.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    unfollow(loggedUser, selectedUser);
+                    loadPosts();
+                }
+            });
+        } else {
+            DatabaseReference notificationsRef = databaseReference.child("notifications").child(selectedUser.getIdUser());
+            notificationsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                        Notification notification = ds.getValue(Notification.class);
+                        if (notification.getAction().equals("followReq") && notification.getIdSender().equals(idLoggedUSer)) {
+                            btFollow.setText("Requested");
+                            btFollow.setClickable(false);
                         }
                     }
 
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+            if (!btFollow.getText().equals("Requested")) {
+                btFollow.setText("Follow");
+                btFollow.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                    public void onClick(View v) {
+                        if (selectedUser.getIsPrivate().equals("false")) {
+                            saveFollower(loggedUser, selectedUser);
+                            loadPosts();
+                        } else {
+                            Notification notification = new Notification();
+                            notification.setIdReceiver(selectedUser.getIdUser());
+                            notification.setIdSender(loggedUser.getIdUser());
+                            notification.setAction("followReq");
+                            notification.setStatus("sent");
+                            notification.save();
+                            btFollow.setText("Requested");
+                            btFollow.setClickable(false);
+                        }
 
                     }
-                }
-        );
+                });
+            }
+        }
+
+//
     }
 
     private void unfollow(User loggedUser, User friendsUser) {
-        DatabaseReference followingNode = followingRef
-                .child(loggedUser.getIdUser())
-                .child(friendsUser.getIdUser());
-
-        followingNode.removeValue();
-
-        DatabaseReference followerNode = followerRef
-                .child(friendsUser.getIdUser())
-                .child(loggedUser.getIdUser());
-
-        followerNode.removeValue();
-
         btFollow.setText("Follow");
 
         loggedUser.setFollowingCount(loggedUser.getFollowingCount() - 1);
@@ -329,35 +329,10 @@ public class VisitProfileActivity extends AppCompatActivity {
         loggedUser.changeFollowing(selectedUser.getIdUser(), "remove");
         selectedUser.changeFollower(loggedUser.getIdUser(), "remove");
 
-        loggedUser.updateInfo();
-        selectedUser.updateInfo();
 
-//
     }
 
-    private void saveFollower(User loggedUser, User friendsUser) {
-        HashMap<String, Object> friendsData = new HashMap<>();
-        friendsData.put("name", friendsUser.getName());
-        friendsData.put("picturePath", friendsUser.getPicturePath());
-        friendsData.put("university", friendsUser.getUniversityName());
-
-        HashMap<String, Object> loggedUserData = new HashMap<>();
-        loggedUserData.put("name", loggedUser.getName());
-        loggedUserData.put("picturePath", loggedUser.getPicturePath());
-        friendsData.put("university", loggedUser.getUniversityName());
-
-        DatabaseReference followingNode = followingRef
-                .child(loggedUser.getIdUser())
-                .child(friendsUser.getIdUser());
-
-        followingNode.setValue(friendsData);
-
-        DatabaseReference followerNode = followerRef
-                .child(friendsUser.getIdUser())
-                .child(loggedUser.getIdUser());
-
-        followerNode.setValue(loggedUserData);
-
+    private void saveFollower(User loggedUser, User friendsUser) {//
         btFollow.setText("Following");
 
         loggedUser.setFollowingCount(loggedUser.getFollowingCount() + 1);
@@ -366,8 +341,6 @@ public class VisitProfileActivity extends AppCompatActivity {
         loggedUser.changeFollowing(selectedUser.getIdUser(), "add");
         selectedUser.changeFollower(loggedUser.getIdUser(), "add");
 
-        loggedUser.updateInfo();
-        selectedUser.updateInfo();
 
     }
 }
