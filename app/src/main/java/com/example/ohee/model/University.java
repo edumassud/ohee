@@ -98,8 +98,8 @@ public class University implements Serializable {
         usersMap.put("bio", user.getBio());
         usersMap.put("searchName", user.getName().toUpperCase());
         usersMap.put("postCount", user.getPostCount());
-        usersMap.put("followingCount", user.getFollowingCount());
-        usersMap.put("followerCount", user.getFollowerCount());
+//        usersMap.put("followingCount", user.getFollowingCount());
+//        usersMap.put("followerCount", user.getFollowerCount());
         usersMap.put("status", user.getStatus());
         usersMap.put("sex", user.getSex());
 

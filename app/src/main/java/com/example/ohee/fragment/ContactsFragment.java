@@ -130,8 +130,8 @@ public class ContactsFragment extends Fragment {
                         for (DataSnapshot dados : dataSnapshot.getChildren()) {
                             User usuario = dados.getValue(User.class);
                             boolean notMe = !usuario.getEmail().equals(usuarioAtual.getEmail());
-                            boolean myFriend = user.getFollowing().contains(usuario.getIdUser());
-                            if (notMe && myFriend) {
+//                            boolean myFriend = user.getFollowing().contains(usuario.getIdUser());
+                            if (notMe /*&& myFriend*/) {
                                 listaContatos.add(usuario);
                             }
 

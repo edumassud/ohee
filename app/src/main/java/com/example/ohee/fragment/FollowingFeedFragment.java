@@ -108,9 +108,9 @@ public class FollowingFeedFragment extends Fragment {
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     for (DataSnapshot ds : dataSnapshot.getChildren()) {
                                         Post post = ds.getValue(Post.class);
-                                        boolean isFollowing = loggedUser.getFollowing().contains(post.getIdUser());
+//                                        boolean isFollowing = loggedUser.getFollowing().contains(post.getIdUser());
                                         boolean exclusive = post.getType().equals("homeExclusive") && !loggedUser.getUniversityDomain().equals(post.getUniversityDomain());
-                                        if (isFollowing && !exclusive) {
+                                        if (/*isFollowing &&*/ !exclusive) {
                                             posts.add(post);
                                         }
                                     }

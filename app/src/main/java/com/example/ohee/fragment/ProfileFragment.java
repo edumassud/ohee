@@ -13,11 +13,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.ohee.R;
+import com.example.ohee.activity.ChatActivity;
 import com.example.ohee.activity.EditProfileActivity;
+//import com.example.ohee.activity.FriendsActivity;
 import com.example.ohee.adapter.AdapterGrid;
 import com.example.ohee.helpers.SetFirebase;
 import com.example.ohee.helpers.SetFirebaseUser;
@@ -35,6 +38,7 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.Inflater;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -53,8 +57,10 @@ public class ProfileFragment extends Fragment {
 
     private FirebaseUser user = SetFirebaseUser.getUser();
     private DatabaseReference databaseReference = SetFirebase.getFirebaseDatabase();
-    private DatabaseReference userRef = databaseReference.child("user").child(user.getUid());
-    private DatabaseReference postsRef = databaseReference.child("posts");
+    private DatabaseReference userRef           = databaseReference.child("user").child(user.getUid());
+    private DatabaseReference postsRef          = databaseReference.child("posts");
+    private DatabaseReference followingRef      = databaseReference.child("following");
+    private DatabaseReference followerRef       = databaseReference.child("followers");
 
     private String universityDomain = "";
 
@@ -97,18 +103,45 @@ public class ProfileFragment extends Fragment {
                 String txtNameAndUniversity     = user.getName() + " • " + user.getUniversityName();
                 String username                 = String.valueOf(user.getUserName());
                 String posts                    = String.valueOf(user.getPostCount());
-                String following                = String.valueOf(user.getFollowingCount());
-                String followers                = String.valueOf(user.getFollowerCount());
+//                String following                = String.valueOf(user.getFollowingCount());
+//                String followers                = String.valueOf(user.getFollowerCount());
                 String bio                      = String.valueOf(user.getBio());
                 String picturePath              = String.valueOf(user.getPicturePath());
                 universityDomain                = user.getUniversityDomain();
+
+                followingRef.child(user.getIdUser()).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        int following = (int) dataSnapshot.getChildrenCount();
+                        followingCount.setText(following + "");
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+                followerRef.child(user.getIdUser()).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        int followers = (int) dataSnapshot.getChildrenCount();
+                        followersCount.setText(followers + "");
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
                 loadPosts();
 
                 // Setting data on screen
                 postsCount.setText(posts);
                 profileUsername.setText(username);
-                followingCount.setText(following);
-                followersCount.setText(followers);
+//                followingCount.setText(following);
+//                followersCount.setText(followers);
                 profileBio.setText(bio);
                 profileNameAndUniversity.setText(txtNameAndUniversity);
                 if (user.getPicturePath() != null && getActivity() != null) {
@@ -117,6 +150,27 @@ public class ProfileFragment extends Fragment {
                 } else {
                     profileImg.setImageResource(R.drawable.avatar);
                 }
+
+//                followingCount.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        Intent i = new Intent(getActivity(), FriendsActivity.class);
+//                        i.putExtra("type", "following");
+//                        i.putExtra("user", user);
+//                        startActivity(i);
+//                    }
+//                });
+//
+//                followersCount.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        Intent i = new Intent(getActivity(), FriendsActivity.class);
+//                        i.putExtra("type", "followers");
+//                        i.putExtra("user", user);
+//                        startActivity(i);
+//                    }
+//                });
+
             }
 
             @Override
@@ -124,7 +178,10 @@ public class ProfileFragment extends Fragment {
 
             }
         });
+
+
         initImgLoader();
+        //loadPosts();
 
 
         return view;
@@ -137,6 +194,7 @@ public class ProfileFragment extends Fragment {
     }
 
     private void initImgLoader() {
+        //loadPosts();
         ImageLoaderConfiguration imageLoaderConfiguration = new ImageLoaderConfiguration
                 .Builder(getContext())
                 .memoryCache(new LruMemoryCache(2 * 1024 * 1024))
@@ -151,7 +209,7 @@ public class ProfileFragment extends Fragment {
 
     private void loadPosts() {
         DatabaseReference myUniversitysPost  = postsRef.child(universityDomain);
-        Query myPosts = myUniversitysPost.orderByChild("idUser").equalTo(user.getUid());
+        Query myPosts = myUniversitysPost.orderByChild("idUser").equalTo(SetFirebaseUser.getUsersId());
 
         // Set grid size
         int sizeGrid = getResources().getDisplayMetrics().widthPixels;

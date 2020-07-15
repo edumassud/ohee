@@ -30,6 +30,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.HashMap;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -42,6 +43,8 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
     private DatabaseReference databaseReference = SetFirebase.getFirebaseDatabase();
     private DatabaseReference usersRef          = databaseReference.child("user");
     private DatabaseReference postsRef          = databaseReference.child("posts");
+    private DatabaseReference followingRef      = databaseReference.child("following");
+    private DatabaseReference followerRef       = databaseReference.child("followers");
 
     public NotificationsAdapter(List<Notification> notifications, Context context) {
         this.notifications = notifications;
@@ -125,11 +128,29 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                         User friendsUser = dataSnapshot.getValue(User.class);
 
-                                        friendsUser.setFollowingCount(friendsUser.getFollowingCount() + 1);
-                                        loggedUser.setFollowerCount(loggedUser.getFollowerCount() + 1);
+                                        HashMap<String, Object> loggedUsersData = new HashMap<>();
+                                        loggedUsersData.put("name", loggedUser.getName() );
+                                        loggedUsersData.put("picturePath", loggedUser.getPicturePath() );
 
-                                        friendsUser.changeFollowing(loggedUser.getIdUser(), "add");
-                                        loggedUser.changeFollower(friendsUser.getIdUser(), "add");
+                                        HashMap<String, Object> hostData = new HashMap<>();
+                                        hostData.put("name", friendsUser.getName() );
+                                        hostData.put("picturePath", friendsUser.getPicturePath() );
+
+                                        DatabaseReference followerNode = followerRef
+                                                .child(loggedUser.getIdUser())
+                                                .child(friendsUser.getIdUser());
+                                        followerNode.setValue(hostData);
+
+                                        DatabaseReference followingNode = followingRef
+                                                .child(friendsUser.getIdUser())
+                                                .child(loggedUser.getIdUser());
+                                        followingNode.setValue(loggedUsersData);
+
+//                                        friendsUser.setFollowingCount(friendsUser.getFollowingCount() + 1);
+//                                        loggedUser.setFollowerCount(loggedUser.getFollowerCount() + 1);
+//
+//                                        friendsUser.changeFollowing(loggedUser.getIdUser(), "add");
+//                                        loggedUser.changeFollower(friendsUser.getIdUser(), "add");
 
                                         notification.setStatus("answered");
                                         notification.updateStatus();

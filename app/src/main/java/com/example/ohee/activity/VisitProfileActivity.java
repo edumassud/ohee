@@ -12,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.ohee.R;
@@ -48,6 +49,8 @@ public class VisitProfileActivity extends AppCompatActivity {
     private DatabaseReference databaseReference = SetFirebase.getFirebaseDatabase();
     private DatabaseReference usersRef          = databaseReference.child("user");
     private DatabaseReference postsRef          = databaseReference.child("posts");
+    private DatabaseReference followingRef      = databaseReference.child("following");
+    private DatabaseReference followerRef       = databaseReference.child("followers");
     private DatabaseReference usersUniversitysPosts;
     private DatabaseReference userHostRef;
     private DatabaseReference loggedUserRef;
@@ -150,14 +153,14 @@ public class VisitProfileActivity extends AppCompatActivity {
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         User user = dataSnapshot.getValue(User.class);
                         String posts        = String.valueOf(user.getPostCount());
-                        String following    = String.valueOf(user.getFollowingCount());
-                        String followers    = String.valueOf(user.getFollowerCount());
+//                        String following    = String.valueOf(user.getFollowingCount());
+//                        String followers    = String.valueOf(user.getFollowerCount());
                         String bio          = String.valueOf(user.getBio());
 
                         // Set values on profile card
                         txtPosts.setText(posts);
-                        txtFollowing.setText(following);
-                        txtFollowers.setText(followers);
+//                        txtFollowing.setText(following);
+//                        txtFollowers.setText(followers);
                         txtBio.setText(bio);
                     }
 
@@ -167,6 +170,32 @@ public class VisitProfileActivity extends AppCompatActivity {
                     }
                 }
         );
+
+        followingRef.child(selectedUser.getIdUser()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                int following = (int) dataSnapshot.getChildrenCount();
+                txtFollowing.setText(following + "");
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        followerRef.child(selectedUser.getIdUser()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                int followers = (int) dataSnapshot.getChildrenCount();
+                txtFollowers.setText(followers + "");
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
     }
 
@@ -207,11 +236,12 @@ public class VisitProfileActivity extends AppCompatActivity {
 
                             boolean usersPost = post.getIdUser().equals(selectedUser.getIdUser());
                             boolean isPublic = post.getType().equals("public");
-                            boolean sameSchoolFriend = loggedUser.getFollowing().contains(post.getIdUser()) && post.getUniversityDomain().equals(loggedUser.getUniversityDomain());
+//                            boolean sameSchoolFriend = loggedUser.getFollowing().contains(post.getIdUser()) && post.getUniversityDomain().equals(loggedUser.getUniversityDomain());
                             boolean sameSchool = loggedUser.getUniversityDomain().equals(post.getUniversityDomain()) && !post.getType().equals("private");
-                            boolean isFriend = loggedUser.getFollowing().contains(post.getIdUser()) && !post.getType().equals("homeExclusive");
+//                            boolean isFriend = loggedUser.getFollowing().contains(post.getIdUser()) && !post.getType().equals("homeExclusive");
 
-                            if (usersPost && (isPublic || sameSchoolFriend || sameSchool || isFriend)) {
+
+                            if (usersPost && (isPublic || /*sameSchoolFriend ||*/ sameSchool /*|| isFriend*/)) {
                                 posts.add(post);
                                 urls.add(post.getPath());
                             }
@@ -264,82 +294,221 @@ public class VisitProfileActivity extends AppCompatActivity {
 //                .child(idLoggedUSer)
 //                .child(selectedUser.getIdUser());
 
-        if (selectedUser.getFollowers().contains(loggedUser.getIdUser())) {
-            btFollow.setText("Following");
-            btFollow.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    unfollow(loggedUser, selectedUser);
-                    loadPosts();
-                }
-            });
-        } else {
-            DatabaseReference notificationsRef = databaseReference.child("notifications").child(selectedUser.getIdUser());
-            notificationsRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                        Notification notification = ds.getValue(Notification.class);
-                        if (notification.getAction().equals("followReq") && notification.getIdSender().equals(idLoggedUSer)) {
-                            btFollow.setText("Requested");
-                            btFollow.setClickable(false);
-                        }
-                    }
+        DatabaseReference folloingList = followingRef
+                .child(idLoggedUSer)
+                .child(selectedUser.getIdUser());
 
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            });
-            if (!btFollow.getText().equals("Requested")) {
-                btFollow.setText("Follow");
-                btFollow.setOnClickListener(new View.OnClickListener() {
+        folloingList.addValueEventListener(
+                new ValueEventListener() {
                     @Override
-                    public void onClick(View v) {
-                        if (selectedUser.getIsPrivate().equals("false")) {
-                            saveFollower(loggedUser, selectedUser);
-                            loadPosts();
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            btFollow.setText("Following");
+                            btFollow.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    unfollow(loggedUser, selectedUser);
+                                    //loadPosts();
+                                }
+                            });
                         } else {
-                            Notification notification = new Notification();
-                            notification.setIdReceiver(selectedUser.getIdUser());
-                            notification.setIdSender(loggedUser.getIdUser());
-                            notification.setAction("followReq");
-                            notification.setStatus("sent");
-                            notification.save();
-                            btFollow.setText("Requested");
-                            btFollow.setClickable(false);
+                            DatabaseReference notificationsRef = databaseReference.child("notifications").child(selectedUser.getIdUser());
+                            notificationsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                                        Notification notification = ds.getValue(Notification.class);
+                                        if (notification.getAction().equals("followReq") && notification.getIdSender().equals(idLoggedUSer)) {
+                                            btFollow.setText("Requested");
+                                            btFollow.setClickable(false);
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
+
+                            if (!btFollow.getText().equals("Requested")) {
+                                btFollow.setText("Follow");
+                                btFollow.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        if (selectedUser.getIsPrivate().equals("false")) {
+                                            saveFollower(loggedUser, selectedUser);
+                                            //loadPosts();
+                                        } else {
+                                            Notification notification = new Notification();
+                                            notification.setIdReceiver(selectedUser.getIdUser());
+                                            notification.setIdSender(loggedUser.getIdUser());
+                                            notification.setAction("followReq");
+                                            notification.setStatus("sent");
+                                            notification.save();
+                                            btFollow.setText("Requested");
+                                            btFollow.setClickable(false);
+                                        }
+
+                                    }
+                                });
+                            }
+
+//                            btFollow.setText("Follow");
+//                            btFollow.setOnClickListener(new View.OnClickListener() {
+//                                @Override
+//                                public void onClick(View v) {
+//                                    saveFollower(loggedUser, selectedUser);
+//                                    //loadPosts();
+//                                }
+//                            });
                         }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
 
                     }
-                });
-            }
-        }
+                }
+        );
+
+//        if (selectedUser.getFollowers().contains(loggedUser.getIdUser())) {
+//            btFollow.setText("Following");
+//            btFollow.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    unfollow(loggedUser, selectedUser);
+//                    loadPosts();
+//                }
+//            });
+//        } else {
+//            DatabaseReference notificationsRef = databaseReference.child("notifications").child(selectedUser.getIdUser());
+//            notificationsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//                @Override
+//                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
+//                        Notification notification = ds.getValue(Notification.class);
+//                        if (notification.getAction().equals("followReq") && notification.getIdSender().equals(idLoggedUSer)) {
+//                            btFollow.setText("Requested");
+//                            btFollow.setClickable(false);
+//                        }
+//                    }
+//
+//                }
+//
+//                @Override
+//                public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                }
+//            });
+//            if (!btFollow.getText().equals("Requested")) {
+//                btFollow.setText("Follow");
+//                btFollow.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        if (selectedUser.getIsPrivate().equals("false")) {
+//                            saveFollower(loggedUser, selectedUser);
+//                            loadPosts();
+//                        } else {
+//                            Notification notification = new Notification();
+//                            notification.setIdReceiver(selectedUser.getIdUser());
+//                            notification.setIdSender(loggedUser.getIdUser());
+//                            notification.setAction("followReq");
+//                            notification.setStatus("sent");
+//                            notification.save();
+//                            btFollow.setText("Requested");
+//                            btFollow.setClickable(false);
+//                        }
+//
+//                    }
+//                });
+//            }
+//        }
 
 //
     }
 
     private void unfollow(User loggedUser, User friendsUser) {
+
+        DatabaseReference followingNode = followingRef
+                .child(loggedUser.getIdUser())
+                .child(friendsUser.getIdUser());
+
+        followingNode.removeValue();
+
+        DatabaseReference followerNode = followerRef
+                .child(friendsUser.getIdUser())
+                .child(loggedUser.getIdUser());
+
+        followerNode.removeValue();
+        followingNode.removeValue();
+
         btFollow.setText("Follow");
+        getHostData();
 
-        loggedUser.setFollowingCount(loggedUser.getFollowingCount() - 1);
-        selectedUser.setFollowerCount(selectedUser.getFollowerCount() - 1);
 
-        loggedUser.changeFollowing(selectedUser.getIdUser(), "remove");
-        selectedUser.changeFollower(loggedUser.getIdUser(), "remove");
+//        btFollow.setText("Follow");
+//
+//        loggedUser.setFollowingCount(loggedUser.getFollowingCount() - 1);
+//        selectedUser.setFollowerCount(selectedUser.getFollowerCount() - 1);
+//
+//        loggedUser.changeFollowing(selectedUser.getIdUser(), "remove");
+//        selectedUser.changeFollower(loggedUser.getIdUser(), "remove");
 
 
     }
 
     private void saveFollower(User loggedUser, User friendsUser) {//
+
+        HashMap<String, Object> loggedUsersData = new HashMap<>();
+        loggedUsersData.put("name", loggedUser.getName() );
+        loggedUsersData.put("picturePath", loggedUser.getPicturePath() );
+
+        HashMap<String, Object> hostData = new HashMap<>();
+        hostData.put("name", friendsUser.getName() );
+        hostData.put("picturePath", friendsUser.getPicturePath() );
+
+        DatabaseReference followerNode = followerRef
+                .child(friendsUser.getIdUser())
+                .child(loggedUser.getIdUser());
+        followerNode.setValue(loggedUsersData);
+
+        DatabaseReference followingNode = followingRef
+                .child(loggedUser.getIdUser())
+                .child(friendsUser.getIdUser());
+        followingNode.setValue(hostData);
+
         btFollow.setText("Following");
+        getHostData();
 
-        loggedUser.setFollowingCount(loggedUser.getFollowingCount() + 1);
-        selectedUser.setFollowerCount(selectedUser.getFollowerCount() + 1);
 
-        loggedUser.changeFollowing(selectedUser.getIdUser(), "add");
-        selectedUser.changeFollower(loggedUser.getIdUser(), "add");
+
+
+
+//        //Incrementar seguindo do usuário logado
+//        int seguindo = uLogado.getSeguindo() + 1;
+//        HashMap<String, Object> dadosSeguindo = new HashMap<>();
+//        dadosSeguindo.put("seguindo", seguindo );
+//        DatabaseReference usuarioSeguindo = usuariosRef
+//                .child( uLogado.getId() );
+//        usuarioSeguindo.updateChildren( dadosSeguindo );
+//
+//        //Incrementar seguidores do amigo
+//        int seguidores = uAmigo.getSeguidores() + 1;
+//        HashMap<String, Object> dadosSeguidores = new HashMap<>();
+//        dadosSeguidores.put("seguidores", seguidores );
+//        DatabaseReference usuarioSeguidores = usuariosRef
+//                .child( uAmigo.getId() );
+//        usuarioSeguidores.updateChildren( dadosSeguidores );
+
+
+//        btFollow.setText("Following");
+//
+//        loggedUser.setFollowingCount(loggedUser.getFollowingCount() + 1);
+//        selectedUser.setFollowerCount(selectedUser.getFollowerCount() + 1);
+//
+//        loggedUser.changeFollowing(selectedUser.getIdUser(), "add");
+//        selectedUser.changeFollower(loggedUser.getIdUser(), "add");
 
 
     }

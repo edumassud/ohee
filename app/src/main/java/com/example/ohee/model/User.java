@@ -20,10 +20,10 @@ public class User implements Serializable {
     private String userName, name, email, password, idUser, picturePath, searchName, universityName, universityDomain, status, sex;
     private String bio = "Im new to OhEE!";
     private int postCount = 0;
-    private int followerCount = 0;
-    private int followingCount = 0;
-    private List<String> following = new ArrayList<>();
-    private List<String> followers = new ArrayList<>();
+//    private int followerCount = 0;
+//    private int followingCount = 0;
+//    private List<String> following = new ArrayList<>();
+//    private List<String> followers = new ArrayList<>();
     private String isPrivate;
 
     public User(String userName, String name, String email, String password, String universityName, String universityDomain) {
@@ -73,27 +73,27 @@ public class User implements Serializable {
         userRef.updateChildren(userValues);
     }
 
-    public void changeFollower(String user, String act) {
-        List<String> followers = this.getFollowers();
-        if (act.equals("add")) {
-            followers.add(user);
-        } else if (act.equals("remove")) {
-            followers.remove(user);
-        }
-        setFollowers(followers);
-        updateLists();
-    }
-
-    public void changeFollowing(String user, String act) {
-        List<String> following = this.getFollowing();
-        if (act.equals("add")) {
-            following.add(user);
-        } else if (act.equals("remove")) {
-            following.remove(user);
-        }
-        setFollowing(following);
-        updateLists();
-    }
+//    public void changeFollower(String user, String act) {
+//        List<String> followers = this.getFollowers();
+//        if (act.equals("add")) {
+//            followers.add(user);
+//        } else if (act.equals("remove")) {
+//            followers.remove(user);
+//        }
+//        setFollowers(followers);
+//        updateLists();
+//    }
+//
+//    public void changeFollowing(String user, String act) {
+//        List<String> following = this.getFollowing();
+//        if (act.equals("add")) {
+//            following.add(user);
+//        } else if (act.equals("remove")) {
+//            following.remove(user);
+//        }
+//        setFollowing(following);
+//        updateLists();
+//    }
 
     public void updateLists() {
         DatabaseReference firebaseRef = SetFirebase.getFirebaseDatabase();
@@ -124,12 +124,12 @@ public class User implements Serializable {
         usersMap.put("bio", getBio());
         usersMap.put("searchName", getName().toUpperCase());
         usersMap.put("postCount", getPostCount());
-        usersMap.put("followingCount", getFollowingCount());
-        usersMap.put("followerCount", getFollowerCount());
+//        usersMap.put("followingCount", getFollowingCount());
+//        usersMap.put("followerCount", getFollowerCount());
         usersMap.put("status", getStatus());
         usersMap.put("sex", getSex());
-        usersMap.put("followers", getFollowers());
-        usersMap.put("following", getFollowing());
+//        usersMap.put("followers", getFollowers());
+//        usersMap.put("following", getFollowing());
 
         return usersMap;
     }
@@ -169,21 +169,21 @@ public class User implements Serializable {
         this.postCount = postCount;
     }
 
-    public int getFollowerCount() {
-        return followerCount;
-    }
-
-    public void setFollowerCount(int followerCount) {
-        this.followerCount = followerCount;
-    }
-
-    public int getFollowingCount() {
-        return followingCount;
-    }
-
-    public void setFollowingCount(int followingCount) {
-        this.followingCount = followingCount;
-    }
+//    public int getFollowerCount() {
+//        return followerCount;
+//    }
+//
+//    public void setFollowerCount(int followerCount) {
+//        this.followerCount = followerCount;
+//    }
+//
+//    public int getFollowingCount() {
+//        return followingCount;
+//    }
+//
+//    public void setFollowingCount(int followingCount) {
+//        this.followingCount = followingCount;
+//    }
 
     public String getSearchName() {
         return searchName;
@@ -274,21 +274,21 @@ public class User implements Serializable {
         this.universityDomain = universityDomain;
     }
 
-    public List<String> getFollowing() {
-        return following;
-    }
-
-    public void setFollowing(List<String> following) {
-        this.following = following;
-    }
-
-    public List<String> getFollowers() {
-        return followers;
-    }
-
-    public void setFollowers(List<String> followers) {
-        this.followers = followers;
-    }
+//    public List<String> getFollowing() {
+//        return following;
+//    }
+//
+//    public void setFollowing(List<String> following) {
+//        this.following = following;
+//    }
+//
+//    public List<String> getFollowers() {
+//        return followers;
+//    }
+//
+//    public void setFollowers(List<String> followers) {
+//        this.followers = followers;
+//    }
 
     public String getIsPrivate() {
         return isPrivate;

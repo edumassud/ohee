@@ -116,6 +116,10 @@ public class EditProfileActivity extends AppCompatActivity {
 
                 if (user.getIsPrivate().equals("true")) {
                     switchPrivacy.setChecked(true);
+                    isPrivate = "true";
+                } else if (user.getIsPrivate().equals("false")) {
+                    switchPrivacy.setChecked(false);
+                    isPrivate = "false";
                 }
 
                 if (user.getStatus() != null && !user.getStatus().isEmpty()) {

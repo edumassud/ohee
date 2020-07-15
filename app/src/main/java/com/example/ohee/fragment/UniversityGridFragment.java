@@ -103,11 +103,11 @@ public class UniversityGridFragment extends Fragment {
                             Post post = ds.getValue(Post.class);
 
                             boolean isPublic = post.getType().equals("public");
-                            boolean sameSchoolFriend = user.getFollowing().contains(post.getIdUser()) && post.getUniversityDomain().equals(user.getUniversityDomain());
+//                            boolean sameSchoolFriend = user.getFollowing().contains(post.getIdUser()) && post.getUniversityDomain().equals(user.getUniversityDomain());
                             boolean sameSchool = user.getUniversityDomain().equals(post.getUniversityDomain()) && !post.getType().equals("private");
-                            boolean isFriend = user.getFollowing().contains(post.getIdUser()) && !post.getType().equals("homeExclusive");
+//                            boolean isFriend = user.getFollowing().contains(post.getIdUser()) && !post.getType().equals("homeExclusive");
 
-                            if (isPublic || sameSchoolFriend || sameSchool || isFriend) {
+                            if (isPublic || /*sameSchoolFriend ||*/ sameSchool /*|| isFriend*/) {
                                 urls.add(post.getPath());
                                 posts.add(post);
                             }

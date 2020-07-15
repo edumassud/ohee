@@ -118,11 +118,11 @@ public class ExploreUsersFragment extends Fragment {
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     for (DataSnapshot ds : dataSnapshot.getChildren()) {
                                         Post post = ds.getValue(Post.class);
-                                        boolean notFollowing = !loggedUser.getFollowing().contains(post.getIdUser());
+//                                        boolean notFollowing = !loggedUser.getFollowing().contains(post.getIdUser());
                                         boolean difUni = !loggedUser.getUniversityDomain().equals(post.getUniversityDomain());
                                         boolean privacy = post.getType().equals("public");
                                         boolean notDuplicate = !posts.contains(post);
-                                        if (notFollowing && difUni && privacy && notDuplicate) {
+                                        if (/*notFollowing &&*/ difUni && privacy && notDuplicate) {
                                             posts.add(post);
                                         }
                                     }
