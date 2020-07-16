@@ -2,6 +2,7 @@ package com.example.ohee.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ohee.R;
 import com.example.ohee.adapter.ContactsAdapter;
+import com.example.ohee.adapter.UniDataAdapter;
 import com.example.ohee.helpers.RecyclerItemClickListener;
 import com.example.ohee.helpers.SetFirebase;
 import com.example.ohee.helpers.SetFirebaseUser;
@@ -21,18 +23,26 @@ import com.example.ohee.model.User;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import id.yuana.chart.pie.PieChartView;
 
 public class FriendsActivity extends AppCompatActivity {
     private ImageView btClose;
     private TextView txtType;
-    private RecyclerView recycler;
-    private PieChartView chartGender, chartUniversities;
+    private RecyclerView recycler, recyclerUniData;
+    private PieChartView chartGender;
 
     private String type;
     private User selectedUser;
@@ -40,11 +50,15 @@ public class FriendsActivity extends AppCompatActivity {
     private List<User> users = new ArrayList<>();
     private ContactsAdapter adapter;
 
+    private List<String> universities = new ArrayList<>();
+    private List<String> universitiesSorted = new ArrayList<>();
+    private List<Integer> frequecies = new ArrayList<>();
+    private UniDataAdapter adapterUni;
+
     private float dudesCount = 0;
     private float chicksCount = 0;
     private float otherCount = 0;
 
-    private List<String> universities = new ArrayList<>();
     private List<String> ids = new ArrayList<>();
     private List<String> following = new ArrayList<>();
     private List<String> followers = new ArrayList<>();
@@ -63,12 +77,11 @@ public class FriendsActivity extends AppCompatActivity {
 
         btClose             = findViewById(R.id.btClose);
         recycler            = findViewById(R.id.recycler);
+        recyclerUniData     = findViewById(R.id.recyclerUniData);
         txtType             = findViewById(R.id.txtType);
         chartGender         = findViewById(R.id.pieChartGender);
-        chartUniversities   = findViewById(R.id.pieChartUniversities);
 
         chartGender.setCenterColor(R.color.colorBlack);
-        chartUniversities.setCenterColor(R.color.colorBlack);
 
         btClose.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,13 +105,21 @@ public class FriendsActivity extends AppCompatActivity {
             txtType.setText("Followers");
             getFollowers();
         }
-        adapter = new ContactsAdapter(users, getApplicationContext());
 
-        // Set recycler
+        // Set adapter
+        adapter     = new ContactsAdapter(users, getApplicationContext());
+//        adapterUni  = new UniDataAdapter(universities, getApplicationContext());
+        adapterUni  = new UniDataAdapter(universitiesSorted, getApplicationContext());
+
+        // Set recyclers
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+        RecyclerView.LayoutManager layoutManager1 = new LinearLayoutManager(this);
         recycler.setLayoutManager(layoutManager);
         recycler.setHasFixedSize(true);
         recycler.setAdapter(adapter);
+        recyclerUniData.setLayoutManager(layoutManager1);
+        recyclerUniData.setHasFixedSize(true);
+        recyclerUniData.setAdapter(adapterUni);
 
         // Set click
         recycler.addOnItemTouchListener(
@@ -146,6 +167,25 @@ public class FriendsActivity extends AppCompatActivity {
         chartGender.setSliceColor(colors);
     }
 
+    private void countFrequencies(List<String> list) {
+        // hashmap to store the frequency of element
+        LinkedHashMap<String, Integer> hm = new LinkedHashMap<String, Integer>();
+
+        for (String i : list) {
+            Integer j = hm.get(i);
+            hm.put(i, (j == null) ? 1 : j + 1);
+        }
+
+        // displaying the occurrence of elements in the arraylist
+        for (LinkedHashMap.Entry<String, Integer> val : hm.entrySet()) {
+
+
+            Log.i("Test", "Element " + val.getKey() + " "
+                    + "occurs"
+                    + ": " + val.getValue() + " times");
+        }
+    }
+
     private void getFollowing() {
         DatabaseReference myFollowing = followingRef.child(loggedUserId);
         myFollowing.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -162,7 +202,35 @@ public class FriendsActivity extends AppCompatActivity {
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             User user = dataSnapshot.getValue(User.class);
                             users.add(user);
+                            universities.add(user.getUniversityName());
+
+                            LinkedHashMap<String, Integer> hm = new LinkedHashMap<String, Integer>();
+
+                            for (String i : universities) {
+                                Integer j = hm.get(i);
+                                hm.put(i, (j == null) ? 1 : j + 1);
+                            }
+
+                            // displaying the occurrence of elements in the arraylist
+                        
+                            int highestFreq = 0;
+                            String uni = "";
+                            for (LinkedHashMap.Entry<String, Integer> val : hm.entrySet()) {
+                                if (val.getValue() > highestFreq) {
+                                    highestFreq = val.getValue();
+                                    uni = val.getKey();
+                                }
+                            }
+                            for (int j = 0; j < highestFreq; j++) {
+                                universitiesSorted.add(uni);
+                                hm.remove(uni);
+                                universities.remove(uni);
+                            }
+
+
+
                             adapter.notifyDataSetChanged();
+                            adapterUni.notifyDataSetChanged();
 
                             if (user.getSex() != null) {
                                 if (user.getSex().equals("male")) {
@@ -209,6 +277,8 @@ public class FriendsActivity extends AppCompatActivity {
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             User user = dataSnapshot.getValue(User.class);
                             users.add(user);
+                            universities.add(user.getUniversityName());
+                            adapterUni.notifyDataSetChanged();
                             adapter.notifyDataSetChanged();
 
                             if (user.getSex() != null) {
@@ -240,3 +310,5 @@ public class FriendsActivity extends AppCompatActivity {
         });
     }
 }
+
+
