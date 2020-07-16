@@ -106,17 +106,20 @@ public class AdapterFeedExplore extends RecyclerView.Adapter<AdapterFeedExplore.
             holder.btLike.setOnLikeListener(new OnLikeListener() {
                 @Override
                 public void liked(LikeButton likeButton) {
-                    post.getLikedBy().add(SetFirebaseUser.getUsersId());
-                    post.upDateLikes();
-                    holder.txtLikesCount.setText(post.getLikedBy().size() + " Likes");
+                    if (!post.getLikedBy().contains(SetFirebaseUser.getUsersId())) {
+                        post.getLikedBy().add(SetFirebaseUser.getUsersId());
+                        post.upDateLikes();
+                        holder.txtLikesCount.setText(post.getLikedBy().size() + " Likes");
+                        holder.btLike.setLiked(true);
 
-                    if (!SetFirebaseUser.getUsersId().equals(post.getIdUser())) {
-                        Notification notification = new Notification();
-                        notification.setIdReceiver(post.getIdUser());
-                        notification.setIdSender(SetFirebaseUser.getUsersId());
-                        notification.setAction("postLiked");
-                        notification.setIdPost(post.getId());
-                        notification.save();
+                        if (!SetFirebaseUser.getUsersId().equals(post.getIdUser())) {
+                            Notification notification = new Notification();
+                            notification.setIdReceiver(post.getIdUser());
+                            notification.setIdSender(SetFirebaseUser.getUsersId());
+                            notification.setAction("postLiked");
+                            notification.setIdPost(post.getId());
+                            notification.save();
+                        }
                     }
                 }
 
@@ -127,12 +130,30 @@ public class AdapterFeedExplore extends RecyclerView.Adapter<AdapterFeedExplore.
                     holder.txtLikesCount.setText(post.getLikedBy().size() + " Likes");
 
                     if (!SetFirebaseUser.getUsersId().equals(post.getIdUser())) {
-                        Notification notification = new Notification();
-                        notification.setIdReceiver(post.getIdUser());
-                        notification.setIdSender(SetFirebaseUser.getUsersId());
-                        notification.setAction("postLiked");
-                        notification.setIdPost(post.getId());
-                        notification.deleteNotification();
+                        DatabaseReference notificationsRef = databaseReference.child("notifications").child(post.getIdUser());
+                        notificationsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                                    Notification notification = ds.getValue(Notification.class);
+                                    if (notification.getIdPost().equals(post.getId())) {
+                                        notificationsRef.child(notification.getIdNotification()).removeValue();
+                                        break;
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+//                        Notification notification = new Notification();
+//                        notification.setIdReceiver(post.getIdUser());
+//                        notification.setIdSender(SetFirebaseUser.getUsersId());
+//                        notification.setAction("postLiked");
+//                        notification.setIdPost(post.getId());
+//                        notification.deleteNotification();
                     }
                 }
             });
@@ -140,17 +161,20 @@ public class AdapterFeedExplore extends RecyclerView.Adapter<AdapterFeedExplore.
             holder.doubleTapper.setOnTapListener(new DoubleTapLikeView.OnTapListener() {
                 @Override
                 public void onDoubleTap(View view) {
-                    post.getLikedBy().add(SetFirebaseUser.getUsersId());
-                    post.upDateLikes();
-                    holder.txtLikesCount.setText(post.getLikedBy().size() + " Likes");
+                    if (!post.getLikedBy().contains(SetFirebaseUser.getUsersId())) {
+                        post.getLikedBy().add(SetFirebaseUser.getUsersId());
+                        post.upDateLikes();
+                        holder.txtLikesCount.setText(post.getLikedBy().size() + " Likes");
+                        holder.btLike.setLiked(true);
 
-                    if (!SetFirebaseUser.getUsersId().equals(post.getIdUser())) {
-                        Notification notification = new Notification();
-                        notification.setIdReceiver(post.getIdUser());
-                        notification.setIdSender(SetFirebaseUser.getUsersId());
-                        notification.setAction("postLiked");
-                        notification.setIdPost(post.getId());
-                        notification.save();
+                        if (!SetFirebaseUser.getUsersId().equals(post.getIdUser())) {
+                            Notification notification = new Notification();
+                            notification.setIdReceiver(post.getIdUser());
+                            notification.setIdSender(SetFirebaseUser.getUsersId());
+                            notification.setAction("postLiked");
+                            notification.setIdPost(post.getId());
+                            notification.save();
+                        }
                     }
                 }
 

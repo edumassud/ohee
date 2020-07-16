@@ -78,6 +78,7 @@ public class FollowingFeedFragment extends Fragment {
                 getFeed();
             }
         });
+        
 
         return view;
     }
