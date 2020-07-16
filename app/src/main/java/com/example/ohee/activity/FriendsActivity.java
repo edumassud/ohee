@@ -1,48 +1,30 @@
 package com.example.ohee.activity;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentStatePagerAdapter;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager.widget.ViewPager;
-
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ohee.R;
-import com.example.ohee.adapter.AdapterFeedHome;
 import com.example.ohee.adapter.ContactsAdapter;
-import com.example.ohee.adapter.SearchAdapter;
-import com.example.ohee.fragment.RatingsFragment;
-import com.example.ohee.fragment.StatutsDistFragment;
-import com.example.ohee.fragment.UniversityDataFragment;
-import com.example.ohee.fragment.UniversityProfileMainFragment;
 import com.example.ohee.helpers.RecyclerItemClickListener;
 import com.example.ohee.helpers.SetFirebase;
 import com.example.ohee.helpers.SetFirebaseUser;
 import com.example.ohee.model.User;
-import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import id.yuana.chart.pie.PieChartView;
 
@@ -143,81 +125,8 @@ public class FriendsActivity extends AppCompatActivity {
                 }
                 )
         );
-        //getGenderDist();
-        //getUniDist();
 
     }
-
-//    private void getIds() {
-//        if (type.equals("following")) {
-//            DatabaseReference myFollowing = followingRef.child(loggedUserId);
-//            myFollowing.addListenerForSingleValueEvent(new ValueEventListener() {
-//                @Override
-//                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
-//                        String id = ds.getValue(String.class);
-//                        ids.add(id);
-//                    }
-//                }
-//
-//                @Override
-//                public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//                }
-//            });
-//
-//        } else {
-//            DatabaseReference myFollowers = followerRef.child(loggedUserId);
-//            myFollowers.addListenerForSingleValueEvent(new ValueEventListener() {
-//                @Override
-//                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
-//                        String id = ds.getValue(String.class);
-//                        ids.add(id);
-//                    }
-//                }
-//
-//                @Override
-//                public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//                }
-//            });
-//        }
-//    }
-
-//    private void getGenderDist() {
-//        getIds();
-//        Query searchStudents;
-//
-//
-//        for (int i = 0; i < ids.size(); i++) {
-//            searchStudents  = usersRef.orderByChild("idUser").equalTo(ids.get(i));
-//
-//            searchStudents.addListenerForSingleValueEvent(new ValueEventListener() {
-//                @Override
-//                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
-//                        User user = ds.getValue(User.class);
-//                        if (user.getSex() != null) {
-//                            if (user.getSex().equals("male")) {
-//                                dudesCount = dudesCount + 1;
-//                            } else if (user.getSex().equals("female")) {
-//                                chicksCount = chicksCount + 1;
-//                            } else if (user.getSex().equals("other")) {
-//                                otherCount++;
-//                            }
-//                            setGenderDist();
-//                        }
-//                    }
-//                }
-//
-//                @Override
-//                public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//                }
-//            });
-//        }
-//    }
 
     private void setGenderDist() {
         float total = dudesCount + chicksCount + otherCount;
@@ -236,77 +145,6 @@ public class FriendsActivity extends AppCompatActivity {
         chartGender.setDataPoints(dataSet);
         chartGender.setSliceColor(colors);
     }
-
-//    private void getUniDist() {
-//        DatabaseReference databaseReference = SetFirebase.getFirebaseDatabase();
-//        DatabaseReference usersRef = databaseReference.child("user");
-//        DatabaseReference universitiesRef = databaseReference.child("universities");
-//        Query searchStudents;
-//
-//
-//
-//
-//        for (int i = 0; i < ids.size(); i++) {
-//            searchStudents  = usersRef.orderByChild("idUser").equalTo(ids.get(i));
-//
-//            searchStudents.addListenerForSingleValueEvent(new ValueEventListener() {
-//                @Override
-//                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
-//                        User user = ds.getValue(User.class);
-//                        universities.add(user.getUniversityName());
-//                        countFrequencies(universities);
-//                    }
-//                }
-//
-//                @Override
-//                public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//                }
-//            });
-//        }
-//    }
-
-//    private void countFrequencies(List<String> list) {
-//        // hashmap to store the frequency of element
-//        Map<String, Integer> hm = new HashMap<String, Integer>();
-//
-//        for (String i : list) {
-//            Integer j = hm.get(i);
-//            hm.put(i, (j == null) ? 1 : j + 1);
-//        }
-//
-//        // displaying the occurrence of elements in the arraylist
-//        for (Map.Entry<String, Integer> val : hm.entrySet()) {
-//
-//
-//            Log.i("Test", "Element " + val.getKey() + " "
-//                    + "occurs"
-//                    + ": " + val.getValue() + " times");
-//        }
-//    }
-//
-//    private void setUniDist() {
-//        float total = dudesCount + chicksCount + otherCount;
-//
-//        float dudesPerCent = dudesCount / total;
-//        float chicksPerCent = chicksCount / total;
-//        float otherPerCent = otherCount / total;
-//
-////        txtDudesPercent.setText("Dudes: " + Math.round(dudesPerCent * 100) + " %");
-////        txtChicksPercent.setText("Girls: " + Math.round(chicksPerCent * 100) + " %");
-////        txtOtherPercent.setText("Other: " + Math.round(otherPerCent * 100) + " %");
-//
-//
-//        float[] dataSet;
-//        int[] colors;
-//
-//        dataSet = new float[]{dudesPerCent, chicksPerCent, otherPerCent};
-//        colors = new int[]{R.color.colorPrimary, R.color.colorPink, R.color.other};
-//
-//        chartGender.setDataPoints(dataSet);
-//        chartGender.setSliceColor(colors);
-//    }
 
     private void getFollowing() {
         DatabaseReference myFollowing = followingRef.child(loggedUserId);

@@ -72,14 +72,36 @@
             android:layout_margin="4dp"
             android:background="@drawable/button_background"/>
 
-        <ImageView
-            android:id="@+id/imgSelected"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="420dp"
-            android:layout_marginBottom="4dp"
-            android:visibility="gone"
-            android:scaleType="centerCrop"
-            app:srcCompat="@drawable/avatar" />
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/imgSelected"
+                android:layout_width="match_parent"
+                android:layout_height="420dp"
+                android:scaleType="centerCrop"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/avatar" />
+
+            <ImageView
+                android:id="@+id/btRotate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:src="@drawable/ic_rotate"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerFilters"

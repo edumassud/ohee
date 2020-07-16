@@ -27,6 +27,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -34,12 +35,20 @@ import java.util.List;
  */
 public class ContactsFragment extends Fragment {
     private RecyclerView recyclerViewListaContatos;
+
     private ContactsAdapter adapter;
     private ArrayList<User> listaContatos = new ArrayList<>();
-    private DatabaseReference usuariosRef;
-    private DatabaseReference usuarioRef;
+
+    private List<String> following = new ArrayList<>();
+
     private ValueEventListener valueEventListenerContatos;
     private FirebaseUser usuarioAtual;
+
+    DatabaseReference databaseReference = SetFirebase.getFirebaseDatabase();
+    DatabaseReference usuarioRef        = SetFirebase.getFirebaseDatabase().child("user").child(SetFirebaseUser.getUsersId());
+    DatabaseReference usuariosRef       = databaseReference.child("user");
+    DatabaseReference followingRef      = databaseReference.child("following");
+
 
     public ContactsFragment() {
         // Required empty public constructor
@@ -52,8 +61,8 @@ public class ContactsFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_contatos, container, false);
 
-        usuariosRef = SetFirebase.getFirebaseDatabase().child("user");
-        usuarioRef  = SetFirebase.getFirebaseDatabase().child("user").child(SetFirebaseUser.getUsersId());
+
+        DatabaseReference followingRef      = SetFirebase.getFirebaseDatabase().child("following");
         recyclerViewListaContatos = view.findViewById(R.id.recyclerViewListaConversas);
         usuarioAtual = SetFirebaseUser.getUser();
 
@@ -129,14 +138,30 @@ public class ContactsFragment extends Fragment {
                         limparListaContatos();
                         for (DataSnapshot dados : dataSnapshot.getChildren()) {
                             User usuario = dados.getValue(User.class);
-                            boolean notMe = !usuario.getEmail().equals(usuarioAtual.getEmail());
-//                            boolean myFriend = user.getFollowing().contains(usuario.getIdUser());
-                            if (notMe /*&& myFriend*/) {
-                                listaContatos.add(usuario);
-                            }
 
+                            DatabaseReference myFollowing = followingRef.child(SetFirebaseUser.getUsersId());
+                            myFollowing.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                                        String id = ds.getValue(String.class);
+                                        following.add(id);
+                                    }
+                                    boolean notMe = !usuario.getEmail().equals(usuarioAtual.getEmail());
+                                    boolean myFriend = following.contains(usuario.getIdUser());
+                                    if (notMe && myFriend) {
+                                        listaContatos.add(usuario);
+                                    }
+                                    adapter.notifyDataSetChanged();
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
                         }
-                        adapter.notifyDataSetChanged();
+
                     }
 
                     @Override

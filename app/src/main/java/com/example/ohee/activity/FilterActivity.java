@@ -1,30 +1,26 @@
 package com.example.ohee.activity;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ohee.R;
 import com.example.ohee.adapter.AdapterFilters;
@@ -36,7 +32,6 @@ import com.example.ohee.model.User;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -59,7 +54,7 @@ public class FilterActivity extends AppCompatActivity {
         System.loadLibrary("NativeImageProcessor");
     }
 
-    private ImageView imgSelected, btClose, btPost1;
+    private ImageView imgSelected, btClose, btPost1, btRotate;
     private Bitmap imgOriginal;
     private Bitmap imgFilter;
     private RecyclerView recyclerFilters;
@@ -108,6 +103,7 @@ public class FilterActivity extends AppCompatActivity {
         btInclusive         = findViewById(R.id.btInclusive);
         btExclusive         = findViewById(R.id.btExclusive);
         extraOpts           = findViewById(R.id.extraOpts);
+        btRotate            = findViewById(R.id.btRotate);
 
         idLoggedUSer = SetFirebaseUser.getUsersId();
 
@@ -222,7 +218,15 @@ public class FilterActivity extends AppCompatActivity {
 
                     btPickImg.setVisibility(View.GONE);
                     imgSelected.setVisibility(View.VISIBLE);
+                    btRotate.setVisibility(View.VISIBLE);
                     getFilters();
+
+                    btRotate.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            imgSelected.setRotation(imgSelected.getRotation() + 90);
+                        }
+                    });
 
                 }
             } catch (Exception e) {
@@ -380,9 +384,17 @@ public class FilterActivity extends AppCompatActivity {
         post.setUniversityDomain(loggedUser.getUniversityDomain());
         post.setType(type);
 
+        Matrix matrix = new Matrix();
+
+        matrix.postRotate(imgSelected.getRotation());
+
+        Bitmap scaledBitmap = Bitmap.createScaledBitmap(imgFilter, imgFilter.getWidth(), imgFilter.getHeight(), true);
+
+        Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
+
         // Get img data
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        imgFilter.compress(Bitmap.CompressFormat.JPEG, 50, baos);
+        rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
         byte[] imgData = baos.toByteArray();
 
         // Save img to firebase storage
