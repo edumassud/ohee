@@ -372,58 +372,7 @@ public class VisitProfileActivity extends AppCompatActivity {
                 }
         );
 
-//        if (selectedUser.getFollowers().contains(loggedUser.getIdUser())) {
-//            btFollow.setText("Following");
-//            btFollow.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    unfollow(loggedUser, selectedUser);
-//                    loadPosts();
-//                }
-//            });
-//        } else {
-//            DatabaseReference notificationsRef = databaseReference.child("notifications").child(selectedUser.getIdUser());
-//            notificationsRef.addListenerForSingleValueEvent(new ValueEventListener() {
-//                @Override
-//                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
-//                        Notification notification = ds.getValue(Notification.class);
-//                        if (notification.getAction().equals("followReq") && notification.getIdSender().equals(idLoggedUSer)) {
-//                            btFollow.setText("Requested");
-//                            btFollow.setClickable(false);
-//                        }
-//                    }
 //
-//                }
-//
-//                @Override
-//                public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//                }
-//            });
-//            if (!btFollow.getText().equals("Requested")) {
-//                btFollow.setText("Follow");
-//                btFollow.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        if (selectedUser.getIsPrivate().equals("false")) {
-//                            saveFollower(loggedUser, selectedUser);
-//                            loadPosts();
-//                        } else {
-//                            Notification notification = new Notification();
-//                            notification.setIdReceiver(selectedUser.getIdUser());
-//                            notification.setIdSender(loggedUser.getIdUser());
-//                            notification.setAction("followReq");
-//                            notification.setStatus("sent");
-//                            notification.save();
-//                            btFollow.setText("Requested");
-//                            btFollow.setClickable(false);
-//                        }
-//
-//                    }
-//                });
-//            }
-//        }
 
 //
     }
@@ -447,36 +396,27 @@ public class VisitProfileActivity extends AppCompatActivity {
         getHostData();
 
 
-//        btFollow.setText("Follow");
-//
-//        loggedUser.setFollowingCount(loggedUser.getFollowingCount() - 1);
-//        selectedUser.setFollowerCount(selectedUser.getFollowerCount() - 1);
-//
-//        loggedUser.changeFollowing(selectedUser.getIdUser(), "remove");
-//        selectedUser.changeFollower(loggedUser.getIdUser(), "remove");
-
-
     }
 
     private void saveFollower(User loggedUser, User friendsUser) {//
 
-        HashMap<String, Object> loggedUsersData = new HashMap<>();
-        loggedUsersData.put("name", loggedUser.getName() );
-        loggedUsersData.put("picturePath", loggedUser.getPicturePath() );
-
-        HashMap<String, Object> hostData = new HashMap<>();
-        hostData.put("name", friendsUser.getName() );
-        hostData.put("picturePath", friendsUser.getPicturePath() );
+//        HashMap<String, Object> loggedUsersData = new HashMap<>();
+//        loggedUsersData.put("name", loggedUser.getName() );
+//        loggedUsersData.put("picturePath", loggedUser.getPicturePath() );
+//
+//        HashMap<String, Object> hostData = new HashMap<>();
+//        hostData.put("name", friendsUser.getName() );
+//        hostData.put("picturePath", friendsUser.getPicturePath() );
 
         DatabaseReference followerNode = followerRef
                 .child(friendsUser.getIdUser())
                 .child(loggedUser.getIdUser());
-        followerNode.setValue(loggedUsersData);
+        followerNode.setValue(loggedUser.getIdUser());
 
         DatabaseReference followingNode = followingRef
                 .child(loggedUser.getIdUser())
                 .child(friendsUser.getIdUser());
-        followingNode.setValue(hostData);
+        followingNode.setValue(friendsUser.getIdUser());
 
         btFollow.setText("Following");
         getHostData();

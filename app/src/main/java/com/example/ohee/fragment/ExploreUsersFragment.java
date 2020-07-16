@@ -40,17 +40,15 @@ public class ExploreUsersFragment extends Fragment {
 
     private List<Post> posts = new ArrayList<>();
     private List<String> universities = new ArrayList<>();
+    private List<String> following = new ArrayList<>();
 
     private String loggedUserId = SetFirebaseUser.getUsersId();
 
-//    DatabaseReference databaseReference = SetFirebase.getFirebaseDatabase();
-//    DatabaseReference userRef = databaseReference.child("user").child(loggedUserId);
-//    DatabaseReference feedRef = databaseReference.child("feedExplore");
     DatabaseReference databaseReference = SetFirebase.getFirebaseDatabase();
-    DatabaseReference feedRef = databaseReference.child("feedFollowing").child(loggedUserId);
-    DatabaseReference userRef = databaseReference.child("user").child(loggedUserId);
-    DatabaseReference universitiesRef = databaseReference.child("universities");
-    DatabaseReference postsRef = databaseReference.child("posts");
+    DatabaseReference userRef           = databaseReference.child("user").child(loggedUserId);
+    DatabaseReference universitiesRef   = databaseReference.child("universities");
+    DatabaseReference postsRef          = databaseReference.child("posts");
+    DatabaseReference followingref      = databaseReference.child("following");
 
     private ValueEventListener valueEventListener;
 
@@ -118,17 +116,33 @@ public class ExploreUsersFragment extends Fragment {
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     for (DataSnapshot ds : dataSnapshot.getChildren()) {
                                         Post post = ds.getValue(Post.class);
-//                                        boolean notFollowing = !loggedUser.getFollowing().contains(post.getIdUser());
-                                        boolean difUni = !loggedUser.getUniversityDomain().equals(post.getUniversityDomain());
-                                        boolean privacy = post.getType().equals("public");
-                                        boolean notDuplicate = !posts.contains(post);
-                                        if (/*notFollowing &&*/ difUni && privacy && notDuplicate) {
-                                            posts.add(post);
-                                        }
+
+                                        DatabaseReference myFollowing = followingref.child(loggedUserId);
+                                        myFollowing.addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                                                    String id = ds.getValue(String.class);
+                                                    following.add(id);
+                                                }
+                                                boolean notFollowing = !following.contains(post.getIdUser());
+                                                boolean difUni = !loggedUser.getUniversityDomain().equals(post.getUniversityDomain());
+                                                boolean privacy = post.getType().equals("public");
+                                                boolean notDuplicate = !posts.contains(post);
+                                                if (notFollowing && difUni && privacy && notDuplicate) {
+                                                    posts.add(post);
+                                                }
+                                                Collections.reverse(posts);
+                                                adapter.notifyDataSetChanged();
+                                                swipeRefresh.setRefreshing(false);
+                                            }
+
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                            }
+                                        });
                                     }
-                                    Collections.reverse(posts);
-                                    adapter.notifyDataSetChanged();
-                                    swipeRefresh.setRefreshing(false);
                                 }
 
                                 @Override

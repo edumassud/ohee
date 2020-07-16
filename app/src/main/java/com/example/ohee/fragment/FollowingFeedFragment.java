@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,14 +39,15 @@ public class FollowingFeedFragment extends Fragment {
 
     private List<Post> posts = new ArrayList<>();
     private List<String> universities = new ArrayList<>();
+    private List<String> following = new ArrayList<>();
 
     private String loggedUserId = SetFirebaseUser.getUsersId();
 
     DatabaseReference databaseReference = SetFirebase.getFirebaseDatabase();
-    DatabaseReference feedRef = databaseReference.child("feedFollowing").child(loggedUserId);
-    DatabaseReference userRef = databaseReference.child("user").child(loggedUserId);
-    DatabaseReference universitiesRef = databaseReference.child("universities");
-    DatabaseReference postsRef = databaseReference.child("posts");
+    DatabaseReference userRef           = databaseReference.child("user").child(loggedUserId);
+    DatabaseReference universitiesRef   = databaseReference.child("universities");
+    DatabaseReference postsRef          = databaseReference.child("posts");
+    DatabaseReference followingref      = databaseReference.child("following");
 
     public FollowingFeedFragment() {
         // Required empty public constructor
@@ -85,6 +87,7 @@ public class FollowingFeedFragment extends Fragment {
     public void onStart() {
         super.onStart();
         getFeed();
+
     }
 
     private void getFeed() {
@@ -108,16 +111,34 @@ public class FollowingFeedFragment extends Fragment {
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     for (DataSnapshot ds : dataSnapshot.getChildren()) {
                                         Post post = ds.getValue(Post.class);
-//                                        boolean isFollowing = loggedUser.getFollowing().contains(post.getIdUser());
-                                        boolean exclusive = post.getType().equals("homeExclusive") && !loggedUser.getUniversityDomain().equals(post.getUniversityDomain());
-                                        if (/*isFollowing &&*/ !exclusive) {
-                                            posts.add(post);
-                                        }
+
+                                        DatabaseReference myFollowing = followingref.child(loggedUserId);
+                                        myFollowing.addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                                                    String id = ds.getValue(String.class);
+                                                    following.add(id);
+                                                }
+                                                boolean isFollowing = following.contains(post.getIdUser());
+                                                boolean exclusive = post.getType().equals("homeExclusive") && !loggedUser.getUniversityDomain().equals(post.getUniversityDomain());
+                                                if (isFollowing && !exclusive) {
+                                                    posts.add(post);
+                                                }
+                                                Collections.reverse(posts);
+                                                adapter.notifyDataSetChanged();
+                                                swipeRefresh.setRefreshing(false);
+                                            }
+
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                            }
+                                        });
+//
                                     }
 
-                                    Collections.reverse(posts);
-                                    adapter.notifyDataSetChanged();
-                                    swipeRefresh.setRefreshing(false);
+
                                 }
 
                                 @Override

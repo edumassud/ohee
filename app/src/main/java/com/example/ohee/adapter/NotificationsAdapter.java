@@ -139,12 +139,12 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
                                         DatabaseReference followerNode = followerRef
                                                 .child(loggedUser.getIdUser())
                                                 .child(friendsUser.getIdUser());
-                                        followerNode.setValue(hostData);
+                                        followerNode.setValue(friendsUser.getIdUser());
 
                                         DatabaseReference followingNode = followingRef
                                                 .child(friendsUser.getIdUser())
                                                 .child(loggedUser.getIdUser());
-                                        followingNode.setValue(loggedUsersData);
+                                        followingNode.setValue(loggedUser.getIdUser());
 
 //                                        friendsUser.setFollowingCount(friendsUser.getFollowingCount() + 1);
 //                                        loggedUser.setFollowerCount(loggedUser.getFollowerCount() + 1);

@@ -21,6 +21,7 @@ import com.example.ohee.R;
 import com.example.ohee.activity.ChatActivity;
 import com.example.ohee.activity.EditProfileActivity;
 //import com.example.ohee.activity.FriendsActivity;
+import com.example.ohee.activity.FriendsActivity;
 import com.example.ohee.adapter.AdapterGrid;
 import com.example.ohee.helpers.SetFirebase;
 import com.example.ohee.helpers.SetFirebaseUser;
@@ -151,25 +152,25 @@ public class ProfileFragment extends Fragment {
                     profileImg.setImageResource(R.drawable.avatar);
                 }
 
-//                followingCount.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        Intent i = new Intent(getActivity(), FriendsActivity.class);
-//                        i.putExtra("type", "following");
-//                        i.putExtra("user", user);
-//                        startActivity(i);
-//                    }
-//                });
-//
-//                followersCount.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        Intent i = new Intent(getActivity(), FriendsActivity.class);
-//                        i.putExtra("type", "followers");
-//                        i.putExtra("user", user);
-//                        startActivity(i);
-//                    }
-//                });
+                followingCount.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent i = new Intent(getActivity(), FriendsActivity.class);
+                        i.putExtra("type", "following");
+                        i.putExtra("user", user);
+                        startActivity(i);
+                    }
+                });
+
+                followersCount.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent i = new Intent(getActivity(), FriendsActivity.class);
+                        i.putExtra("type", "followers");
+                        i.putExtra("user", user);
+                        startActivity(i);
+                    }
+                });
 
             }
 
