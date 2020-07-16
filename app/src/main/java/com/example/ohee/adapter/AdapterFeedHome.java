@@ -13,6 +13,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.brouding.doubletaplikeview.DoubleTapLikeView;
 import com.bumptech.glide.Glide;
 import com.example.ohee.R;
 import com.example.ohee.activity.CommentsActivity;
@@ -136,6 +137,32 @@ public class AdapterFeedHome extends RecyclerView.Adapter<AdapterFeedHome.MyView
                         notification.setIdPost(post.getId());
                         notification.deleteNotification();
                     }
+                }
+            });
+
+            holder.doubleTapper.setOnTapListener(new DoubleTapLikeView.OnTapListener() {
+                @Override
+                public void onDoubleTap(View view) {
+                    if (!post.getLikedBy().contains(SetFirebaseUser.getUsersId())) {
+                        post.getLikedBy().add(SetFirebaseUser.getUsersId());
+                        post.upDateLikes();
+                        holder.txtLikesCount.setText(post.getLikedBy().size() + " Likes");
+                        holder.btLike.setLiked(true);
+
+                        if (!SetFirebaseUser.getUsersId().equals(post.getIdUser())) {
+                            Notification notification = new Notification();
+                            notification.setIdReceiver(post.getIdUser());
+                            notification.setIdSender(SetFirebaseUser.getUsersId());
+                            notification.setAction("postLiked");
+                            notification.setIdPost(post.getId());
+                            notification.save();
+                        }
+                    }
+                }
+
+                @Override
+                public void onTap() {
+
                 }
             });
 
@@ -318,6 +345,7 @@ public class AdapterFeedHome extends RecyclerView.Adapter<AdapterFeedHome.MyView
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         private CircleImageView imgProfile;
+        private DoubleTapLikeView doubleTapper;
         private ImageView imgPost, btComment;
         private TextView txtName, txtNameCap, txtCaption, txtLikesCount, txtCommentsCount, txtCommenter, txtComment;
         private LikeButton btLike;
@@ -336,6 +364,7 @@ public class AdapterFeedHome extends RecyclerView.Adapter<AdapterFeedHome.MyView
             txtCommentsCount = itemView.findViewById(R.id.txtCommentsCount);
             txtCommenter     = itemView.findViewById(R.id.txtCommenter);
             txtComment       = itemView.findViewById(R.id.txtComment);
+            doubleTapper     = itemView.findViewById(R.id.doubleTapper);
         }
     }
 }

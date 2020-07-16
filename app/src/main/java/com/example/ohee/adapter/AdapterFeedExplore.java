@@ -4,7 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.text.Html;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -14,6 +16,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.brouding.doubletaplikeview.DoubleTapLikeView;
 import com.bumptech.glide.Glide;
 import com.example.ohee.R;
 import com.example.ohee.activity.CommentsActivity;
@@ -59,6 +62,7 @@ public class AdapterFeedExplore extends RecyclerView.Adapter<AdapterFeedExplore.
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         Post post = posts.get(position);
+//        holder.imgPost.setScaleType(ImageView.ScaleType.FIT_CENTER);
 
         if (post != null) {
 
@@ -114,8 +118,6 @@ public class AdapterFeedExplore extends RecyclerView.Adapter<AdapterFeedExplore.
                         notification.setIdPost(post.getId());
                         notification.save();
                     }
-
-
                 }
 
                 @Override
@@ -134,6 +136,30 @@ public class AdapterFeedExplore extends RecyclerView.Adapter<AdapterFeedExplore.
                     }
                 }
             });
+
+            holder.doubleTapper.setOnTapListener(new DoubleTapLikeView.OnTapListener() {
+                @Override
+                public void onDoubleTap(View view) {
+                    post.getLikedBy().add(SetFirebaseUser.getUsersId());
+                    post.upDateLikes();
+                    holder.txtLikesCount.setText(post.getLikedBy().size() + " Likes");
+
+                    if (!SetFirebaseUser.getUsersId().equals(post.getIdUser())) {
+                        Notification notification = new Notification();
+                        notification.setIdReceiver(post.getIdUser());
+                        notification.setIdSender(SetFirebaseUser.getUsersId());
+                        notification.setAction("postLiked");
+                        notification.setIdPost(post.getId());
+                        notification.save();
+                    }
+                }
+
+                @Override
+                public void onTap() {
+
+                }
+            });
+
 
             // Set comment count
             int commentCount = post.getComments().size();
@@ -336,6 +362,7 @@ public class AdapterFeedExplore extends RecyclerView.Adapter<AdapterFeedExplore.
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         private CircleImageView imgProfile;
+        private DoubleTapLikeView doubleTapper;
         private ImageView imgPost, btComment;
         private TextView txtName, txtNameCap, txtCaption, txtUniversity, txtLikesCount, txtCommentsCount, txtCommenter, txtComment;
         private LikeButton btLike;
@@ -355,6 +382,7 @@ public class AdapterFeedExplore extends RecyclerView.Adapter<AdapterFeedExplore.
             txtCommentsCount = itemView.findViewById(R.id.txtCommentsCount);
             txtCommenter     = itemView.findViewById(R.id.txtCommenter);
             txtComment       = itemView.findViewById(R.id.txtComment);
+            doubleTapper     = itemView.findViewById(R.id.doubleTapper);
 
         }
     }

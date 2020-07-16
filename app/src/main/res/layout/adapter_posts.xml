@@ -14,57 +14,90 @@
         >
 
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:background="@android:color/black"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/imgUser"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:layout_marginTop="4dp"
+            android:layout_weight="1"
+            android:src="@drawable/avatar" />
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:background="@android:color/black"
-            android:orientation="horizontal">
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="15"
+            android:orientation="vertical">
 
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/imgUser"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_marginTop="4dp"
-                android:layout_weight="1"
-                android:src="@drawable/avatar" />
-
-            <LinearLayout
+            <TextView
+                android:id="@+id/txtUserName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:orientation="vertical"
-                android:layout_weight="15" >
+                android:layout_gravity="start"
+                android:text="Username"
+                android:textColor="@android:color/white"
+                android:textSize="18sp" />
 
-                <TextView
-                    android:id="@+id/txtUserName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start"
-                    android:text="Username"
-                    android:textColor="@android:color/white"
-                    android:textSize="18sp" />
-                <TextView
-                    android:id="@+id/txtUniversity"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start"
-                    android:text="Username"
-                    android:visibility="gone"
-                    android:textColor="@android:color/darker_gray"
-                    android:textSize="14sp" />
-            </LinearLayout>
-
-
+            <TextView
+                android:id="@+id/txtUniversity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:text="Username"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="14sp"
+                android:visibility="gone" />
         </LinearLayout>
+
+
+    </LinearLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="400dp">
+
+        <com.brouding.doubletaplikeview.DoubleTapLikeView
+            android:id="@+id/doubleTapper"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:elevation="1dp"
+            app:adjustViewBounds="false"
+            app:disableAnimation="false"
+
+            app:doubleTapIn="200"
+            app:icon="@drawable/ic_heart"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:scaleType="centerCrop"
+            app:src="@android:color/transparent" />
 
         <com.example.ohee.helpers.SquareImgView
             android:id="@+id/imgPost"
-            android:layout_width="match_parent"
-            android:layout_height="400dp"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:scaleType="centerCrop"
-            app:srcCompat="@drawable/avatar"
-            android:elevation="4dp"/>
+
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/avatar" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
 
         <LinearLayout
             android:layout_width="match_parent"

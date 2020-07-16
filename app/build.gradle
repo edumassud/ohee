@@ -71,4 +71,6 @@ dependencies {
 
     implementation 'com.github.edumassud:SimpleRatingBar:1.6.0'
 
+    implementation 'com.brouding:android-doubletaplikeview:0.2.0'
+
 }
