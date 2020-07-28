@@ -7,16 +7,6 @@
     android:background="@drawable/login_background"
     tools:context=".activity.SignUpActivity">
 
-    <TextView
-        android:id="@+id/btHighSchooler"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="I'm not a college student"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btSignup" />
 
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/editUserName"
@@ -71,7 +61,7 @@
         android:background="@drawable/text_field_background"
         android:drawableLeft="@drawable/ic_email"
         android:drawablePadding="5dp"
-        android:hint="College Email"
+        android:hint="Email"
         android:inputType="textEmailAddress"
         android:padding="8dp"
         app:layout_constraintBottom_toTopOf="@+id/textInputLayout2"
@@ -116,7 +106,7 @@
         android:id="@+id/textView6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:text="Terms of Use"
         app:layout_constraintBottom_toTopOf="@+id/progressBar"

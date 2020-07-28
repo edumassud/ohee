@@ -20,6 +20,8 @@ import com.brouding.doubletaplikeview.DoubleTapLikeView;
 import com.bumptech.glide.Glide;
 import com.example.ohee.R;
 import com.example.ohee.activity.CommentsActivity;
+import com.example.ohee.activity.HSUniProfileActivity;
+import com.example.ohee.activity.HSVisitProfileActivity;
 import com.example.ohee.activity.LikesListActivity;
 import com.example.ohee.activity.UniversityProfileActivity;
 import com.example.ohee.activity.VisitProfileActivity;
@@ -28,6 +30,7 @@ import com.example.ohee.helpers.SetFirebaseUser;
 import com.example.ohee.model.Comment;
 import com.example.ohee.model.FeedExplore;
 import com.example.ohee.model.FeedFollowing;
+import com.example.ohee.model.HighSchooler;
 import com.example.ohee.model.Notification;
 import com.example.ohee.model.Post;
 import com.example.ohee.model.University;
@@ -204,19 +207,35 @@ public class AdapterFeedExplore extends RecyclerView.Adapter<AdapterFeedExplore.
 
                 holder.txtComment.setText(firstComment.getComment());
 
-                DatabaseReference commenterRef = databaseReference.child("user").child(firstComment.getIdUser());
-                commenterRef.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        User user = dataSnapshot.getValue(User.class);
-                        holder.txtCommenter.setText(user.getName());
-                    }
+                if (!post.getType().equals("highschool")) {
+                    DatabaseReference commenterRef = databaseReference.child("user").child(firstComment.getIdUser());
+                    commenterRef.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            User user = dataSnapshot.getValue(User.class);
+                            holder.txtCommenter.setText(user.getUserName());
+                        }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                    }
-                });
+                        }
+                    });
+                } else {
+                    DatabaseReference commenterRef = databaseReference.child("highschoolers").child(firstComment.getIdUser());
+                    commenterRef.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            HighSchooler user = dataSnapshot.getValue(HighSchooler.class);
+                            holder.txtCommenter.setText(user.getUserName());
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+                }
             }
 
 
@@ -243,11 +262,18 @@ public class AdapterFeedExplore extends RecyclerView.Adapter<AdapterFeedExplore.
                             if (user.getIdUser().equals(SetFirebaseUser.getUsersId())) {
                                 holder.imgProfile.setClickable(false);
                             } else {
-                                Intent i = new Intent(context, VisitProfileActivity.class);
-                                i.putExtra("selectedUser", user);
-                                context.startActivity(i);
+                                if (!post.getType().equals("highschool")) {
+                                    Intent i = new Intent(context, VisitProfileActivity.class);
+                                    i.putExtra("selectedUser", user);
+                                    context.startActivity(i);
+                                } else {
+                                    Intent i = new Intent(context, HSVisitProfileActivity.class);
+                                    i.putExtra("selectedUser", user);
+                                    context.startActivity(i);
+                                }
                             }
                         }
+
                         @Override
                         public void onCancelled(@NonNull DatabaseError databaseError) {
 
@@ -256,6 +282,7 @@ public class AdapterFeedExplore extends RecyclerView.Adapter<AdapterFeedExplore.
 
                 }
             });
+
 
             // Set name click
             holder.txtName.setOnClickListener(new View.OnClickListener() {
@@ -270,9 +297,15 @@ public class AdapterFeedExplore extends RecyclerView.Adapter<AdapterFeedExplore.
                             if (user.getIdUser().equals(SetFirebaseUser.getUsersId())) {
                                 holder.txtName.setClickable(false);
                             } else {
-                                Intent i = new Intent(context, VisitProfileActivity.class);
-                                i.putExtra("selectedUser", user);
-                                context.startActivity(i);
+                                if (!post.getType().equals("highschool")) {
+                                    Intent i = new Intent(context, VisitProfileActivity.class);
+                                    i.putExtra("selectedUser", user);
+                                    context.startActivity(i);
+                                } else {
+                                    Intent i = new Intent(context, HSVisitProfileActivity.class);
+                                    i.putExtra("selectedUser", user);
+                                    context.startActivity(i);
+                                }
                             }
                         }
                         @Override
@@ -297,9 +330,15 @@ public class AdapterFeedExplore extends RecyclerView.Adapter<AdapterFeedExplore.
                             if (user.getIdUser().equals(SetFirebaseUser.getUsersId())) {
                                 holder.txtNameCap.setClickable(false);
                             } else {
-                                Intent i = new Intent(context, VisitProfileActivity.class);
-                                i.putExtra("selectedUser", user);
-                                context.startActivity(i);
+                                if (!post.getType().equals("highschool")) {
+                                    Intent i = new Intent(context, VisitProfileActivity.class);
+                                    i.putExtra("selectedUser", user);
+                                    context.startActivity(i);
+                                } else {
+                                    Intent i = new Intent(context, HSVisitProfileActivity.class);
+                                    i.putExtra("selectedUser", user);
+                                    context.startActivity(i);
+                                }
                             }
                         }
                         @Override
@@ -328,9 +367,15 @@ public class AdapterFeedExplore extends RecyclerView.Adapter<AdapterFeedExplore.
                                 if (user.getIdUser().equals(SetFirebaseUser.getUsersId())) {
                                     holder.txtCommenter.setClickable(false);
                                 } else {
-                                    Intent i = new Intent(context, VisitProfileActivity.class);
-                                    i.putExtra("selectedUser", user);
-                                    context.startActivity(i);
+                                    if (!post.getType().equals("highschool")) {
+                                        Intent i = new Intent(context, VisitProfileActivity.class);
+                                        i.putExtra("selectedUser", user);
+                                        context.startActivity(i);
+                                    } else {
+                                        Intent i = new Intent(context, HSVisitProfileActivity.class);
+                                        i.putExtra("selectedUser", user);
+                                        context.startActivity(i);
+                                    }
                                 }
                             }
                             @Override
@@ -363,9 +408,15 @@ public class AdapterFeedExplore extends RecyclerView.Adapter<AdapterFeedExplore.
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             University university = dataSnapshot.getValue(University.class);
 
-                            Intent i = new Intent(context, UniversityProfileActivity.class);
-                            i.putExtra("selectedUniversity", university);
-                            context.startActivity(i);
+                            if (!post.getType().equals("highschool")) {
+                                Intent i = new Intent(context, UniversityProfileActivity.class);
+                                i.putExtra("selectedUniversity", university);
+                                context.startActivity(i);
+                            } else {
+                                Intent i = new Intent(context, HSUniProfileActivity.class);
+                                i.putExtra("selectedUniversity", university);
+                                context.startActivity(i);
+                            }
                         }
 
                         @Override

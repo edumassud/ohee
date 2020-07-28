@@ -338,6 +338,12 @@ public class VisitProfileActivity extends AppCompatActivity {
                                     public void onClick(View v) {
                                         if (selectedUser.getIsPrivate().equals("false")) {
                                             saveFollower(loggedUser, selectedUser);
+
+                                            Notification notification = new Notification();
+                                            notification.setIdReceiver(selectedUser.getIdUser());
+                                            notification.setIdSender(loggedUser.getIdUser());
+                                            notification.setAction("follow");
+                                            notification.save();
                                             //loadPosts();
                                         } else {
                                             Notification notification = new Notification();
@@ -395,7 +401,27 @@ public class VisitProfileActivity extends AppCompatActivity {
         btFollow.setText("Follow");
         getHostData();
 
+        DatabaseReference notificationsRef = databaseReference
+                .child("notifications")
+                .child(friendsUser.getIdUser());
 
+        notificationsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    Notification notification = ds.getValue(Notification.class);
+                    if (notification.getIdSender().equals(loggedUser.getIdUser()) && notification.getAction().equals("followReq") || notification.getAction().equals("follow")) {
+                        DatabaseReference remove = notificationsRef.child(notification.getIdNotification());
+                        remove.removeValue();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private void saveFollower(User loggedUser, User friendsUser) {//

@@ -15,6 +15,8 @@ import android.widget.Toast;
 
 import com.example.ohee.R;
 import com.example.ohee.helpers.SetFirebase;
+import com.example.ohee.helpers.SetFirebaseUser;
+import com.example.ohee.model.HighSchooler;
 import com.example.ohee.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -23,6 +25,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
+import com.google.firebase.auth.FirebaseUser;
 
 public class LoginActivity extends AppCompatActivity {
     private TextInputEditText emailField, passwordField;
@@ -33,6 +36,9 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth auth = SetFirebase.getFirebaseAuth();
 
     private User user;
+    private HighSchooler hsUser;
+
+    private String type = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,10 +61,16 @@ public class LoginActivity extends AppCompatActivity {
                 String txtPassword = passwordField.getText().toString();
                 if (txtEmail.isEmpty() || txtPassword.isEmpty()) {
                     Toast.makeText(LoginActivity.this, "Complete all fields", Toast.LENGTH_SHORT).show();
-                } else {
+                } else if (txtEmail.substring(txtEmail.length() - 4).equals(".edu")) {
                     user = new User(txtEmail, txtPassword);
+                    type = "college";
                     validateLogin();
+                } else {
+                    hsUser = new HighSchooler(txtEmail, txtPassword);
+                    type = "hs";
+                    validateLoginHS();
                 }
+
             }
         });
 
@@ -91,6 +103,43 @@ public class LoginActivity extends AppCompatActivity {
                     } else {
                         Toast.makeText(LoginActivity.this, "Your email hasn't been verified yet.", Toast.LENGTH_SHORT).show();
                     }
+//                    goToMain();
+
+                } else {
+                    progressBar.setVisibility(View.GONE);
+                    String exception = "";
+                    try {
+                        throw task.getException();
+                    } catch (FirebaseAuthInvalidUserException e) {
+                        exception = "Invalid user";
+                    } catch (FirebaseAuthInvalidCredentialsException e) {
+                        exception = "Email and password do not match";
+                    } catch (Exception e) {
+                        exception = "Error: " + e.getMessage();
+                        e.printStackTrace();
+                    }
+                    Toast.makeText(LoginActivity.this, exception, Toast.LENGTH_LONG).show();
+                    Log.i("Erro", exception);
+                }
+            }
+        });
+    }
+
+    public void validateLoginHS() {
+        progressBar.setVisibility(View.VISIBLE);
+        auth = SetFirebase.getFirebaseAuth();
+        auth.signInWithEmailAndPassword(hsUser.getEmail(), hsUser.getPassword()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    progressBar.setVisibility(View.GONE);
+                    if (auth.getCurrentUser().isEmailVerified()) {
+                        goToMainHS();
+                        finish();
+                    } else {
+                        Toast.makeText(LoginActivity.this, "Your email hasn't been verified yet.", Toast.LENGTH_SHORT).show();
+                    }
+//                    goToMainHS();
 
                 } else {
                     progressBar.setVisibility(View.GONE);
@@ -113,14 +162,22 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void checkLogged () {
-//        auth.signOut();
-        if (auth.getCurrentUser() != null){ //&& auth.getCurrentUser().isEmailVerified()) {
-            goToMain();
+        //auth.signOut();
+        if (auth.getCurrentUser() != null){// && auth.getCurrentUser().isEmailVerified()) {
+            if (SetFirebaseUser.getUser().getEmail().contains(".edu")) {
+                goToMain();
+            } else {
+                goToMainHS();
+            }
         }
     }
 
     public void goToMain() {
         startActivity(new Intent(getApplicationContext(), MainActivity.class));
+    }
+
+    public void goToMainHS() {
+        startActivity(new Intent(getApplicationContext(), MainHSActivity.class));
     }
 
 }

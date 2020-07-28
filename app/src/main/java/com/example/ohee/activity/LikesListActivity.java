@@ -16,6 +16,7 @@ import com.example.ohee.adapter.ContactsAdapter;
 import com.example.ohee.helpers.RecyclerItemClickListener;
 import com.example.ohee.helpers.SetFirebase;
 import com.example.ohee.helpers.SetFirebaseUser;
+import com.example.ohee.model.HighSchooler;
 import com.example.ohee.model.Post;
 import com.example.ohee.model.User;
 import com.google.firebase.database.DataSnapshot;
@@ -49,21 +50,45 @@ public class LikesListActivity extends AppCompatActivity {
         }
 
         // Get list users
-        for (int i = 0; i < post.getLikedBy().size(); i++) {
-            DatabaseReference databaseReference = SetFirebase.getFirebaseDatabase();
-            DatabaseReference userRef = databaseReference.child("user").child(post.getLikedBy().get(i));
-            userRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    User user = dataSnapshot.getValue(User.class);
-                    likers.add(user);
-                }
+        if (!post.getType().equals("highschool")) {
+            for (int i = 0; i < post.getLikedBy().size(); i++) {
+                DatabaseReference databaseReference = SetFirebase.getFirebaseDatabase();
+                DatabaseReference userRef = databaseReference.child("user").child(post.getLikedBy().get(i));
+                userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        User user = dataSnapshot.getValue(User.class);
+                        likers.add(user);
+                    }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                }
-            });
+                    }
+                });
+            }
+        } else {
+            for (int i = 0; i < post.getLikedBy().size(); i++) {
+                DatabaseReference databaseReference = SetFirebase.getFirebaseDatabase();
+                DatabaseReference userRef = databaseReference.child("highschoolers").child(post.getLikedBy().get(i));
+                userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        HighSchooler highSchooler = dataSnapshot.getValue(HighSchooler.class);
+                        User user = new User();
+                        user.setName(highSchooler.getName());
+                        user.setEmail(highSchooler.getEmail());
+                        user.setUniversityName("");
+                        user.setPicturePath(highSchooler.getPicturePath());
+                        likers.add(user);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+            }
         }
 
         // Set adapter

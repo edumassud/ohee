@@ -57,8 +57,8 @@ public class UniDataAdapter extends RecyclerView.Adapter<UniDataAdapter.MyViewHo
         float count = Collections.frequency(universities, university);
 
         holder.txtName.setText(university);
-        holder.txtCount.setText(count + "");
-//        holder.txtCount.setText(Math.round((count/universities.size()) * 100) + " %");
+//        holder.txtCount.setText(count + "");
+        holder.txtCount.setText(Math.round((count/universities.size()) * 100) + " %");
     }
 
 

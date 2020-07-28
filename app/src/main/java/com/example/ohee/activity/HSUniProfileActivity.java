@@ -1,7 +1,6 @@
 package com.example.ohee.activity;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -11,20 +10,17 @@ import androidx.viewpager.widget.ViewPager;
 import android.os.Bundle;
 
 import com.example.ohee.R;
-import com.example.ohee.fragment.ContactsFragment;
-import com.example.ohee.fragment.FollowingFeedFragment;
-import com.example.ohee.fragment.HomeFragment;
+import com.example.ohee.fragment.HSUniversityProfileMainFragment;
 import com.example.ohee.fragment.RatingsFragment;
 import com.example.ohee.fragment.StatutsDistFragment;
 import com.example.ohee.fragment.UniversityDataFragment;
 import com.example.ohee.fragment.UniversityGridFragment;
 import com.example.ohee.fragment.UniversityProfileMainFragment;
 import com.example.ohee.fragment.UniversityStudentsFragment;
-import com.example.ohee.fragment.YourUniversityFeedFragment;
 import com.example.ohee.model.University;
 import com.google.android.material.tabs.TabLayout;
 
-public class UniversityProfileActivity extends AppCompatActivity {
+public class HSUniProfileActivity extends AppCompatActivity {
     private TabLayout tabs;
     private ViewPager pager;
     private TabLayout tabsContent;
@@ -35,7 +31,7 @@ public class UniversityProfileActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_university_profile);
+        setContentView(R.layout.activity_h_s_uni_profile);
 
         tabs            = findViewById(R.id.tabs);
         pager           = findViewById(R.id.pager);
@@ -43,10 +39,10 @@ public class UniversityProfileActivity extends AppCompatActivity {
         pagerContent    = findViewById(R.id.pagerContent);
 
 
-        pager.setAdapter(new PagerAdapter(getSupportFragmentManager()));
+        pager.setAdapter(new HSUniProfileActivity.PagerAdapter(getSupportFragmentManager()));
         tabs.setupWithViewPager(pager);
 
-        pagerContent.setAdapter(new PagerAdapterContent(getSupportFragmentManager()));
+        pagerContent.setAdapter(new HSUniProfileActivity.PagerAdapterContent(getSupportFragmentManager()));
         tabsContent.setupWithViewPager(pagerContent);
 
         Bundle bundle = getIntent().getExtras();
@@ -65,7 +61,7 @@ public class UniversityProfileActivity extends AppCompatActivity {
         @Override
         public Fragment getItem(int position) {
             if (position == 0) {
-                return new UniversityProfileMainFragment(university);
+                return new HSUniversityProfileMainFragment(university);
             } else if (position == 1) {
                 return new UniversityDataFragment(university);
             } else if (position == 2){
@@ -91,7 +87,8 @@ public class UniversityProfileActivity extends AppCompatActivity {
         @Override
         public Fragment getItem(int position) {
             if (position == 0) {
-                return new UniversityGridFragment(university);
+                return new UniversityStudentsFragment(university);
+                //return new UniversityGridFragment(university);
             } else {
                 return new UniversityStudentsFragment(university);
             }

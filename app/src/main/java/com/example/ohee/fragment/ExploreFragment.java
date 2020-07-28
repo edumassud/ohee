@@ -167,6 +167,7 @@ import android.widget.SearchView;
 
 import com.example.ohee.R;
 import com.example.ohee.activity.MainActivity;
+import com.example.ohee.activity.OhYeeActivity;
 import com.example.ohee.activity.SearchActivity;
 import com.example.ohee.activity.VisitProfileActivity;
 import com.example.ohee.adapter.SearchAdapter;
@@ -191,7 +192,7 @@ import java.util.List;
 public class ExploreFragment extends Fragment {
     private TabLayout tabs;
     private ViewPager pager;
-    private ImageView btSearch;
+    private ImageView btSearch, btOhYee;
 
     public ExploreFragment() {
         // Required empty public constructor
@@ -205,6 +206,7 @@ public class ExploreFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_explore, container, false);
 
         btSearch        = view.findViewById(R.id.btSearch);
+        btOhYee         = view.findViewById(R.id.btOhYee);
         tabs            = view.findViewById(R.id.tabs);
         pager           = view.findViewById(R.id.pager);
 
@@ -217,6 +219,13 @@ public class ExploreFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getActivity(), SearchActivity.class));
+            }
+        });
+
+        btOhYee.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(), OhYeeActivity.class));
             }
         });
 

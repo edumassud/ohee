@@ -66,8 +66,6 @@ public class ExploreUsersFragment extends Fragment {
         recycler        = view.findViewById(R.id.recycler);
         swipeRefresh    = view.findViewById(R.id.refresh);
 
-
-
         // Set adapter
         adapter = new AdapterFeedExplore(posts, getActivity());
 

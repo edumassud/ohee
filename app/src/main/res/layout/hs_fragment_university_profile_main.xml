@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="200dp"
+    android:layout_marginTop="10dp"
+    android:orientation="vertical"
+    android:padding="8dp"
+    tools:context=".fragment.UniversityProfileMainFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/txtName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:maxLines="1"
+            android:layout_weight="1"
+            android:text="University name"
+            android:textColor="#ffffff"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:autoSizeTextType="uniform" />
+
+        <com.like.LikeButton
+            app:icon_type="heart"
+            app:icon_size="30dp"
+            android:id="@+id/btLike"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            app:unlike_drawable="@drawable/ic_heart_unliked"
+            app:like_drawable="@drawable/ic_heart_liked"
+            android:layout_marginRight="4dp"/>
+    </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/txtLocation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="City, ST"
+        android:textColor="#ffffff" />
+
+    <TextView
+        android:id="@+id/txtCount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Count"
+        android:textColor="#ffffff" />
+
+    <com.willy.ratingbar.ScaleRatingBar
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/uniRating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srb_numStars="5"
+        app:srb_minimumStars="1"
+        app:srb_starWidth="30dp"
+        app:srb_starHeight="30dp"
+        app:srb_starPadding="5dp"
+        app:srb_stepSize="1"
+        app:srb_isIndicator="false"
+        app:srb_clickable="false"
+        app:srb_scrollable="false"
+        app:srb_clearRatingEnabled="false"
+        app:srb_drawableEmpty="@drawable/ic_star_empty"
+        app:srb_drawableFilled="@drawable/ic_star_full"
+        android:layout_gravity="center">
+    </com.willy.ratingbar.ScaleRatingBar>
+
+    <TextView
+        android:id="@+id/txtReviewCount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Num of reviews"
+        android:textAlignment="center"
+        android:textColor="#ffffff" />
+
+</LinearLayout>

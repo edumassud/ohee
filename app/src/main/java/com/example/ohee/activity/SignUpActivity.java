@@ -61,6 +61,7 @@ public class SignUpActivity extends AppCompatActivity {
     private final static String WHO_IS_API_KEY = "at_Ug8nDYbZKxPmyPI2Nfx7TWL0xbk9g";
 
     private TextInputEditText nameField, emailField, passwordField, confirmPasswordField, userNameField;
+    private TextView btHighSchooler;
     private Button btSignUp;
     private ProgressBar progressBar;
 
@@ -75,13 +76,14 @@ public class SignUpActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
 
-        userNameField = findViewById(R.id.editUserName);
-        nameField = findViewById(R.id.editName);
-        emailField = findViewById(R.id.editEmail);
-        passwordField = findViewById(R.id.editPassword);
-        confirmPasswordField = findViewById(R.id.editConfirmPassword);
-        btSignUp = findViewById(R.id.btSignup);
-        progressBar = findViewById(R.id.progressBar);
+        userNameField           = findViewById(R.id.editUserName);
+        nameField               = findViewById(R.id.editName);
+        emailField              = findViewById(R.id.editEmail);
+        passwordField           = findViewById(R.id.editPassword);
+        confirmPasswordField    = findViewById(R.id.editConfirmPassword);
+        btSignUp                = findViewById(R.id.btSignup);
+        progressBar             = findViewById(R.id.progressBar);
+        btHighSchooler          = findViewById(R.id.btHighSchooler);
 
         String BASE_URL = "https://www.whoisxmlapi.com";
 
@@ -89,6 +91,13 @@ public class SignUpActivity extends AppCompatActivity {
                 .baseUrl(BASE_URL)
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .build();
+
+        btHighSchooler.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), HSSignUpActivity.class));
+            }
+        });
 
         btSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -101,8 +110,8 @@ public class SignUpActivity extends AppCompatActivity {
 
                 if (txtName.isEmpty() || txtEmail.isEmpty() || txtPassword.isEmpty() || txtConfirmPassword.isEmpty()) {
                     Toast.makeText(SignUpActivity.this, "Complete all fields", Toast.LENGTH_SHORT).show();
-                } else if(txtUserName.length() < 3) {
-                    Toast.makeText(SignUpActivity.this, "Username must have more than 2 characters", Toast.LENGTH_SHORT).show();
+                } else if(txtUserName.length() < 2) {
+                    Toast.makeText(SignUpActivity.this, "Username must have more than 1 character", Toast.LENGTH_SHORT).show();
                 } else if(!isValidUsername(txtUserName)) {
                     Toast.makeText(SignUpActivity.this, "Username invalid", Toast.LENGTH_SHORT).show();
                 } else if(!checkUserName(txtUserName)){
@@ -137,14 +146,11 @@ public class SignUpActivity extends AppCompatActivity {
                                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                                 if (dataSnapshot.exists()) {
                                                     University university = dataSnapshot.getValue(University.class);
-                                                    user = new User(txtUserName, txtName, txtEmail, txtPassword, university.getName(), university.getDomain());
+                                                    user = new User(txtUserName.toLowerCase(), txtName, txtEmail, txtPassword, university.getName(), university.getDomain());
                                                     user.setSearchName(txtName.toUpperCase());
 
-                                                    signUpUser(university);
+                                                    signUpUser(university, false);
 
-                                                    // Increment university count
-                                                    university.setCount(university.getCount() + 1);
-                                                    university.update();
                                                 } else {
                                                     Map<String, String> params = new HashMap<String, String>();
                                                     params.put("apiKey", WHO_IS_API_KEY);
@@ -170,7 +176,7 @@ public class SignUpActivity extends AppCompatActivity {
                                                                 user = new User(txtUserName, txtName, txtEmail, txtPassword, university.getName(), university.getDomain());
                                                                 user.setSearchName(txtName.toUpperCase());
 
-                                                                signUpUser(university);
+                                                                signUpUser(university, true);
 
                                                             }catch (JSONException e) {
                                                                 Log.e("ERROR", e.getLocalizedMessage());
@@ -208,7 +214,8 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     private boolean isValidUsername(String name) {
-        String regex = "^[aA-zZ]\\w{5,29}$";
+        String regex = "^(?!.*\\.\\.)(?!.*\\.$)[^\\W][\\w.]{0,29}$";
+//        String regex = "^[aA-zZ]\\w{5,29}$";
         Pattern p = Pattern.compile(regex);
         Matcher m = p.matcher(name);
 
@@ -237,8 +244,7 @@ public class SignUpActivity extends AppCompatActivity {
         return true;
     }
 
-    public void signUpUser(University university) {
-        progressBar.setVisibility(View.VISIBLE);
+    public void signUpUser(University university, boolean isNew) {
         auth.createUserWithEmailAndPassword(user.getEmail(), user.getPassword()).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
@@ -250,6 +256,11 @@ public class SignUpActivity extends AppCompatActivity {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if (task.isSuccessful()) {
+                                        if (!isNew) {
+                                            // Increment university count
+                                            university.setCount(university.getCount() + 1);
+                                            university.update();
+                                        }
                                         Toast.makeText(SignUpActivity.this, "Please verify you email.", Toast.LENGTH_SHORT).show();
                                     } else {
                                         Toast.makeText(SignUpActivity.this, "Error", Toast.LENGTH_SHORT).show();

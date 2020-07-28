@@ -104,7 +104,7 @@ public class YourUniversityFeedFragment extends Fragment {
                         posts.clear();
                         for (DataSnapshot ds : dataSnapshot.getChildren()) {
                             Post post = ds.getValue(Post.class);
-                            if (!post.getType().equals("private")) {
+                            if (!post.getType().equals("private") && !post.getType().equals("highschool")) {
                                 posts.add(posts.size(), post);
                             }
 

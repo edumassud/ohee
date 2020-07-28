@@ -121,9 +121,10 @@ public class FollowingFeedFragment extends Fragment {
                                                     String id = ds.getValue(String.class);
                                                     following.add(id);
                                                 }
+                                                boolean isHS = post.getType().equals("highschool");
                                                 boolean isFollowing = following.contains(post.getIdUser());
                                                 boolean exclusive = post.getType().equals("homeExclusive") && !loggedUser.getUniversityDomain().equals(post.getUniversityDomain());
-                                                if (isFollowing && !exclusive) {
+                                                if (isFollowing && !isHS && !exclusive) {
                                                     posts.add(post);
                                                 }
                                                 Collections.reverse(posts);

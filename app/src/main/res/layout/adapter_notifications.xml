@@ -40,7 +40,6 @@
             android:layout_marginRight="1dp"
             android:layout_marginBottom="1dp"
             android:scaleType="centerCrop"
-
             app:srcCompat="@drawable/avatar"
             />
 
@@ -55,23 +54,34 @@
                 android:id="@+id/btAccept"
                 android:layout_width="50dp"
                 android:layout_height="30dp"
-                android:text="Accept"
-                android:textSize="12sp"
-                android:textColor="@android:color/white"
+                android:layout_marginRight="1dp"
                 android:background="@drawable/single_background"
-                android:layout_marginRight="1dp"/>
+                android:text="Accept"
+                android:textColor="@android:color/white"
+                android:textSize="12sp" />
 
             <Button
                 android:id="@+id/btDeny"
                 android:layout_width="50dp"
                 android:layout_height="30dp"
-                android:text="Deny"
-                android:textSize="12sp"
-                android:textColor="@android:color/white"
+                android:layout_marginLeft="1dp"
                 android:background="@drawable/taken_background"
-                android:layout_marginLeft="1dp"/>
+                android:text="Deny"
+                android:textColor="@android:color/white"
+                android:textSize="12sp" />
 
         </LinearLayout>
+
+        <Button
+            android:id="@+id/btFollowBack"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_marginRight="1dp"
+            android:background="@drawable/button_background"
+            android:text="Follow\nBack"
+            android:textColor="@android:color/white"
+            android:textSize="12sp"
+            android:visibility="gone"/>
 
 
 

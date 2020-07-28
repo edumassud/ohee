@@ -18,11 +18,18 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".activity.HSVisitProfileActivity"></activity>
+        <activity android:name=".activity.HSUniProfileActivity" />
+        <activity android:name=".activity.MakeQuestionActivity" />
+        <activity android:name=".activity.HSEditProfileActivity" />
+        <activity android:name=".activity.MainHSActivity" />
+        <activity android:name=".activity.HSSignUpActivity" />
+        <activity android:name=".activity.OhYeeActivity" />
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
-        <activity android:name=".activity.FriendsActivity"></activity>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity android:name=".activity.FriendsActivity" />
         <activity android:name=".activity.LikesListActivity" />
         <activity android:name=".activity.CommentsActivity" />
         <activity android:name=".activity.RateYourUniActivity" />

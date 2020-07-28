@@ -59,7 +59,7 @@ public class FilterActivity extends AppCompatActivity {
     private Bitmap imgFilter;
     private RecyclerView recyclerFilters;
     private TextInputEditText txtCaption;
-    private Button btPrivate, btHome, btPublic, btPost, btPickImg, btInclusive, btExclusive;
+    private Button btPrivate, btHome, btPublic, btPost, btPickImg, btInclusive, btExclusive, btHS;
     private TextView txtInfo;
     private LinearLayout extraOpts;
     private ProgressBar progressBar, progressBar1;
@@ -104,6 +104,7 @@ public class FilterActivity extends AppCompatActivity {
         btExclusive         = findViewById(R.id.btExclusive);
         extraOpts           = findViewById(R.id.extraOpts);
         btRotate            = findViewById(R.id.btRotate);
+        btHS                = findViewById(R.id.btHS);
 
         idLoggedUSer = SetFirebaseUser.getUsersId();
 
@@ -156,6 +157,23 @@ public class FilterActivity extends AppCompatActivity {
 
             //getFilters();
 
+        loggedUserRef = usersRef.child(idLoggedUSer);
+        loggedUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                loggedUser = dataSnapshot.getValue(User.class);
+
+                if (loggedUser.getIsAmbassador().equals("true")) {
+                    btHS.setVisibility(View.VISIBLE);
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
         makeChoice();
 
@@ -189,6 +207,8 @@ public class FilterActivity extends AppCompatActivity {
 
             }
         });
+
+
     }
 
     @Override
@@ -243,6 +263,7 @@ public class FilterActivity extends AppCompatActivity {
                 btPrivate.setBackgroundResource(R.drawable.bg_message_balloon);
                 btHome.setBackgroundResource(R.drawable.button_background);
                 btPublic.setBackgroundResource(R.drawable.button_background);
+                btHS.setBackgroundResource(R.drawable.button_background);
 
                 extraOpts.setVisibility(View.GONE);
 
@@ -258,6 +279,7 @@ public class FilterActivity extends AppCompatActivity {
                 btHome.setBackgroundResource(R.drawable.bg_message_balloon);
                 btPrivate.setBackgroundResource(R.drawable.button_background);
                 btPublic.setBackgroundResource(R.drawable.button_background);
+                btHS.setBackgroundResource(R.drawable.button_background);
 
                 extraOpts.setVisibility(View.VISIBLE);
 
@@ -286,12 +308,29 @@ public class FilterActivity extends AppCompatActivity {
                 btPublic.setBackgroundResource(R.drawable.bg_message_balloon);
                 btHome.setBackgroundResource(R.drawable.button_background);
                 btPrivate.setBackgroundResource(R.drawable.button_background);
+                btHS.setBackgroundResource(R.drawable.button_background);
 
                 extraOpts.setVisibility(View.GONE);
 
                 type = "public";
 
                 txtInfo.setText("Everyone can see your post");
+            }
+        });
+
+        btHS.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                btHS.setBackgroundResource(R.drawable.bg_message_balloon);
+                btPublic.setBackgroundResource(R.drawable.button_background);
+                btHome.setBackgroundResource(R.drawable.button_background);
+                btPrivate.setBackgroundResource(R.drawable.button_background);
+
+                extraOpts.setVisibility(View.GONE);
+
+                type = "highschool";
+
+                txtInfo.setText("High-School students can see this post.");
             }
         });
 

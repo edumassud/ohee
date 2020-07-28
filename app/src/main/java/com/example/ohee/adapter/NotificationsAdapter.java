@@ -178,6 +178,28 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
 
                         }
                     });
+                } else if (notification.getAction().equals("follow")) {
+                    holder.imgPost.setVisibility(View.GONE);
+                    holder.buttons.setVisibility(View.GONE);
+
+                    DatabaseReference folloingList = followingRef
+                            .child(idLoggedUser)
+                            .child(notification.getIdSender());
+
+                    folloingList.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if (!dataSnapshot.exists()) {
+                                holder.btFollowBack.setVisibility(View.VISIBLE);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
                 } else if (notification.getAction().equals("message")) {
                     holder.imgPost.setVisibility(View.GONE);
                     holder.txtName.setOnClickListener(new View.OnClickListener() {
@@ -222,6 +244,8 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
                             fullNotification = "<b>" + sender.getName() + "</b>" + "  started following you." ;
                         } else if (notification.getAction().equals("message")) {
                             fullNotification = "<b>" + sender.getName() + "</b>" + "  sent you a message" ;
+                        } else if (notification.getAction().equals("follow")) {
+                            fullNotification = "<b>" + sender.getName() + "</b>" + "  started following you." ;
                         }
                         holder.txtName.setText(Html.fromHtml(fullNotification));
 
@@ -284,19 +308,20 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
         private CircleImageView imgProfile;
         private TextView txtName;
         private ImageView imgPost;
-        private Button btAccept, btDeny;
+        private Button btAccept, btDeny, btFollowBack;
         private LinearLayout buttons, layout;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
 
             imgProfile = itemView.findViewById(R.id.imgProfile);
-            txtName    = itemView.findViewById(R.id.txtName);
-            imgPost    = itemView.findViewById(R.id.imgPost);
-            btAccept   = itemView.findViewById(R.id.btAccept);
-            btDeny     = itemView.findViewById(R.id.btDeny);
-            buttons    = itemView.findViewById(R.id.buttons);
-            layout     = itemView.findViewById(R.id.layout);
+            txtName      = itemView.findViewById(R.id.txtName);
+            imgPost      = itemView.findViewById(R.id.imgPost);
+            btAccept     = itemView.findViewById(R.id.btAccept);
+            btFollowBack = itemView.findViewById(R.id.btFollowBack);
+            btDeny       = itemView.findViewById(R.id.btDeny);
+            buttons      = itemView.findViewById(R.id.buttons);
+            layout       = itemView.findViewById(R.id.layout);
         }
     }
 }

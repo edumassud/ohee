@@ -5,6 +5,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.example.ohee.model.HighSchooler;
 import com.example.ohee.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -73,6 +74,23 @@ public class SetFirebaseUser {
         FirebaseUser firebaseUser = getUser();
 
         User user = new User();
+        user.setEmail(firebaseUser.getEmail());
+        user.setName(firebaseUser.getDisplayName());
+        user.setIdUser(firebaseUser.getUid());
+
+        if (firebaseUser.getPhotoUrl() == null) {
+            user.setPicturePath("");
+        } else {
+            user.setPicturePath(firebaseUser.getPhotoUrl().toString());
+        }
+
+        return user;
+    }
+
+    public static HighSchooler getHighSchoolerData() {
+        FirebaseUser firebaseUser = getUser();
+
+        HighSchooler user = new HighSchooler();
         user.setEmail(firebaseUser.getEmail());
         user.setName(firebaseUser.getDisplayName());
         user.setIdUser(firebaseUser.getUid());
