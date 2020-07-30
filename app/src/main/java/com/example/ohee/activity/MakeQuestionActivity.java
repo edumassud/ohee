@@ -2,31 +2,30 @@ package com.example.ohee.activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ohee.R;
-import com.example.ohee.adapter.AdapterFilters;
 import com.example.ohee.helpers.SetFirebase;
 import com.example.ohee.helpers.SetFirebaseUser;
 import com.example.ohee.model.HighSchooler;
+import com.example.ohee.model.Post;
 import com.example.ohee.model.Question;
-import com.example.ohee.model.User;
+import com.example.ohee.model.University;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.List;
 
 public class MakeQuestionActivity extends AppCompatActivity {
     private ImageView btClose, btPost1;
@@ -37,12 +36,11 @@ public class MakeQuestionActivity extends AppCompatActivity {
 
     private String type = "my list";
 
-    private String idLoggedUser = SetFirebaseUser.getUsersId();
-
-    private HighSchooler loggedUser;
-    private String idLoggedUSer;
+    private String idLoggedUSer = SetFirebaseUser.getUsersId();
     private DatabaseReference databaseReference = SetFirebase.getFirebaseDatabase();
-    private DatabaseReference usersRef = databaseReference.child("highschooler");
+    private DatabaseReference userRef = databaseReference.child("highschoolers").child(idLoggedUSer);
+
+    private University selectedUniversity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +58,18 @@ public class MakeQuestionActivity extends AppCompatActivity {
         progressBar         = findViewById(R.id.progressBar);
 
         idLoggedUSer = SetFirebaseUser.getUsersId();
+
+        // Get data from specific question
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            selectedUniversity = (University) bundle.getSerializable("selectedUniversity");
+
+            btPublic.setVisibility(View.GONE);
+            btMyList.setVisibility(View.GONE);
+            txtInfo.setVisibility(View.GONE);
+
+            type = "specific";
+        }
 
         makeChoice();
 
@@ -123,13 +133,41 @@ public class MakeQuestionActivity extends AppCompatActivity {
     }
 
     private void postQuestion() {
-        Question question = new Question();
-        question.setIdUser(idLoggedUser);
-        question.setQuestion(txtCaption.getText().toString());
-        question.setType(type);
+        if (type.equals("my list")) {
+            userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    HighSchooler user = dataSnapshot.getValue(HighSchooler.class);
+                    Question question = new Question();
+                    question.setIdUser(idLoggedUSer);
+                    question.setQuestion(txtCaption.getText().toString());
+                    question.setType(type);
+                    question.setUniversities(user.getInterests());
+                    question.save();
+                }
 
-        question.save();
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
 
-        startActivity(new Intent(getApplicationContext(), MainHSActivity.class));
+                }
+            });
+        } else if (type.equals("specific")) {
+            Question question = new Question();
+            question.setIdUser(idLoggedUSer);
+            question.setQuestion(txtCaption.getText().toString());
+            question.setType(type);
+            question.setSpecificUniversity(selectedUniversity);
+            question.save();
+        } else {
+            Question question = new Question();
+            question.setIdUser(idLoggedUSer);
+            question.setQuestion(txtCaption.getText().toString());
+            question.setType(type);
+            question.save();
+        }
+
+
+
+        startActivity(new Intent(getApplicationContext(), HSMainActivity.class));
     }
 }

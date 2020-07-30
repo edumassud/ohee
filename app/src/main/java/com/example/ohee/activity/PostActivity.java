@@ -16,6 +16,7 @@ import com.example.ohee.R;
 import com.example.ohee.helpers.SetFirebase;
 import com.example.ohee.helpers.SetFirebaseUser;
 import com.example.ohee.model.Comment;
+import com.example.ohee.model.HighSchooler;
 import com.example.ohee.model.Notification;
 import com.example.ohee.model.Post;
 import com.example.ohee.model.User;
@@ -197,20 +198,37 @@ public class PostActivity extends AppCompatActivity {
 
                     //holder.txtComment.setText(firstComment.getComment());
 
-                    DatabaseReference commenterRef = databaseReference.child("user").child(firstComment.getIdUser());
-                    commenterRef.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            User user = dataSnapshot.getValue(User.class);
-                            String fullComment = "<b>" + user.getName() + "</b>" + "  " + firstComment.getComment();
-                            txtCommenter.setText(Html.fromHtml(fullComment));
-                        }
+                    if (!post.getType().equals("highschool")) {
+                        DatabaseReference commenterRef = databaseReference.child("user").child(firstComment.getIdUser());
+                        commenterRef.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                User user = dataSnapshot.getValue(User.class);
+                                String fullComment = "<b>" + user.getName() + "</b>" + "  " + firstComment.getComment();
+                                txtCommenter.setText(Html.fromHtml(fullComment));
+                            }
 
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                        }
-                    });
+                            }
+                        });
+                    } else {
+                        DatabaseReference commenterRef = databaseReference.child("highschoolers").child(firstComment.getIdUser());
+                        commenterRef.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                HighSchooler user = dataSnapshot.getValue(HighSchooler.class);
+                                String fullComment = "<b>" + user.getName() + "</b>" + "  " + firstComment.getComment();
+                                txtCommenter.setText(Html.fromHtml(fullComment));
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+                    }
                 }
             }
 

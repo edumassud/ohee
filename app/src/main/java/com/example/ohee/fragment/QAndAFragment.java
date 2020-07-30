@@ -16,7 +16,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.example.ohee.R;
-import com.example.ohee.activity.OhYeeActivity;
 import com.example.ohee.activity.SearchActivity;
 import com.google.android.material.tabs.TabLayout;
 
@@ -79,9 +78,9 @@ public class QAndAFragment extends Fragment {
         @Override
         public Fragment getItem(int position) {
             if (position == 0) {
-                return new ExploreUsersFragment();
+                return new HSQandAFragment(false);
             } else {
-                return new UniversitiesExploreFragment();
+                return new HSQandAFragment(true);
             }
         }
 

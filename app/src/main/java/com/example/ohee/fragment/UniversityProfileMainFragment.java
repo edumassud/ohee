@@ -67,7 +67,7 @@ public class UniversityProfileMainFragment extends Fragment {
                 location = location + ", " + university.getState();
             }
             txtLocation.setText(location);
-            txtCount.setText("Number of users: " + university.getCount());
+            txtCount.setText("Number of users: " + university.getCount() + " • Number of watchers: " + university.getLikes());
         }
 
         // Check if its the logged users university

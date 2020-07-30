@@ -154,24 +154,17 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageView;
-import android.widget.SearchView;
 
 import com.example.ohee.R;
-import com.example.ohee.activity.MainActivity;
-import com.example.ohee.activity.OhYeeActivity;
+import com.example.ohee.activity.AnswersActivity;
+import com.example.ohee.activity.BeAmbassadorActivity;
 import com.example.ohee.activity.SearchActivity;
-import com.example.ohee.activity.VisitProfileActivity;
-import com.example.ohee.adapter.SearchAdapter;
-import com.example.ohee.helpers.RecyclerItemClickListener;
 import com.example.ohee.helpers.SetFirebase;
 import com.example.ohee.helpers.SetFirebaseUser;
 import com.example.ohee.model.User;
@@ -179,12 +172,7 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.miguelcatalan.materialsearchview.MaterialSearchView;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -192,7 +180,7 @@ import java.util.List;
 public class ExploreFragment extends Fragment {
     private TabLayout tabs;
     private ViewPager pager;
-    private ImageView btSearch, btOhYee;
+    private ImageView btSearch, btQAndA;
 
     public ExploreFragment() {
         // Required empty public constructor
@@ -206,7 +194,7 @@ public class ExploreFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_explore, container, false);
 
         btSearch        = view.findViewById(R.id.btSearch);
-        btOhYee         = view.findViewById(R.id.btOhYee);
+        btQAndA         = view.findViewById(R.id.btQAndA);
         tabs            = view.findViewById(R.id.tabs);
         pager           = view.findViewById(R.id.pager);
 
@@ -222,10 +210,27 @@ public class ExploreFragment extends Fragment {
             }
         });
 
-        btOhYee.setOnClickListener(new View.OnClickListener() {
+        DatabaseReference databaseReference = SetFirebase.getFirebaseDatabase();
+        DatabaseReference userRef = databaseReference.child("user").child(SetFirebaseUser.getUsersId());
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+                if (user.getIsAmbassador().equals("false")) {
+                    btQAndA.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        btQAndA.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getActivity(), OhYeeActivity.class));
+                startActivity(new Intent(getActivity(), BeAmbassadorActivity.class));
             }
         });
 

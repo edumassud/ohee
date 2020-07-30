@@ -4,6 +4,7 @@ import com.example.ohee.helpers.SetFirebase;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 
+import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -13,8 +14,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Question {
+public class Question implements Serializable {
     private String idUser, id, question, type, datePosted;
+    private University specificUniversity;
     private List<String> likedBy = new ArrayList<>();
     private List<Comment> answers = new ArrayList<>();
     private List<University> universities = new ArrayList<>();
@@ -36,9 +38,44 @@ public class Question {
     public void save() {
         DatabaseReference firebase = SetFirebase.getFirebaseDatabase();
         firebase.child("questions")
-                .child(this.idUser)
                 .child(this.id)
                 .setValue(this);
+    }
+
+    public void upDateLikes() {
+        DatabaseReference firebaseRef = SetFirebase.getFirebaseDatabase();
+        DatabaseReference postRef = firebaseRef
+                .child("questions")
+                .child(getId());
+
+        Map<String, Object> postLikes = convertLikesToMap();
+
+        postRef.updateChildren(postLikes);
+    }
+
+    public Map<String, Object> convertLikesToMap() {
+        HashMap<String, Object> postMap = new HashMap<>();
+        postMap.put("likedBy", getLikedBy());
+
+        return postMap;
+    }
+
+    public void upDateAnswers() {
+        DatabaseReference firebaseRef = SetFirebase.getFirebaseDatabase();
+        DatabaseReference postRef = firebaseRef
+                .child("questions")
+                .child(getId());
+
+        Map<String, Object> postComments = convertAnswersToMap();
+
+        postRef.updateChildren(postComments);
+    }
+
+    public Map<String, Object> convertAnswersToMap() {
+        HashMap<String, Object> postMap = new HashMap<>();
+        postMap.put("answers", getAnswers());
+
+        return postMap;
     }
 
     public String getIdUser() {
@@ -103,5 +140,13 @@ public class Question {
 
     public void setUniversities(List<University> universities) {
         this.universities = universities;
+    }
+
+    public University getSpecificUniversity() {
+        return specificUniversity;
+    }
+
+    public void setSpecificUniversity(University specificUniversity) {
+        this.specificUniversity = specificUniversity;
     }
 }

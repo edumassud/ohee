@@ -24,7 +24,7 @@ public class University implements Serializable {
     private String state;
     private String domain;
     private List<String> students = new ArrayList<>();
-    private int count;
+    private int count, likes;
 
     public University(JSONObject json) throws JSONException {
         JSONObject whois = json.getJSONObject("WhoisRecord");
@@ -41,6 +41,7 @@ public class University implements Serializable {
         this.city = registrant.optString("city");
         this.state = registrant.optString("state");
         this.count = 0;
+        this.likes = 0;
     }
 
     public University() {
@@ -87,6 +88,7 @@ public class University implements Serializable {
     public Map<String, Object> convertInfoToMap() {
         HashMap<String, Object> usersMap = new HashMap<>();
         usersMap.put("count", getCount());
+        usersMap.put("likes", getLikes());
         usersMap.put("students", getStudents());
 
         return usersMap;
@@ -152,5 +154,13 @@ public class University implements Serializable {
 
     public void setStudents(List<String> students) {
         this.students = students;
+    }
+
+    public int getLikes() {
+        return likes;
+    }
+
+    public void setLikes(int likes) {
+        this.likes = likes;
     }
 }

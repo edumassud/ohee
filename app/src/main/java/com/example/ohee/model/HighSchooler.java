@@ -4,12 +4,13 @@ import com.example.ohee.helpers.SetFirebase;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Exclude;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class HighSchooler {
+public class HighSchooler implements Serializable {
     private String userName, name, email, password, idUser, picturePath, searchName;
     private String bio = "I'm new to OhEE!";
     private List<University> interests = new ArrayList();

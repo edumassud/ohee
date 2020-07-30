@@ -19,7 +19,7 @@ import com.example.ohee.fragment.ProfileFragment;
 import com.example.ohee.fragment.QAndAFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-public class MainHSActivity extends AppCompatActivity {
+public class HSMainActivity extends AppCompatActivity {
     private ImageView navHome, navExplore, navNotifications, navProfile;
     private FloatingActionButton fabPost;
 

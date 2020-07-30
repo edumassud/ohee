@@ -87,8 +87,7 @@ public class HSUniProfileActivity extends AppCompatActivity {
         @Override
         public Fragment getItem(int position) {
             if (position == 0) {
-                return new UniversityStudentsFragment(university);
-                //return new UniversityGridFragment(university);
+                return new UniversityGridFragment(university);
             } else {
                 return new UniversityStudentsFragment(university);
             }

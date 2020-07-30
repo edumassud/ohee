@@ -49,9 +49,7 @@ public class HSProfileFragment extends Fragment {
     private FirebaseUser user = SetFirebaseUser.getUser();
     private DatabaseReference databaseReference = SetFirebase.getFirebaseDatabase();
     private DatabaseReference userRef           = databaseReference.child("highschoolers").child(user.getUid());
-    private DatabaseReference questionsRef      = databaseReference.child("questions").child(user.getUid());
-
-    private String universityDomain = "";
+    private DatabaseReference questionsRef      = databaseReference.child("questions");
 
 
     private ValueEventListener valueEventListener;
@@ -118,7 +116,14 @@ public class HSProfileFragment extends Fragment {
         questionsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                questionsCount.setText(dataSnapshot.getChildrenCount() + "");
+                int total = 0;
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    Question question = ds.getValue(Question.class);
+                    if (question.getIdUser().equals(SetFirebaseUser.getUsersId())) {
+                        total++;
+                    }
+                }
+                questionsCount.setText(total + "");
             }
 
             @Override

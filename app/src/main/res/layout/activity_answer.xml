@@ -15,26 +15,6 @@
             android:layout_height="50dp"
             android:background="@android:color/black">
 
-            <ImageView
-                android:id="@+id/btSearch"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginEnd="8dp"
-                android:src="@drawable/ic_search"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <ImageView
-                android:id="@+id/btQAndA"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginStart="8dp"
-                android:src="@drawable/ic_ambassador"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
@@ -79,7 +59,7 @@
             </com.google.android.material.appbar.CollapsingToolbarLayout>
 
             <com.google.android.material.tabs.TabLayout
-                android:id="@+id/tabs"
+                android:id="@+id/tabsHome"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="#000000"
@@ -91,19 +71,19 @@
                 <com.google.android.material.tabs.TabItem
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Explore" />
+                    android:text="home" />
 
                 <com.google.android.material.tabs.TabItem
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Universities" />
+                    android:text="public" />
 
             </com.google.android.material.tabs.TabLayout>
 
         </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.viewpager.widget.ViewPager
-            android:id="@+id/pager"
+            android:id="@+id/pagerHome"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"/>

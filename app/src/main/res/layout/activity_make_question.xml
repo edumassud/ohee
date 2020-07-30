@@ -81,7 +81,8 @@
                 android:textColorHighlight="@android:color/white"
                 android:textColorHint="@android:color/white"
                 android:textColorLink="@android:color/white"
-                android:background="@drawable/text_field_background"/>
+                android:background="@drawable/text_field_background"
+                android:padding="8dp"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <LinearLayout

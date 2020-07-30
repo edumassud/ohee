@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.example.ohee.R;
+import com.example.ohee.activity.MakeQuestionActivity;
 import com.example.ohee.activity.RateYourUniActivity;
 import com.example.ohee.helpers.SetFirebase;
 import com.example.ohee.helpers.SetFirebaseUser;
@@ -37,6 +38,7 @@ public class HSUniversityProfileMainFragment extends Fragment {
     private University university;
     private ScaleRatingBar uniRate;
     private LikeButton btLike;
+    private Button btAsk;
 
     DatabaseReference databaseReference = SetFirebase.getFirebaseDatabase();
     DatabaseReference userRef = databaseReference.child("highschoolers").child(SetFirebaseUser.getUsersId());
@@ -61,6 +63,7 @@ public class HSUniversityProfileMainFragment extends Fragment {
         uniRate         = view.findViewById(R.id.uniRating);
         txtRatingsCount = view.findViewById(R.id.txtReviewCount);
         btLike          = view.findViewById(R.id.btLike);
+        btAsk           = view.findViewById(R.id.btAsk);
 
         if (university != null) {
             txtName.setText(university.getName());
@@ -104,6 +107,9 @@ public class HSUniversityProfileMainFragment extends Fragment {
                         universities.add(university);
                         user.setInterests(universities);
                         user.updateInterests();
+
+                        university.setLikes(university.getLikes() + 1);
+                        university.update();
                     }
 
                     @Override
@@ -128,6 +134,8 @@ public class HSUniversityProfileMainFragment extends Fragment {
                                 break;
                             }
                         }
+                        university.setLikes(university.getLikes() - 1);
+                        university.update();
                     }
 
                     @Override
@@ -135,6 +143,15 @@ public class HSUniversityProfileMainFragment extends Fragment {
 
                     }
                 });
+            }
+        });
+
+        btAsk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getActivity(), MakeQuestionActivity.class);
+                i.putExtra("selectedUniversity", university);
+                startActivity(i);
             }
         });
 

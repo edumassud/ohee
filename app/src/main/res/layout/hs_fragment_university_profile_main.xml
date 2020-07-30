@@ -81,4 +81,15 @@
         android:textAlignment="center"
         android:textColor="#ffffff" />
 
+    <Button
+        android:id="@+id/btAsk"
+        android:layout_width="match_parent"
+        android:layout_height="21dp"
+        android:background="@drawable/button_edit_bg"
+        android:text="post a question"
+        android:layout_marginTop="10dp"
+        android:textColor="@android:color/white"
+        android:textSize="12sp"
+        />
+
 </LinearLayout>

@@ -16,6 +16,7 @@ import android.widget.AdapterView;
 import com.example.ohee.R;
 import com.example.ohee.activity.ChatActivity;
 import com.example.ohee.activity.GroupActivity;
+import com.example.ohee.activity.HSVisitProfileActivity;
 import com.example.ohee.activity.VisitProfileActivity;
 import com.example.ohee.adapter.ContactsAdapter;
 import com.example.ohee.helpers.RecyclerItemClickListener;
@@ -85,10 +86,26 @@ public class UniversityStudentsFragment extends Fragment {
                             public void onItemClick(View view, int position) {
                                 List<User> listStudentsUpdated = adapter.getContatos();
                                 User selectedUser = listStudentsUpdated.get(position);
-                                Intent i = new Intent(getActivity(), VisitProfileActivity.class);
-                                i.putExtra("selectedUser", selectedUser);
-                                startActivity(i);
+                                DatabaseReference highschoolers = databaseReference.child("highschoolers").child(SetFirebaseUser.getUsersId());
+                                highschoolers.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                        if (dataSnapshot.exists()) {
+                                            Intent i = new Intent(getActivity(), HSVisitProfileActivity.class);
+                                            i.putExtra("selectedUser", selectedUser);
+                                            startActivity(i);
+                                        } else {
+                                            Intent i = new Intent(getActivity(), VisitProfileActivity.class);
+                                            i.putExtra("selectedUser", selectedUser);
+                                            startActivity(i);
+                                        }
+                                    }
 
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                    }
+                                });
                             }
 
                             @Override

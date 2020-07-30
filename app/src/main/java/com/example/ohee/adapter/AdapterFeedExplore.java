@@ -294,7 +294,7 @@ public class AdapterFeedExplore extends RecyclerView.Adapter<AdapterFeedExplore.
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             User user = dataSnapshot.getValue(User.class);
 
-                            if (user.getIdUser().equals(SetFirebaseUser.getUsersId())) {
+                            if (post.getIdUser().equals(SetFirebaseUser.getUsersId())) {
                                 holder.txtName.setClickable(false);
                             } else {
                                 if (!post.getType().equals("highschool")) {
@@ -364,7 +364,7 @@ public class AdapterFeedExplore extends RecyclerView.Adapter<AdapterFeedExplore.
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                 User user = dataSnapshot.getValue(User.class);
 
-                                if (user.getIdUser().equals(SetFirebaseUser.getUsersId())) {
+                                if (comment.getIdUser().equals(SetFirebaseUser.getUsersId())) {
                                     holder.txtCommenter.setClickable(false);
                                 } else {
                                     if (!post.getType().equals("highschool")) {

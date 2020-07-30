@@ -130,60 +130,6 @@ public class HSFeedFragment extends Fragment {
 
             }
         });
-
-
-//        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                HighSchooler loggedUser = dataSnapshot.getValue(HighSchooler.class);
-//                universitiesRef.addListenerForSingleValueEvent(new ValueEventListener() {
-//                    @Override
-//                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
-//                            University university = ds.getValue(University.class);
-//                            if (loggedUser.getInterests().contains(university)) {
-//                                universities.add(university.getDomain());
-//                            }
-//                        }
-//
-//                        for (int i = 0; i < universities.size(); i++) {
-//                            DatabaseReference postUniref = postsRef.child(universities.get(i));
-//                            postUniref.addListenerForSingleValueEvent(new ValueEventListener() {
-//                                @Override
-//                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
-//                                        Post post = ds.getValue(Post.class);
-//
-//                                        if (post.getType().equals("highschool")) {
-//                                            posts.add(post);
-//                                        }
-//                                        Collections.reverse(posts);
-//                                        adapter.notifyDataSetChanged();
-//                                        swipeRefresh.setRefreshing(false);
-//                                    }
-//                                }
-//
-//                                @Override
-//                                public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//                                }
-//                            });
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//                    }
-//                });
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        });
-
     }
 
 

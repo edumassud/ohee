@@ -6,6 +6,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import com.example.ohee.activity.PostActivity;
 import com.example.ohee.adapter.AdapterGrid;
 import com.example.ohee.helpers.SetFirebase;
 import com.example.ohee.helpers.SetFirebaseUser;
+import com.example.ohee.model.HighSchooler;
 import com.example.ohee.model.Post;
 import com.example.ohee.model.University;
 import com.example.ohee.model.User;
@@ -44,6 +46,7 @@ public class UniversityGridFragment extends Fragment {
     DatabaseReference databaseReference = SetFirebase.getFirebaseDatabase();
     DatabaseReference postsRef = databaseReference.child("posts");
     DatabaseReference userRef = databaseReference.child("user").child(SetFirebaseUser.getUsersId());
+    DatabaseReference highschoolerRef = databaseReference.child("highschoolers").child(SetFirebaseUser.getUsersId());
 
     private List<Post> posts = new ArrayList<>();
 
@@ -64,7 +67,24 @@ public class UniversityGridFragment extends Fragment {
         grid = view.findViewById(R.id.grid);
 
         initImgLoader();
-        loadPosts();
+
+        DatabaseReference highschoolers = databaseReference.child("highschoolers").child(SetFirebaseUser.getUsersId());
+        highschoolers.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    loadPostsHS();
+                } else {
+                    loadPosts();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
         setClick();
 
         return view;
@@ -135,6 +155,56 @@ public class UniversityGridFragment extends Fragment {
             }
         });
 
+
+    }
+
+    private void loadPostsHS() {
+        // Set grid size
+        int sizeGrid = getResources().getDisplayMetrics().widthPixels;
+        int sizeImg = sizeGrid / 3;
+        grid.setColumnWidth(sizeImg);
+
+        DatabaseReference thisUniversitysPosts = postsRef.child(university.getDomain());
+
+        highschoolerRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                HighSchooler user = dataSnapshot.getValue(HighSchooler.class);
+                thisUniversitysPosts.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        List<String> urls = new ArrayList<>();
+                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                            Post post = ds.getValue(Post.class);
+
+                            boolean isHighSchool = post.getType().equals("highschool");
+                            if (isHighSchool) {
+                                urls.add(post.getPath());
+                                posts.add(post);
+                            }
+
+                        }
+
+                        // Set adapter
+                        adapter = new AdapterGrid(getActivity(), R.layout.grid_post, urls);
+
+                        // Set gridView
+                        grid.setAdapter(adapter);
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
     }
 
