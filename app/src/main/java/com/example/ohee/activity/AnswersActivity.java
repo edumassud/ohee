@@ -26,6 +26,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public class AnswersActivity extends AppCompatActivity {
     private ImageView btClose;
     private RecyclerView recycler;
@@ -33,6 +37,7 @@ public class AnswersActivity extends AppCompatActivity {
     private FloatingActionButton fabComment;
 
     protected AnswersAdapter adapter;
+    private List<Comment> answers = new ArrayList<>();
 
     private Question selectedQuestion;
 
@@ -55,8 +60,7 @@ public class AnswersActivity extends AppCompatActivity {
         }
 
         // Set adapter
-        adapter = new AnswersAdapter(selectedQuestion.getAnswers(), this);
-
+        adapter = new AnswersAdapter(answers, this);
 
         // Set recycler
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
@@ -79,6 +83,8 @@ public class AnswersActivity extends AppCompatActivity {
                     Toast.makeText(AnswersActivity.this, "Write an asnwer.", Toast.LENGTH_SHORT).show();
                 } else {
                     Comment comment = new Comment(idLoggedUser, txtComment);
+                    comment.setIdPost(selectedQuestion.getId());
+                    comment.save();
                     selectedQuestion.getAnswers().add(comment);
                     selectedQuestion.upDateAnswers();
                     adapter.notifyDataSetChanged();
@@ -97,4 +103,36 @@ public class AnswersActivity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getAnswers();
+    }
+
+    private void getAnswers() {
+        DatabaseReference databaseReference = SetFirebase.getFirebaseDatabase();
+        DatabaseReference answersRef = databaseReference.child("comments");
+
+        answersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    Comment answer = ds.getValue(Comment.class);
+                    if (answer.getIdPost().equals(selectedQuestion.getId())) {
+                        answers.add(answer);
+                    }
+                }
+                Collections.sort(answers, Comment.Comparators.LIKES);
+                Collections.reverse(answers);
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
 }

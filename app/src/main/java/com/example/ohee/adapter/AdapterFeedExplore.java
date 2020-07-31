@@ -42,6 +42,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.like.LikeButton;
 import com.like.OnLikeListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -200,44 +201,35 @@ public class AdapterFeedExplore extends RecyclerView.Adapter<AdapterFeedExplore.
 
             // Set featured comment
             if (post.getComments().size() == 0) {
-                holder.txtCommenter.setText("Be the first one to comment!");
-                holder.txtComment.setText("");
+                holder.txtCommenter.setText("Be the first one to answer!");
             } else {
-                Comment firstComment = post.getComments().get(0);
-
-                holder.txtComment.setText(firstComment.getComment());
-
-                if (!post.getType().equals("highschool")) {
-                    DatabaseReference commenterRef = databaseReference.child("user").child(firstComment.getIdUser());
-                    commenterRef.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            User user = dataSnapshot.getValue(User.class);
-                            holder.txtCommenter.setText(user.getUserName());
+                DatabaseReference commentsRef = databaseReference.child("comments");
+                commentsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        List<Comment> comments = new ArrayList<>();
+                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                            Comment comment = ds.getValue(Comment.class);
+                            if (comment.getIdPost().equals(post.getId())) {
+                                comments.add(comment);
+                            }
                         }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                        Comment display = comments.get(0);
+                        for (int i = 0; i < comments.size(); i++) {
+                            if (comments.get(i).getLikedBy().size() > display.getLikedBy().size()) {
+                                display = comments.get(i);
+                            }
                         }
-                    });
-                } else {
-                    DatabaseReference commenterRef = databaseReference.child("highschoolers").child(firstComment.getIdUser());
-                    commenterRef.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            HighSchooler user = dataSnapshot.getValue(HighSchooler.class);
-                            holder.txtCommenter.setText(user.getUserName());
-                        }
+                        display(display, holder);
 
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                    }
 
-                        }
-                    });
-                }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
             }
-
 
             // Set comment event
             holder.btComment.setOnClickListener(new View.OnClickListener() {
@@ -427,6 +419,42 @@ public class AdapterFeedExplore extends RecyclerView.Adapter<AdapterFeedExplore.
                 }
             });
         }
+    }
+
+    private void display(Comment comment, @NonNull AdapterFeedExplore.MyViewHolder holder) {
+        DatabaseReference commenterRef = SetFirebase.getFirebaseDatabase().child("user").child(comment.getIdUser());
+        commenterRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    User user = dataSnapshot.getValue(User.class);
+                    String fullComment = "<b>" + user.getName() + "</b>" + "  " + comment.getComment();
+                    holder.txtCommenter.setText(Html.fromHtml(fullComment));
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        DatabaseReference commenterHSRef = SetFirebase.getFirebaseDatabase().child("highschoolers").child(comment.getIdUser());
+        commenterHSRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    HighSchooler user = dataSnapshot.getValue(HighSchooler.class);
+                    String fullComment = "<b>" + user.getName() + "</b>" + "  " + comment.getComment();
+                    holder.txtCommenter.setText(Html.fromHtml(fullComment));
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     @Override

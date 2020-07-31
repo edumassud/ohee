@@ -22,6 +22,7 @@ import com.example.ohee.activity.VisitProfileActivity;
 import com.example.ohee.helpers.SetFirebase;
 import com.example.ohee.helpers.SetFirebaseUser;
 import com.example.ohee.model.Comment;
+import com.example.ohee.model.HighSchooler;
 import com.example.ohee.model.Notification;
 import com.example.ohee.model.Post;
 import com.example.ohee.model.User;
@@ -32,6 +33,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.like.LikeButton;
 import com.like.OnLikeListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -66,10 +68,6 @@ public class AdapterFeedHome extends RecyclerView.Adapter<AdapterFeedHome.MyView
                 Uri urlProfile = Uri.parse(post.getPath());
                 Glide.with(context).load(urlProfile).into(holder.imgPost);
             }
-//            holder.txtCaption.setText(post.getCaption());
-
-
-
 
             DatabaseReference userRef = databaseReference.child("user").child(post.getIdUser());
 
@@ -146,12 +144,6 @@ public class AdapterFeedHome extends RecyclerView.Adapter<AdapterFeedHome.MyView
 
                             }
                         });
-//                        Notification notification = new Notification();
-//                        notification.setIdReceiver(post.getIdUser());
-//                        notification.setIdSender(SetFirebaseUser.getUsersId());
-//                        notification.setAction("postLiked");
-//                        notification.setIdPost(post.getId());
-//                        notification.deleteNotification();
                     }
                 }
             });
@@ -195,20 +187,27 @@ public class AdapterFeedHome extends RecyclerView.Adapter<AdapterFeedHome.MyView
 
             // Set featured comment
             if (post.getComments().size() == 0) {
-                holder.txtCommenter.setText("Be the first one to comment!");
-                holder.txtComment.setText("");
+                holder.txtCommenter.setText("Be the first one to answer!");
             } else {
-                Comment firstComment = post.getComments().get(0);
-
-                //holder.txtComment.setText(firstComment.getComment());
-
-                DatabaseReference commenterRef = databaseReference.child("user").child(firstComment.getIdUser());
-                commenterRef.addValueEventListener(new ValueEventListener() {
+                DatabaseReference commentsRef = databaseReference.child("comments");
+                commentsRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        User user = dataSnapshot.getValue(User.class);
-                        String fullComment = "<b>" + user.getName() + "</b>" + "  " + firstComment.getComment();
-                        holder.txtCommenter.setText(Html.fromHtml(fullComment));
+                        List<Comment> comments = new ArrayList<>();
+                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                            Comment comment = ds.getValue(Comment.class);
+                            if (comment.getIdPost().equals(post.getId())) {
+                                comments.add(comment);
+                            }
+                        }
+                        Comment display = comments.get(0);
+                        for (int i = 0; i < comments.size(); i++) {
+                            if (comments.get(i).getLikedBy().size() > display.getLikedBy().size()) {
+                                display = comments.get(i);
+                            }
+                        }
+                        display(display, holder);
+
                     }
 
                     @Override
@@ -217,6 +216,7 @@ public class AdapterFeedHome extends RecyclerView.Adapter<AdapterFeedHome.MyView
                     }
                 });
             }
+
 
             // Set comment event
             holder.btComment.setOnClickListener(new View.OnClickListener() {
@@ -351,6 +351,42 @@ public class AdapterFeedHome extends RecyclerView.Adapter<AdapterFeedHome.MyView
             });
 
         }
+    }
+
+    private void display(Comment comment, @NonNull AdapterFeedHome.MyViewHolder holder) {
+        DatabaseReference commenterRef = SetFirebase.getFirebaseDatabase().child("user").child(comment.getIdUser());
+        commenterRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    User user = dataSnapshot.getValue(User.class);
+                    String fullComment = "<b>" + user.getName() + "</b>" + "  " + comment.getComment();
+                    holder.txtCommenter.setText(Html.fromHtml(fullComment));
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        DatabaseReference commenterHSRef = SetFirebase.getFirebaseDatabase().child("highschoolers").child(comment.getIdUser());
+        commenterHSRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    HighSchooler user = dataSnapshot.getValue(HighSchooler.class);
+                    String fullComment = "<b>" + user.getName() + "</b>" + "  " + comment.getComment();
+                    holder.txtCommenter.setText(Html.fromHtml(fullComment));
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     @Override

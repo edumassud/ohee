@@ -210,23 +210,6 @@ public class ExploreFragment extends Fragment {
             }
         });
 
-        DatabaseReference databaseReference = SetFirebase.getFirebaseDatabase();
-        DatabaseReference userRef = databaseReference.child("user").child(SetFirebaseUser.getUsersId());
-        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                User user = dataSnapshot.getValue(User.class);
-                if (user.getIsAmbassador().equals("false")) {
-                    btQAndA.setVisibility(View.GONE);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
         btQAndA.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

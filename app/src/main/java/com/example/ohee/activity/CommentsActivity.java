@@ -1,6 +1,8 @@
 package com.example.ohee.activity;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -13,12 +15,20 @@ import android.widget.Toast;
 
 import com.example.ohee.R;
 import com.example.ohee.adapter.CommentsAdapter;
+import com.example.ohee.helpers.SetFirebase;
 import com.example.ohee.helpers.SetFirebaseUser;
 import com.example.ohee.model.Comment;
 import com.example.ohee.model.Notification;
 import com.example.ohee.model.Post;
 import com.example.ohee.model.User;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CommentsActivity extends AppCompatActivity {
     private ImageView btClose;
@@ -73,6 +83,9 @@ public class CommentsActivity extends AppCompatActivity {
                     Toast.makeText(CommentsActivity.this, "Write a comment", Toast.LENGTH_SHORT).show();
                 } else {
                     Comment comment = new Comment(idLoggedUser, txtComment);
+                    comment.setIdPost(selectedPost.getId());
+//                    comment.setPostDomain(selectedPost.getUniversityDomain());
+                    comment.save();
                     selectedPost.getComments().add(comment);
                     selectedPost.upDateComments();
                     adapter.notifyDataSetChanged();

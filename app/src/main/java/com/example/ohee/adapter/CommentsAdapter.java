@@ -8,10 +8,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.brouding.doubletaplikeview.DoubleTapLikeView;
 import com.bumptech.glide.Glide;
 import com.example.ohee.R;
 import com.example.ohee.activity.HSVisitProfileActivity;
@@ -20,12 +22,17 @@ import com.example.ohee.helpers.SetFirebase;
 import com.example.ohee.helpers.SetFirebaseUser;
 import com.example.ohee.model.Comment;
 import com.example.ohee.model.HighSchooler;
+import com.example.ohee.model.Notification;
+import com.example.ohee.model.Post;
 import com.example.ohee.model.User;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
+import com.like.LikeButton;
+import com.like.OnLikeListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -51,9 +58,6 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.MyView
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         Comment comment = comments.get(position);
-
-        // Set comment
-//        holder.txtComment.setText(comment.getComment());
 
         // Get user's info
         DatabaseReference databaseReference = SetFirebase.getFirebaseDatabase();
@@ -144,6 +148,81 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.MyView
             }
         });
 
+        // Set like info
+        DatabaseReference commentsRef = databaseReference.child("comments").child(comment.getIdComment());
+        commentsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Comment commentRef = dataSnapshot.getValue(Comment.class);
+                holder.txtLikesCount.setText(commentRef.getLikedBy().size() + " Likes");
+                if (commentRef.getLikedBy().contains(SetFirebaseUser.getUsersId())) {
+                    holder.btLike.setLiked(true);
+                } else {
+                    holder.btLike.setLiked(false);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+        // Set like event
+        holder.btLike.setOnLikeListener(new OnLikeListener() {
+            @Override
+            public void liked(LikeButton likeButton) {
+                if (!comment.getLikedBy().contains(SetFirebaseUser.getUsersId())) {
+                    comment.getLikedBy().add(SetFirebaseUser.getUsersId());
+                    comment.upDateLikes();
+                    holder.txtLikesCount.setText(comment.getLikedBy().size() + " Likes");
+                    holder.btLike.setLiked(true);
+
+                }
+            }
+
+            @Override
+            public void unLiked(LikeButton likeButton) {
+                comment.getLikedBy().remove(SetFirebaseUser.getUsersId());
+                comment.upDateLikes();
+                holder.txtLikesCount.setText(comment.getLikedBy().size() + " Likes");
+
+            }
+        });
+
+//        holder.doubleTapper.setOnTapListener(new DoubleTapLikeView.OnTapListener() {
+//            @Override
+//            public void onDoubleTap(View view) {
+//                if (!comment.getLikedBy().contains(SetFirebaseUser.getUsersId())) {
+//                    holder.txtLikesCount.setText(comment.getLikedBy().size() + " Likes");
+//                    holder.btLike.setLiked(true);
+//                    Toast.makeText(context, comment.getPostDomain(), Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(context, comment.getIdPost(), Toast.LENGTH_SHORT).show();
+//
+//                    DatabaseReference postRef = databaseReference.child("posts").child(comment.getPostDomain()).child(comment.getIdPost());
+//                    postRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//                        @Override
+//                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                            Post post = dataSnapshot.getValue(Post.class);
+//                            comment.getLikedBy().add(SetFirebaseUser.getUsersId());
+//                            post.upDateComments();
+//                        }
+//
+//                        @Override
+//                        public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                        }
+//                    });
+//                }
+//            }
+//
+//            @Override
+//            public void onTap() {
+//
+//            }
+//        });
+
         // Set name click
         holder.txtName.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -186,14 +265,18 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.MyView
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         private CircleImageView imgProfile;
-        private TextView txtName, txtComment;
+        private TextView txtName, txtLikesCount;
+        //private DoubleTapLikeView doubleTapper;
+        private LikeButton btLike;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            imgProfile = itemView.findViewById(R.id.imgProfile);
-            txtName    = itemView.findViewById(R.id.txtName);
-            txtComment = itemView.findViewById(R.id.txtComment);
+            imgProfile      = itemView.findViewById(R.id.imgProfile);
+            txtName         = itemView.findViewById(R.id.txtName);
+            txtLikesCount   = itemView.findViewById(R.id.txtLikesCount);
+            //doubleTapper    = itemView.findViewById(R.id.doubleTapper);
+            btLike          = itemView.findViewById(R.id.btLike);
         }
     }
 }

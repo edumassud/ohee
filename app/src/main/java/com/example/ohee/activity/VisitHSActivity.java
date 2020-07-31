@@ -112,6 +112,7 @@ public class VisitHSActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent i = new Intent(getApplicationContext(), ChatActivity.class);
                 i.putExtra("chatContato", selectedUser);
+                i.putExtra("isHighschooler", true);
                 startActivity(i);
             }
         });

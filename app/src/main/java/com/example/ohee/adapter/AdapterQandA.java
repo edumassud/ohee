@@ -35,6 +35,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.like.LikeButton;
 import com.like.OnLikeListener;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -105,14 +107,14 @@ public class AdapterQandA extends RecyclerView.Adapter<AdapterQandA.MyViewHolder
                     holder.txtLikesCount.setText(question.getLikedBy().size() + " Likes");
                     holder.btLike.setLiked(true);
 
-//                    if (!SetFirebaseUser.getUsersId().equals(question.getIdUser())) {
-//                        Notification notification = new Notification();
-//                        notification.setIdReceiver(question.getIdUser());
-//                        notification.setIdSender(SetFirebaseUser.getUsersId());
-//                        notification.setAction("questionLiked");
-//                        notification.setIdPost(question.getId());
-//                        notification.save();
-//                    }
+                    if (!SetFirebaseUser.getUsersId().equals(question.getIdUser())) {
+                        Notification notification = new Notification();
+                        notification.setIdReceiver(question.getIdUser());
+                        notification.setIdSender(SetFirebaseUser.getUsersId());
+                        notification.setAction("questionLiked");
+                        notification.setIdPost(question.getId());
+                        notification.save();
+                    }
                 }
             }
 
@@ -154,14 +156,14 @@ public class AdapterQandA extends RecyclerView.Adapter<AdapterQandA.MyViewHolder
                     holder.txtLikesCount.setText(question.getLikedBy().size() + " Likes");
                     holder.btLike.setLiked(true);
 
-//                    if (!SetFirebaseUser.getUsersId().equals(question.getIdUser())) {
-//                        Notification notification = new Notification();
-//                        notification.setIdReceiver(question.getIdUser());
-//                        notification.setIdSender(SetFirebaseUser.getUsersId());
-//                        notification.setAction("questionLiked");
-//                        notification.setIdPost(question.getId());
-//                        notification.save();
-//                    }
+                    if (!SetFirebaseUser.getUsersId().equals(question.getIdUser())) {
+                        Notification notification = new Notification();
+                        notification.setIdReceiver(question.getIdUser());
+                        notification.setIdSender(SetFirebaseUser.getUsersId());
+                        notification.setAction("questionLiked");
+                        notification.setIdPost(question.getId());
+                        notification.save();
+                    }
                 }
             }
 
@@ -194,36 +196,26 @@ public class AdapterQandA extends RecyclerView.Adapter<AdapterQandA.MyViewHolder
         // Set featured comment
         if (question.getAnswers().size() == 0) {
             holder.txtCommenter.setText("Be the first one to answer!");
-            holder.txtComment.setText("");
         } else {
-            Comment firstComment = question.getAnswers().get(0);
-
-            DatabaseReference commenterRef = databaseReference.child("user").child(firstComment.getIdUser());
-            commenterRef.addValueEventListener(new ValueEventListener() {
+            DatabaseReference commentsRef = databaseReference.child("comments");
+            commentsRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    if (dataSnapshot.exists()) {
-                        User user = dataSnapshot.getValue(User.class);
-                        String fullComment = "<b>" + user.getName() + "</b>" + "  " + firstComment.getComment();
-                        holder.txtCommenter.setText(Html.fromHtml(fullComment));
+                    List<Comment> comments = new ArrayList<>();
+                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                        Comment comment = ds.getValue(Comment.class);
+                        if (comment.getIdPost().equals(question.getId())) {
+                            comments.add(comment);
+                        }
                     }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            });
-
-            DatabaseReference commenterHSRef = databaseReference.child("highschoolers").child(firstComment.getIdUser());
-            commenterHSRef.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    if (dataSnapshot.exists()) {
-                        HighSchooler user = dataSnapshot.getValue(HighSchooler.class);
-                        String fullComment = "<b>" + user.getName() + "</b>" + "  " + firstComment.getComment();
-                        holder.txtCommenter.setText(Html.fromHtml(fullComment));
+                    Comment display = comments.get(0);
+                    for (int i = 0; i < comments.size(); i++) {
+                        if (comments.get(i).getLikedBy().size() > display.getLikedBy().size()) {
+                            display = comments.get(i);
+                        }
                     }
+                    display(display, holder);
+
                 }
 
                 @Override
@@ -261,6 +253,42 @@ public class AdapterQandA extends RecyclerView.Adapter<AdapterQandA.MyViewHolder
         });
     }
 
+    private void display(Comment comment, @NonNull MyViewHolder holder) {
+        DatabaseReference commenterRef = SetFirebase.getFirebaseDatabase().child("user").child(comment.getIdUser());
+        commenterRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    User user = dataSnapshot.getValue(User.class);
+                    String fullComment = "<b>" + user.getName() + "</b>" + "  " + comment.getComment();
+                    holder.txtCommenter.setText(Html.fromHtml(fullComment));
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        DatabaseReference commenterHSRef = SetFirebase.getFirebaseDatabase().child("highschoolers").child(comment.getIdUser());
+        commenterHSRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    HighSchooler user = dataSnapshot.getValue(HighSchooler.class);
+                    String fullComment = "<b>" + user.getName() + "</b>" + "  " + comment.getComment();
+                    holder.txtCommenter.setText(Html.fromHtml(fullComment));
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
     @Override
     public int getItemCount() {
         return questions.size();
@@ -270,7 +298,7 @@ public class AdapterQandA extends RecyclerView.Adapter<AdapterQandA.MyViewHolder
         private CircleImageView imgProfile;
         private DoubleTapLikeView doubleTapper;
         private ImageView btComment;
-        private TextView txtName, txtUniversity, txtQuestion, txtLikesCount, txtCommentsCount, txtCommenter, txtComment;
+        private TextView txtName, txtUniversity, txtQuestion, txtLikesCount, txtCommentsCount, txtCommenter;
         private LikeButton btLike;
 
         public MyViewHolder(@NonNull View itemView) {
@@ -285,7 +313,6 @@ public class AdapterQandA extends RecyclerView.Adapter<AdapterQandA.MyViewHolder
             btComment        = itemView.findViewById(R.id.btComment);
             txtCommentsCount = itemView.findViewById(R.id.txtCommentsCount);
             txtCommenter     = itemView.findViewById(R.id.txtCommenter);
-            txtComment       = itemView.findViewById(R.id.txtComment);
             doubleTapper     = itemView.findViewById(R.id.doubleTapper);
 
         }

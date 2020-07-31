@@ -25,6 +25,7 @@ import com.example.ohee.helpers.SetFirebase;
 import com.example.ohee.helpers.SetFirebaseUser;
 import com.example.ohee.model.Chat;
 import com.example.ohee.model.Group;
+import com.example.ohee.model.HighSchooler;
 import com.example.ohee.model.Message;
 import com.example.ohee.model.Notification;
 import com.example.ohee.model.User;
@@ -48,6 +49,7 @@ public class ChatActivity extends AppCompatActivity {
     private TextView textViewNome;
     private CircleImageView circleImageView;
     private User usuarioDestinatario;
+    private HighSchooler hsDestinatario;
     private Group grupo;
     private EditText editMensagem;
     private RecyclerView recyclerMensagens;
@@ -65,6 +67,8 @@ public class ChatActivity extends AppCompatActivity {
 
     private ChildEventListener childEventListenerMensagens;
     private static final int SELECAO_CAMERA = 100;
+
+    private boolean isHS;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,6 +107,23 @@ public class ChatActivity extends AppCompatActivity {
                     circleImageView.setImageResource(R.drawable.avatar);
                 }
 
+            } else if (bundle.containsKey("isHighschooler")) {
+                isHS = true;
+                hsDestinatario = (HighSchooler) bundle.getSerializable("chatContato");
+                textViewNome.setText(hsDestinatario.getName());
+
+                String foto = hsDestinatario.getPicturePath();
+                if (foto != null) {
+                    Uri url = Uri.parse(hsDestinatario.getPicturePath());
+                    Glide.with(ChatActivity.this)
+                            .load(url)
+                            .into(circleImageView);
+                } else {
+                    circleImageView.setImageResource(R.drawable.avatar);
+                }
+
+                //recuperar dados suario destinatario
+                idUsuarioDestinatario = hsDestinatario.getIdUser();
             } else {
                 usuarioDestinatario = (User) bundle.getSerializable("chatContato");
                 textViewNome.setText(usuarioDestinatario.getName());
@@ -248,7 +269,7 @@ public class ChatActivity extends AppCompatActivity {
     public void enviarMensagem(View view) {
         String txtMensagem = editMensagem.getText().toString();
         if (!txtMensagem.isEmpty()) {
-            if (usuarioDestinatario != null) {
+            if (!isHS && usuarioDestinatario != null) {
                 Message mensagem = new Message();
                 mensagem.setIdUsuario(idUsuarioRemetente);
                 mensagem.setMensagem(txtMensagem);
@@ -272,6 +293,34 @@ public class ChatActivity extends AppCompatActivity {
                 notification.setAction("message");
                 notification.save();
 
+            } else if (isHS) {
+                Message mensagem = new Message();
+                mensagem.setIdUsuario(idUsuarioRemetente);
+                mensagem.setMensagem(txtMensagem);
+
+                //salvar para remetente
+                salvarMensagem(idUsuarioRemetente, idUsuarioDestinatario, mensagem);
+
+                //salvar para destinatario
+                salvarMensagem(idUsuarioDestinatario, idUsuarioRemetente, mensagem);
+
+                //salvar conversa p remetente
+                User temp = new User();
+                temp.setName(hsDestinatario.getName());
+                temp.setPicturePath(hsDestinatario.getPicturePath());
+                temp.setIdUser(hsDestinatario.getIdUser());
+                temp.setUserName(hsDestinatario.getUserName());
+                salvarConversa(idUsuarioRemetente, idUsuarioDestinatario, temp, mensagem, false);
+
+                //salvar conversa p destinatario
+                salvarConversa(idUsuarioDestinatario, idUsuarioRemetente, temp, mensagem, false);
+
+                // Save notification
+                Notification notification = new Notification();
+                notification.setIdReceiver(idUsuarioDestinatario);
+                notification.setIdSender(SetFirebaseUser.getUsersId());
+                notification.setAction("message");
+                notification.save();
             } else {
                 for (User membro : grupo.getMembros()) {
                     String idRemetenteGrupo = membro.getIdUser();
