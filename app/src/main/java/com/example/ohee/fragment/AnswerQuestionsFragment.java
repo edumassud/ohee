@@ -16,6 +16,7 @@ import com.example.ohee.R;
 import com.example.ohee.adapter.AdapterQandA;
 import com.example.ohee.helpers.SetFirebase;
 import com.example.ohee.helpers.SetFirebaseUser;
+import com.example.ohee.model.Comment;
 import com.example.ohee.model.Question;
 import com.example.ohee.model.User;
 import com.google.firebase.database.DataSnapshot;
@@ -24,12 +25,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Queue;
 
 
 public class AnswerQuestionsFragment extends Fragment {
     private Boolean isHome;
+    private String mode;
 
     private RecyclerView recycler;
     private SwipeRefreshLayout swipeRefresh;
@@ -46,8 +49,9 @@ public class AnswerQuestionsFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public AnswerQuestionsFragment(Boolean isHome) {
+    public AnswerQuestionsFragment(Boolean isHome, String mode) {
         this.isHome = isHome;
+        this.mode = mode;
     }
 
     @Override
@@ -100,20 +104,26 @@ public class AnswerQuestionsFragment extends Fragment {
                             boolean specificToThis = question.getType().equals("specific") && question.getSpecificUniversity().getDomain().equals(user.getUniversityDomain());
 
                             if (!isHome && question.getType().equals("public")) {
-                                questions.add(question);
+                                questions.add(0, question);
                             } else if (isHome && specificToThis) {
                                 questions.add(question);
                             } else if (isHome && question.getType().equals("my list")) {
                                 for (int i = 0; i < question.getUniversities().size(); i++) {
                                     if (question.getUniversities().get(i).getDomain().equals(user.getUniversityDomain())) {
-                                        questions.add(question);
+                                        questions.add(0, question);
                                         break;
                                     }
                                 }
                             }
                         }
-                        adapter.notifyDataSetChanged();
-                        swipeRefresh.setRefreshing(false);
+                        if (mode.equals("top")) {
+                            Collections.sort(questions, Question.Comparators.LIKES);
+                            Collections.reverse(questions);
+                            adapter.notifyDataSetChanged();
+                        } else {
+                            adapter.notifyDataSetChanged();
+                            swipeRefresh.setRefreshing(false);
+                        }
                     }
 
                     @Override

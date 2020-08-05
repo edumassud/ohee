@@ -108,7 +108,6 @@ public class FriendsActivity extends AppCompatActivity {
 
         // Set adapter
         adapter     = new ContactsAdapter(users, getApplicationContext());
-//        adapterUni  = new UniDataAdapter(universities, getApplicationContext());
         adapterUni  = new UniDataAdapter(universitiesSorted, getApplicationContext());
 
         // Set recyclers
@@ -226,8 +225,6 @@ public class FriendsActivity extends AppCompatActivity {
                                 hm.remove(uni);
                                 universities.remove(uni);
                             }
-
-
 
                             adapter.notifyDataSetChanged();
                             adapterUni.notifyDataSetChanged();

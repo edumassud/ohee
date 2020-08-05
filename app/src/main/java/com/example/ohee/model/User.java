@@ -19,11 +19,8 @@ import java.util.Map;
 public class User implements Serializable {
     private String userName, name, email, password, idUser, picturePath, searchName, universityName, universityDomain, status, sex;
     private String bio = "Im new to OhEE!";
+    private int rotation = 0;
     private int postCount = 0;
-//    private int followerCount = 0;
-//    private int followingCount = 0;
-//    private List<String> following = new ArrayList<>();
-//    private List<String> followers = new ArrayList<>();
     private String isPrivate, isAmbassador;
 
     public User(String userName, String name, String email, String password, String universityName, String universityDomain) {
@@ -144,6 +141,7 @@ public class User implements Serializable {
         usersMap.put("sex", getSex());
         usersMap.put("isPrivate", getIsPrivate());
         usersMap.put("isAmbassador", getIsAmbassador());
+        usersMap.put("rotation", getRotation());
 
         return usersMap;
     }
@@ -170,22 +168,6 @@ public class User implements Serializable {
     public void setPostCount(int postCount) {
         this.postCount = postCount;
     }
-
-//    public int getFollowerCount() {
-//        return followerCount;
-//    }
-//
-//    public void setFollowerCount(int followerCount) {
-//        this.followerCount = followerCount;
-//    }
-//
-//    public int getFollowingCount() {
-//        return followingCount;
-//    }
-//
-//    public void setFollowingCount(int followingCount) {
-//        this.followingCount = followingCount;
-//    }
 
     public String getSearchName() {
         return searchName;
@@ -276,22 +258,6 @@ public class User implements Serializable {
         this.universityDomain = universityDomain;
     }
 
-//    public List<String> getFollowing() {
-//        return following;
-//    }
-//
-//    public void setFollowing(List<String> following) {
-//        this.following = following;
-//    }
-//
-//    public List<String> getFollowers() {
-//        return followers;
-//    }
-//
-//    public void setFollowers(List<String> followers) {
-//        this.followers = followers;
-//    }
-
     public String getIsPrivate() {
         return isPrivate;
     }
@@ -306,5 +272,13 @@ public class User implements Serializable {
 
     public void setIsAmbassador(String isAmbassador) {
         this.isAmbassador = isAmbassador;
+    }
+
+    public int getRotation() {
+        return rotation;
+    }
+
+    public void setRotation(int rotation) {
+        this.rotation = rotation;
     }
 }

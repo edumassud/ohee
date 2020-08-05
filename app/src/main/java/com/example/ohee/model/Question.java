@@ -9,12 +9,13 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Question implements Serializable {
+public class Question implements Serializable, Comparable<Question> {
     private String idUser, id, question, type, datePosted;
     private University specificUniversity;
     private List<String> likedBy = new ArrayList<>();
@@ -148,5 +149,19 @@ public class Question implements Serializable {
 
     public void setSpecificUniversity(University specificUniversity) {
         this.specificUniversity = specificUniversity;
+    }
+
+    @Override
+    public int compareTo(Question o) {
+        return 0;
+    }
+
+    public static class Comparators {
+        public static Comparator<Question> LIKES = new Comparator<Question>() {
+            @Override
+            public int compare(Question o1, Question o2) {
+                return o1.getLikedBy().size() - o2.getLikedBy().size();
+            }
+        };
     }
 }

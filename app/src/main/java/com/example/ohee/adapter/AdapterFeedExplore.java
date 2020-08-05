@@ -93,7 +93,7 @@ public class AdapterFeedExplore extends RecyclerView.Adapter<AdapterFeedExplore.
                         Glide.with(context).load(urlPost).into(holder.imgProfile);
                     }
                     holder.txtName.setText(user.getName());
-//                    holder.txtNameCap.setText(user.getName());
+                    holder.imgProfile.setRotation(user.getRotation());
                     String fullComment = "<b>" + user.getName() + "</b>" + "  "  + post.getCaption();
                     holder.txtNameCap.setText(Html.fromHtml(fullComment));
                     holder.txtUniversity.setVisibility(View.VISIBLE);
@@ -152,12 +152,6 @@ public class AdapterFeedExplore extends RecyclerView.Adapter<AdapterFeedExplore.
 
                             }
                         });
-//                        Notification notification = new Notification();
-//                        notification.setIdReceiver(post.getIdUser());
-//                        notification.setIdSender(SetFirebaseUser.getUsersId());
-//                        notification.setAction("postLiked");
-//                        notification.setIdPost(post.getId());
-//                        notification.deleteNotification();
                     }
                 }
             });

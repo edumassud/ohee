@@ -49,6 +49,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.MyView
         if (usuario.getPicturePath() != null) {
             Uri uri = Uri.parse(usuario.getPicturePath());
             Glide.with(context).load(uri).into(holder.foto);
+            holder.foto.setRotation(usuario.getRotation());
         } else {
             if (cabecalho) {
                 holder.foto.setImageResource(R.drawable.ic_group_add_black_24dp);

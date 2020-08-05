@@ -104,8 +104,6 @@ public class ProfileFragment extends Fragment {
                 String txtNameAndUniversity     = user.getName() + " • " + user.getUniversityName();
                 String username                 = String.valueOf(user.getUserName());
                 String posts                    = String.valueOf(user.getPostCount());
-//                String following                = String.valueOf(user.getFollowingCount());
-//                String followers                = String.valueOf(user.getFollowerCount());
                 String bio                      = String.valueOf(user.getBio());
                 String picturePath              = String.valueOf(user.getPicturePath());
                 universityDomain                = user.getUniversityDomain();
@@ -141,13 +139,12 @@ public class ProfileFragment extends Fragment {
                 // Setting data on screen
                 postsCount.setText(posts);
                 profileUsername.setText(username);
-//                followingCount.setText(following);
-//                followersCount.setText(followers);
                 profileBio.setText(bio);
                 profileNameAndUniversity.setText(txtNameAndUniversity);
                 if (user.getPicturePath() != null && getActivity() != null) {
                     Uri uri = Uri.parse(picturePath);
                     Glide.with(getActivity()).load(uri).into(profileImg);
+                    profileImg.setRotation(user.getRotation());
                 } else {
                     profileImg.setImageResource(R.drawable.avatar);
                 }

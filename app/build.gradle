@@ -73,4 +73,5 @@ dependencies {
 
     implementation 'com.brouding:android-doubletaplikeview:0.2.0'
 
+
 }

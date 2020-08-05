@@ -27,10 +27,10 @@
         <activity android:name=".activity.HSEditProfileActivity" />
         <activity android:name=".activity.HSMainActivity" />
         <activity android:name=".activity.HSSignUpActivity" />
-        <activity
-            android:name="com.yalantis.ucrop.UCropActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+<!--        <activity-->
+<!--            android:name="com.yalantis.ucrop.UCropActivity"-->
+<!--            android:screenOrientation="portrait"-->
+<!--            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />-->
         <activity android:name=".activity.FriendsActivity" />
         <activity android:name=".activity.LikesListActivity" />
         <activity android:name=".activity.CommentsActivity" />

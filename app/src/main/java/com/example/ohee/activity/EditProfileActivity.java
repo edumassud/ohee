@@ -7,6 +7,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.Manifest;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -14,6 +16,7 @@ import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -46,7 +49,7 @@ public class EditProfileActivity extends AppCompatActivity {
     private CircleImageView editProfileImg;
     private TextView txtChangePic;
     private TextInputEditText editName, editBio, emailField, universityField;
-    private Button btLogOut, btSave, btTaken, btComplicated, btSingle, btDude, btChick, btOther;
+    private Button btLogOut, btSave, btTaken, btComplicated, btSingle, btDude, btChick, btOther, btRotateRight, btRotateLeft;
     private Switch switchPrivacy, switchAmbassador;
 
     private String status;
@@ -91,6 +94,8 @@ public class EditProfileActivity extends AppCompatActivity {
         btOther             = findViewById(R.id.btOther);
         switchPrivacy       = findViewById(R.id.swithPrivacy);
         switchAmbassador    = findViewById(R.id.switchAmbassador);
+        btRotateRight       = findViewById(R.id.btRotateRight);
+        btRotateLeft        = findViewById(R.id.btRotateLeft);
 
         emailField.setFocusable(false);
         universityField.setFocusable(false);
@@ -106,7 +111,23 @@ public class EditProfileActivity extends AppCompatActivity {
                     .into(editProfileImg);
         } else {
             editProfileImg.setImageResource(R.drawable.avatar);
+            btRotateRight.setVisibility(View.GONE);
+            btRotateLeft.setVisibility(View.GONE);
         }
+
+        btRotateRight.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                editProfileImg.setRotation(editProfileImg.getRotation() + 90);
+            }
+        });
+
+        btRotateLeft.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                editProfileImg.setRotation(editProfileImg.getRotation() - 90);
+            }
+        });
 
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -114,6 +135,8 @@ public class EditProfileActivity extends AppCompatActivity {
                 User user = dataSnapshot.getValue(User.class);
                 String bio = user.getBio();
                 String university = user.getUniversityName();
+
+                editProfileImg.setRotation(user.getRotation());
 
                 if (user.getIsPrivate().equals("true")) {
                     switchPrivacy.setChecked(true);
@@ -214,8 +237,10 @@ public class EditProfileActivity extends AppCompatActivity {
                 loggedUser.setSex(sex);
                 loggedUser.setIsPrivate(isPrivate);
                 loggedUser.setIsAmbassador(isAmbassador);
+                loggedUser.setRotation((int)editProfileImg.getRotation());
                 loggedUser.updatePersonalInfo();
-                finish();
+
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
             }
         });
 

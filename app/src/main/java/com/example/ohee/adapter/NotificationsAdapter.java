@@ -148,12 +148,6 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
                                                     .child(loggedUser.getIdUser());
                                             followingNode.setValue(loggedUser.getIdUser());
 
-//                                        friendsUser.setFollowingCount(friendsUser.getFollowingCount() + 1);
-//                                        loggedUser.setFollowerCount(loggedUser.getFollowerCount() + 1);
-//
-//                                        friendsUser.changeFollowing(loggedUser.getIdUser(), "add");
-//                                        loggedUser.changeFollower(friendsUser.getIdUser(), "add");
-
                                             notification.setStatus("answered");
                                             notification.updateStatus();
 

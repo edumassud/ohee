@@ -53,7 +53,7 @@ public class ChatActivity extends AppCompatActivity {
     private Group grupo;
     private EditText editMensagem;
     private RecyclerView recyclerMensagens;
-    private ImageView imageCamera;
+    private ImageView imageCamera, btClose;
 
     private MessagesAdapter adapter;
     private List<Message> mensagens = new ArrayList<>();
@@ -74,17 +74,21 @@ public class ChatActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        toolbar.setTitle("");
-        setSupportActionBar(toolbar);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        textViewNome = findViewById(R.id.txtViewNomeChat);
-        circleImageView = findViewById(R.id.circleImgFoto);
-        editMensagem = findViewById(R.id.editMensagem);
-        recyclerMensagens = findViewById(R.id.recyclerMensagens);
-        imageCamera = findViewById(R.id.imageCamera);
+        textViewNome        = findViewById(R.id.txtViewNomeChat);
+        circleImageView     = findViewById(R.id.circleImgFoto);
+        editMensagem        = findViewById(R.id.editMensagem);
+        recyclerMensagens   = findViewById(R.id.recyclerMensagens);
+        imageCamera         = findViewById(R.id.imageCamera);
+        btClose             = findViewById(R.id.btClose);
+
+        btClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         //recuperar dados do usurio remetente
         idUsuarioRemetente = SetFirebaseUser.getUsersId();
@@ -103,6 +107,7 @@ public class ChatActivity extends AppCompatActivity {
                     Glide.with(ChatActivity.this)
                             .load(url)
                             .into(circleImageView);
+                    circleImageView.setRotation(usuarioDestinatario.getRotation());
                 } else {
                     circleImageView.setImageResource(R.drawable.avatar);
                 }
@@ -127,6 +132,7 @@ public class ChatActivity extends AppCompatActivity {
             } else {
                 usuarioDestinatario = (User) bundle.getSerializable("chatContato");
                 textViewNome.setText(usuarioDestinatario.getName());
+                circleImageView.setRotation(usuarioDestinatario.getRotation());
 
                 String foto = usuarioDestinatario.getPicturePath();
                 if (foto != null) {
@@ -241,7 +247,6 @@ public class ChatActivity extends AppCompatActivity {
                                             }
                                         }
                                     });
-
                         }
                     });
 

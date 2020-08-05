@@ -81,7 +81,7 @@ public class AdapterFeedHome extends RecyclerView.Adapter<AdapterFeedHome.MyView
                      }
                     holder.txtName.setText(user.getName());
                     String fullComment = "<b>" + user.getName() + "</b>" + "  " + post.getCaption();
-//                    holder.txtName.setText(Html.fromHtml(fullComment));
+                    holder.imgProfile.setRotation(user.getRotation());
                     holder.txtNameCap.setText(Html.fromHtml(fullComment));
                 }
 

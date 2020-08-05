@@ -41,6 +41,8 @@ public class HSQandAFragment extends Fragment {
 
     private String loggedUserId = SetFirebaseUser.getUsersId();
 
+    private String mode;
+
     DatabaseReference databaseReference = SetFirebase.getFirebaseDatabase();
     DatabaseReference userRef           = databaseReference.child("highschoolers").child(loggedUserId);
     DatabaseReference questionsRef      = databaseReference.child("questions");
@@ -53,8 +55,9 @@ public class HSQandAFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public HSQandAFragment(boolean isPublic) {
+    public HSQandAFragment(boolean isPublic, String mode) {
         this.isPublic = isPublic;
+        this.mode = mode;
     }
 
     @Override
@@ -110,11 +113,16 @@ public class HSQandAFragment extends Fragment {
                                 for (int i = 0; i < question.getUniversities().size(); i++) {
                                     for (int j = 0; j < user.getInterests().size(); j++) {
                                         if (user.getInterests().get(j).getDomain().equals(question.getUniversities().get(i).getDomain()) && !questions.contains(question)) {
-                                            questions.add(question);
+                                            questions.add(0, question);
                                             break;
                                         }
                                     }
                                 }
+                                if (mode.equals("top")) {
+                                    Collections.sort(questions, Question.Comparators.LIKES);
+                                    Collections.reverse(questions);
+                                }
+                                adapter.notifyDataSetChanged();
                             }
 
                             @Override
@@ -129,10 +137,15 @@ public class HSQandAFragment extends Fragment {
                                 HighSchooler user = dataSnapshot.getValue(HighSchooler.class);
                                 for (int j = 0; j < user.getInterests().size(); j++) {
                                     if (user.getInterests().get(j).getDomain().equals(question.getSpecificUniversity().getDomain())) {
-                                        questions.add(question);
+                                        questions.add(0, question);
                                         break;
                                     }
                                 }
+                                if (mode.equals("top")) {
+                                    Collections.sort(questions, Question.Comparators.LIKES);
+                                    Collections.reverse(questions);
+                                }
+                                adapter.notifyDataSetChanged();
                             }
 
                             @Override
@@ -142,8 +155,11 @@ public class HSQandAFragment extends Fragment {
                         });
                     }
                 }
+                if (mode.equals("top")) {
+                    Collections.sort(questions, Question.Comparators.LIKES);
+                    Collections.reverse(questions);
+                }
                 adapter.notifyDataSetChanged();
-                swipeRefresh.setRefreshing(false);
             }
 
             @Override

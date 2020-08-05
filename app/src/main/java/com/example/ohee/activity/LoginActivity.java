@@ -137,7 +137,6 @@ public class LoginActivity extends AppCompatActivity {
                     } else {
                         Toast.makeText(LoginActivity.this, "Your email hasn't been verified yet.", Toast.LENGTH_SHORT).show();
                     }
-//                    goToMainHS();
 
                 } else {
                     progressBar.setVisibility(View.GONE);
@@ -161,8 +160,8 @@ public class LoginActivity extends AppCompatActivity {
 
     public void checkLogged () {
         //auth.signOut();
-        if (auth.getCurrentUser() != null){// && auth.getCurrentUser().isEmailVerified()) {
-            if (SetFirebaseUser.getUser().getEmail().contains(".edu")) {
+        if (auth.getCurrentUser() != null && auth.getCurrentUser().isEmailVerified()) {
+            if (SetFirebaseUser.getUser().getEmail().substring(SetFirebaseUser.getUser().getEmail().length() - 4, SetFirebaseUser.getUser().getEmail().length()).equals(".edu")) {
                 goToMain();
             } else {
                 goToMainHS();

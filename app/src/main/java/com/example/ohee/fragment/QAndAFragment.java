@@ -13,6 +13,7 @@ import androidx.viewpager.widget.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 
 import com.example.ohee.R;
@@ -24,6 +25,9 @@ public class QAndAFragment extends Fragment {
     private TabLayout tabs;
     private ViewPager pager;
     private ImageView btSearch;
+    private Button btMode;
+
+    private String mode = "recent";
 
     public QAndAFragment() {
         // Required empty public constructor
@@ -44,6 +48,7 @@ public class QAndAFragment extends Fragment {
         btSearch        = view.findViewById(R.id.btSearch);
         tabs            = view.findViewById(R.id.tabs);
         pager           = view.findViewById(R.id.pager);
+        btMode          = view.findViewById(R.id.btMode);
 
         // Set adapter for viewpager
         pager.setAdapter(new QAndAFragment.PagerAdapter(getChildFragmentManager()));
@@ -54,6 +59,23 @@ public class QAndAFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getActivity(), SearchActivity.class));
+            }
+        });
+
+        btMode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mode.equals("recent")) {
+                    mode = "top";
+                    btMode.setBackgroundResource(R.drawable.ic_top_selected);
+                    pager.setAdapter(new QAndAFragment.PagerAdapter(getChildFragmentManager()));
+                    tabs.setupWithViewPager(pager);
+                } else if (mode.equals("top")) {
+                    mode = "recent";
+                    btMode.setBackgroundResource(R.drawable.ic_recent_selected);
+                    pager.setAdapter(new QAndAFragment.PagerAdapter(getChildFragmentManager()));
+                    tabs.setupWithViewPager(pager);
+                }
             }
         });
 
@@ -78,9 +100,9 @@ public class QAndAFragment extends Fragment {
         @Override
         public Fragment getItem(int position) {
             if (position == 0) {
-                return new HSQandAFragment(false);
+                return new HSQandAFragment(false, mode);
             } else {
-                return new HSQandAFragment(true);
+                return new HSQandAFragment(true, mode);
             }
         }
 

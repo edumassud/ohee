@@ -1,5 +1,6 @@
 package com.example.ohee.activity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -9,10 +10,12 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,7 +50,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FilterActivity extends AppCompatActivity {
+public class FilterActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     static
     {
@@ -63,6 +66,7 @@ public class FilterActivity extends AppCompatActivity {
     private TextView txtInfo;
     private LinearLayout extraOpts;
     private ProgressBar progressBar, progressBar1;
+    private Spinner spinner;
 
     private String type = "public";
 
@@ -90,8 +94,8 @@ public class FilterActivity extends AppCompatActivity {
         imgSelected         = findViewById(R.id.imgSelected);
         recyclerFilters     = findViewById(R.id.recyclerFilters);
         txtCaption          = findViewById(R.id.txtCaption);
-        btHome              = findViewById(R.id.btHome);
-        btPrivate           = findViewById(R.id.btPrivate);
+//        btHome              = findViewById(R.id.btHome);
+//        btPrivate           = findViewById(R.id.btPrivate);
         btPublic            = findViewById(R.id.btPublic);
         txtInfo             = findViewById(R.id.txtInfo);
         btClose             = findViewById(R.id.btClose);
@@ -104,7 +108,9 @@ public class FilterActivity extends AppCompatActivity {
         btExclusive         = findViewById(R.id.btExclusive);
         extraOpts           = findViewById(R.id.extraOpts);
         btRotate            = findViewById(R.id.btRotate);
-        btHS                = findViewById(R.id.btHS);
+//        btHS                = findViewById(R.id.btHS);
+        spinner             = findViewById(R.id.spinner);
+
 
         idLoggedUSer = SetFirebaseUser.getUsersId();
 
@@ -137,7 +143,6 @@ public class FilterActivity extends AppCompatActivity {
                                 public void onItemClick(View view, int position) {
                                     ThumbnailItem item = listFilters.get(position);
 
-                                    imgFilter = imgOriginal.copy(imgOriginal.getConfig(), true);
                                     Filter filter = item.filter;
                                     imgSelected.setImageBitmap(filter.processFilter(imgFilter));
                                 }
@@ -175,7 +180,15 @@ public class FilterActivity extends AppCompatActivity {
             }
         });
 
-        makeChoice();
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.post_opts, android.R.layout.simple_spinner_item);
+
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(this);
+
+        //makeChoice();
 
         btPost1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -504,5 +517,30 @@ public class FilterActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         getLoggedUserData();
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        if (parent.getItemAtPosition(position).equals("Private")) {
+            txtInfo.setText("Only those following you can see this post.");
+            type = "private";
+        } else if (parent.getItemAtPosition(position).equals("Home Inclusive")) {
+            txtInfo.setText("People in your university and those who follow you can see this post.");
+            type = "homeInclusive";
+        } else if (parent.getItemAtPosition(position).equals("Home Exclusive")) {
+            txtInfo.setText("Only people in your university can see this post.");
+            type = "homeExclusive";
+        } else if (parent.getItemAtPosition(position).equals("Public")) {
+            txtInfo.setText("Everyone can see this post.");
+            type = "public";
+        } else if (parent.getItemAtPosition(position).equals("Highschoolers")) {
+            txtInfo.setText("Highschoolers can see this post.");
+            type = "highschool";
+        }
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
     }
 }

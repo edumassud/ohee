@@ -99,6 +99,7 @@ public class VisitProfileActivity extends AppCompatActivity {
                 Glide.with(VisitProfileActivity.this)
                         .load(url)
                         .into(imgProfile);
+                imgProfile.setRotation(selectedUser.getRotation());
             } else {
                 imgProfile.setImageResource(R.drawable.avatar);
             }
