@@ -37,6 +37,11 @@ public class HSMainActivity extends AppCompatActivity {
         navigateBar();
     }
 
+    @Override
+    public void onBackPressed() {
+
+    }
+
     public void navigateBar() {
         final FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();

@@ -162,23 +162,23 @@ public class FilterActivity extends AppCompatActivity implements AdapterView.OnI
 
             //getFilters();
 
-        loggedUserRef = usersRef.child(idLoggedUSer);
-        loggedUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                loggedUser = dataSnapshot.getValue(User.class);
-
-                if (loggedUser.getIsAmbassador().equals("true")) {
-                    btHS.setVisibility(View.VISIBLE);
-                }
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
+//        loggedUserRef = usersRef.child(idLoggedUSer);
+//        loggedUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                loggedUser = dataSnapshot.getValue(User.class);
+//
+//                if (loggedUser.getIsAmbassador().equals("true")) {
+//                    btHS.setVisibility(View.VISIBLE);
+//                }
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.post_opts, android.R.layout.simple_spinner_item);
@@ -201,7 +201,7 @@ public class FilterActivity extends AppCompatActivity implements AdapterView.OnI
                 } else {
                     Toast.makeText(FilterActivity.this, "Pick an image first", Toast.LENGTH_SHORT).show();
                 }
-
+//
             }
         });
 
@@ -218,6 +218,13 @@ public class FilterActivity extends AppCompatActivity implements AdapterView.OnI
                     Toast.makeText(FilterActivity.this, "Pick an image first", Toast.LENGTH_SHORT).show();
                 }
 
+            }
+        });
+
+        btClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
         });
 
@@ -344,13 +351,6 @@ public class FilterActivity extends AppCompatActivity implements AdapterView.OnI
                 type = "highschool";
 
                 txtInfo.setText("High-School students can see this post.");
-            }
-        });
-
-        btClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
             }
         });
     }

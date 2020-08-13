@@ -74,6 +74,7 @@ public class PostActivity extends AppCompatActivity {
         // Set img profile
         Uri uri1 = Uri.parse(selectedUser.getPicturePath());
         Glide.with(getApplicationContext()).load(uri1).into(imgProfile);
+        imgProfile.setRotation(selectedUser.getRotation());
 
         // Set texts
         txtUserName.setText(selectedUser.getName());

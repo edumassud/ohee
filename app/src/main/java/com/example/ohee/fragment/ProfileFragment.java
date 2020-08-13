@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.LinearLayout;
@@ -22,6 +23,7 @@ import com.example.ohee.activity.ChatActivity;
 import com.example.ohee.activity.EditProfileActivity;
 //import com.example.ohee.activity.FriendsActivity;
 import com.example.ohee.activity.FriendsActivity;
+import com.example.ohee.activity.PostActivity;
 import com.example.ohee.adapter.AdapterGrid;
 import com.example.ohee.helpers.SetFirebase;
 import com.example.ohee.helpers.SetFirebaseUser;
@@ -38,6 +40,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.zip.Inflater;
 
@@ -55,6 +58,8 @@ public class ProfileFragment extends Fragment {
     private GridView gridView;
 
     private AdapterGrid adapter;
+    private List<String> urls = new ArrayList<>();
+    private List<Post> posts = new ArrayList<>();
 
     private FirebaseUser user = SetFirebaseUser.getUser();
     private DatabaseReference databaseReference = SetFirebase.getFirebaseDatabase();
@@ -96,6 +101,35 @@ public class ProfileFragment extends Fragment {
                 startActivity(new Intent(getActivity(), EditProfileActivity.class));
             }
         });
+
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Post post = posts.get(position);
+
+                DatabaseReference selectedUserRef = databaseReference.child("user").child(post.getIdUser());
+                selectedUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        User user = dataSnapshot.getValue(User.class);
+                        Intent i = new Intent(getContext(), PostActivity.class);
+                        i.putExtra("selectedPost", post);
+                        i.putExtra("selectedUser", user);
+
+                        startActivity(i);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+
+            }
+        });
+
+
 
         valueEventListener = userRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -217,11 +251,13 @@ public class ProfileFragment extends Fragment {
         myPosts.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                List<String> urls = new ArrayList<>();
+
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     Post post = ds.getValue(Post.class);
                     urls.add(0, post.getPath());
+                    posts.add(post);
                 }
+                Collections.reverse(posts);
 
                 // Set adapter
                 adapter = new AdapterGrid(getActivity(), R.layout.grid_post, urls);

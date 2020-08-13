@@ -26,8 +26,6 @@ public class MessengerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_messenger);
 
-
-
         Toolbar toolbar = findViewById(R.id.toolbarPrincipal);
         setSupportActionBar(toolbar);
         toolbar.setTitle("");

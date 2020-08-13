@@ -33,7 +33,19 @@ public class MainActivity extends AppCompatActivity {
         navProfile = findViewById(R.id.profileIcon);
         fabPost = findViewById(R.id.fabPost);
 
+
         navigateBar();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        fabPost.setClickable(true);
+    }
+
+    @Override
+    public void onBackPressed() {
+
     }
 
     public void navigateBar() {
@@ -93,13 +105,8 @@ public class MainActivity extends AppCompatActivity {
         fabPost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                fabPost.setClickable(false);
                 startActivity(new Intent(getApplicationContext(), FilterActivity.class));
-//                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//                fragmentTransaction.replace(R.id.viewPager, new PostFragment()).commit();
-//                navExplore.setImageResource(R.drawable.ic_explore_unselected);
-//                navHome.setImageResource(R.drawable.ic_home_unselected);
-//                navNotifications.setImageResource(R.drawable.ic_notifications_unselected);
-//                navProfile.setImageResource(R.drawable.ic_profile_unselected);
             }
         });
     }

@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -43,6 +44,7 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
     private String idLoggedUser = SetFirebaseUser.getUsersId();
     private DatabaseReference databaseReference = SetFirebase.getFirebaseDatabase();
     private DatabaseReference usersRef          = databaseReference.child("user");
+    private DatabaseReference hsRef          = databaseReference.child("highschoolers");
     private DatabaseReference postsRef          = databaseReference.child("posts");
     private DatabaseReference followingRef      = databaseReference.child("following");
     private DatabaseReference followerRef       = databaseReference.child("followers");
@@ -182,19 +184,19 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
                                 .child(idLoggedUser)
                                 .child(notification.getIdSender());
 
-                        folloingList.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                if (!dataSnapshot.exists()) {
-                                    //holder.btFollowBack.setVisibility(View.VISIBLE);
-                                }
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                            }
-                        });
+//                        folloingList.addListenerForSingleValueEvent(new ValueEventListener() {
+//                            @Override
+//                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                                if (!dataSnapshot.exists()) {
+//                                    holder.btFollowBack.setVisibility(View.VISIBLE);
+//                                }
+//                            }
+//
+//                            @Override
+//                            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                            }
+//                        });
 
                     } else if (notification.getAction().equals("message")) {
                         holder.imgPost.setVisibility(View.GONE);
@@ -226,32 +228,76 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
                     senderRef.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            User sender = dataSnapshot.getValue(User.class);
+                            if (dataSnapshot.exists()) {
+                                User sender = dataSnapshot.getValue(User.class);
 
-                            String fullNotification = "";
-                            if (notification.getAction().equals("comment")) {
-                                fullNotification = "<b>" + sender.getName() + "</b>" + " commented: " + notification.getComment();
-                            } else if (notification.getAction().equals("postLiked")) {
-                                fullNotification = "<b>" + sender.getName() + "</b>" + "  liked your post.";
-                            } else if (notification.getAction().equals("followReq") && notification.getStatus().equals("sent")) {
-                                fullNotification = "<b>" + sender.getName() + "</b>" + "  wants to follow you.";
-                            } else if (notification.getAction().equals("followReq") && notification.getStatus().equals("answered")) {
-                                fullNotification = "<b>" + sender.getName() + "</b>" + "  started following you.";
-                            } else if (notification.getAction().equals("message")) {
-                                fullNotification = "<b>" + sender.getName() + "</b>" + "  sent you a message";
-                            } else if (notification.getAction().equals("follow")) {
-                                fullNotification = "<b>" + sender.getName() + "</b>" + "  started following you.";
+                                String fullNotification = "";
+                                if (notification.getAction().equals("comment")) {
+                                    fullNotification = "<b>" + sender.getName() + "</b>" + " commented: " + notification.getComment();
+                                } else if (notification.getAction().equals("postLiked")) {
+                                    fullNotification = "<b>" + sender.getName() + "</b>" + "  liked your post.";
+                                } else if (notification.getAction().equals("followReq") && notification.getStatus().equals("sent")) {
+                                    fullNotification = "<b>" + sender.getName() + "</b>" + "  wants to follow you.";
+                                } else if (notification.getAction().equals("followReq") && notification.getStatus().equals("answered")) {
+                                    fullNotification = "<b>" + sender.getName() + "</b>" + "  started following you.";
+                                } else if (notification.getAction().equals("message")) {
+                                    fullNotification = "<b>" + sender.getName() + "</b>" + "  sent you a message";
+                                } else if (notification.getAction().equals("follow")) {
+                                    fullNotification = "<b>" + sender.getName() + "</b>" + "  started following you.";
+                                }
+                                holder.txtName.setText(Html.fromHtml(fullNotification));
+
+                                Post post = dataSnapshot.getValue(Post.class);
+                                if (sender.getPicturePath() != null) {
+                                    Uri url = Uri.parse(sender.getPicturePath());
+                                    Glide.with(context)
+                                            .load(url)
+                                            .into(holder.imgProfile);
+                                } else {
+                                    holder.imgProfile.setImageResource(R.drawable.avatar);
+                                }
                             }
-                            holder.txtName.setText(Html.fromHtml(fullNotification));
+                        }
 
-                            Post post = dataSnapshot.getValue(Post.class);
-                            if (sender.getPicturePath() != null) {
-                                Uri url = Uri.parse(sender.getPicturePath());
-                                Glide.with(context)
-                                        .load(url)
-                                        .into(holder.imgProfile);
-                            } else {
-                                holder.imgProfile.setImageResource(R.drawable.avatar);
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
+                    // Set sender info HS
+                    DatabaseReference senderHSRef = hsRef.child(notification.getIdSender());
+                    senderRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.exists()) {
+                                HighSchooler sender = dataSnapshot.getValue(HighSchooler.class);
+
+                                String fullNotification = "";
+                                if (notification.getAction().equals("comment")) {
+                                    fullNotification = "<b>" + sender.getName() + "</b>" + " commented: " + notification.getComment();
+                                } else if (notification.getAction().equals("postLiked")) {
+                                    fullNotification = "<b>" + sender.getName() + "</b>" + "  liked your post.";
+                                } else if (notification.getAction().equals("followReq") && notification.getStatus().equals("sent")) {
+                                    fullNotification = "<b>" + sender.getName() + "</b>" + "  wants to follow you.";
+                                } else if (notification.getAction().equals("followReq") && notification.getStatus().equals("answered")) {
+                                    fullNotification = "<b>" + sender.getName() + "</b>" + "  started following you.";
+                                } else if (notification.getAction().equals("message")) {
+                                    fullNotification = "<b>" + sender.getName() + "</b>" + "  sent you a message";
+                                } else if (notification.getAction().equals("follow")) {
+                                    fullNotification = "<b>" + sender.getName() + "</b>" + "  started following you.";
+                                }
+                                holder.txtName.setText(Html.fromHtml(fullNotification));
+
+                                Post post = dataSnapshot.getValue(Post.class);
+                                if (sender.getPicturePath() != null) {
+                                    Uri url = Uri.parse(sender.getPicturePath());
+                                    Glide.with(context)
+                                            .load(url)
+                                            .into(holder.imgProfile);
+                                } else {
+                                    holder.imgProfile.setImageResource(R.drawable.avatar);
+                                }
                             }
                         }
 
@@ -319,7 +365,7 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
                 if (dataSnapshot.exists()) {
                     User sender = dataSnapshot.getValue(User.class);
 
-                    holder.imgPost.setVisibility(View.GONE);
+//                    holder.imgPost.setVisibility(View.GONE);
 
                     if (sender.getPicturePath() != null) {
                         Uri url = Uri.parse(sender.getPicturePath());

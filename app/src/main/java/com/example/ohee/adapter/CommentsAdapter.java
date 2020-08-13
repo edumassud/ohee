@@ -77,6 +77,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.MyView
                         Glide.with(context)
                                 .load(url)
                                 .into(holder.imgProfile);
+                        holder.imgProfile.setRotation(user.getRotation());
                     } else {
                         holder.imgProfile.setImageResource(R.drawable.avatar);
                     }

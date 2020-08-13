@@ -240,7 +240,7 @@ public class EditProfileActivity extends AppCompatActivity {
                 loggedUser.setRotation((int)editProfileImg.getRotation());
                 loggedUser.updatePersonalInfo();
 
-                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                finish();
             }
         });
 

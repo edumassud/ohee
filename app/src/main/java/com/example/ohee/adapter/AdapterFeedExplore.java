@@ -140,7 +140,7 @@ public class AdapterFeedExplore extends RecyclerView.Adapter<AdapterFeedExplore.
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                                     Notification notification = ds.getValue(Notification.class);
-                                    if (notification.getIdPost().equals(post.getId())) {
+                                    if (notification.getAction().equals("postLiekd") && notification.getIdPost().equals(post.getId())) {
                                         notificationsRef.child(notification.getIdNotification()).removeValue();
                                         break;
                                     }
@@ -195,7 +195,7 @@ public class AdapterFeedExplore extends RecyclerView.Adapter<AdapterFeedExplore.
 
             // Set featured comment
             if (post.getComments().size() == 0) {
-                holder.txtCommenter.setText("Be the first one to answer!");
+                holder.txtCommenter.setText("Be the first one to comment!");
             } else {
                 DatabaseReference commentsRef = databaseReference.child("comments");
                 commentsRef.addListenerForSingleValueEvent(new ValueEventListener() {
